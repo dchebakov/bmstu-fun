@@ -1,0 +1,70 @@
+{% if solve.is_valid %}
+    <p>Все возможные исходы представлены в таблице, где первое число - количество очков, выпавших на первой
+        кости, второе -
+        на второй.<br></p>
+    <table class="table-bordered">
+        <tr>
+            <td>11</td>
+            <td>12</td>
+            <td>13</td>
+            <td>14</td>
+            <td>15</td>
+            <td>16</td>
+        </tr>
+        <tr>
+            <td>21</td>
+            <td>22</td>
+            <td>23</td>
+            <td>24</td>
+            <td>25</td>
+            <td>26</td>
+        </tr>
+        <tr>
+            <td>31</td>
+            <td>32</td>
+            <td>33</td>
+            <td>34</td>
+            <td>35</td>
+            <td>36</td>
+        </tr>
+        <tr>
+            <td>41</td>
+            <td>42</td>
+            <td>43</td>
+            <td>44</td>
+            <td>45</td>
+            <td>46</td>
+        </tr>
+        <tr>
+            <td>51</td>
+            <td>52</td>
+            <td>53</td>
+            <td>54</td>
+            <td>55</td>
+            <td>56</td>
+        </tr>
+        <tr>
+            <td>61</td>
+            <td>62</td>
+            <td>63</td>
+            <td>64</td>
+            <td>65</td>
+            <td>66</td>
+        </tr>
+    </table>
+    <p>а) Сумма не превосходит {{ solve.N }} в {{ solve.a }} случаях, значит, искомая вероятность Pа = {{ solve.a }}/36
+        = {{ solve.ans_a }}.<br>
+        б) Произведение не превосходит {{ solve.N }} в {{ solve.b }} случаях, значит искомая вероятность Pб = {{ solve.b }}/36
+        = {{ solve.ans_b }}.<br>
+        в) {% if solve.N %}Произведение числа очков делится на {{ solve.N }} в {{ solve.c }} случаях, значит искомая вероятность
+            Pв
+            = {{ solve.c }}/36
+            = {{ solve.ans_c }}. {% endif %}
+        {% if not solve.N %} На 0 делить нельзя :( {% endif %}</p>
+{% else %}
+    <form action="{{ task.get_absolute_url }}" method="get">
+        <label for="N">Введите N</label>
+        <input type="number" id="N" name="N">
+        <button class="btn btn-success" type="submit">Получить решение!</button>
+    </form>
+{% endif %}

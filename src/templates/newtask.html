@@ -1,0 +1,10 @@
+{% extends 'index.html' %}
+{% block main %}
+    {% if form %}
+        {% include 'base/forms.html' with form=form title='Отправить!' action_url='/newtask/' %}
+    {% else %}
+        <div class="post"><p style="font-size: 16px;">Спасибо! В ближайшее время мы проверим решение и опубликуем его на
+            сайте!</p></div>
+    {% endif %}
+{% endblock %}
+{% block loginblock %}{% endblock %}

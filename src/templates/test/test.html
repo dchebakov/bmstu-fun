@@ -1,0 +1,7 @@
+{% extends 'index.html' %}
+{% block main %}
+    {#    <div class="col-xs-12 col-md-8 col-md-pull-2 main-block">#}
+        {% include 'base/forms.html' with form=form title='Попробовать запустить!' action_url='/test/' %}
+    {#    </div>#}
+{% endblock %}
+{% block loginblock %}{% endblock %}
