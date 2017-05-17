@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import Task, News
+from .models import Task, News, NewTask
 
 admin.site.register(Task)
 admin.site.register(News)
-# Register your models here.
+admin.site.register(NewTask)

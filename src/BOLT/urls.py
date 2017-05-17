@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from .views import (main, search, signup, logout,
                     settings, section, task, comment,
-                    thanks, newtask)
+                    thanks, newtask, success)
 
 urlpatterns = [
     url(r'^$', main, name='main'),
@@ -13,7 +13,8 @@ urlpatterns = [
     url(r'^task/(?P<id>\d+)/$', task, name='task'),
     url(r'^comment/(?P<id>\d+)/$', comment, name='comment'),
     url(r'^thanks/$', thanks, name='thanks'),
-    url(r'^newtask/$', newtask, name='newtask')
+    url(r'^newtask/$', newtask, name='newtask'),
+    url(r'^success/$', success, name='success')
     # url(r'^test/$', test, name='test')
     # url(r'^rate/$',rate,name='rate')
 ]

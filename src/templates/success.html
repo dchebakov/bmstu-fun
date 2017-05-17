@@ -1,8 +1,6 @@
 {% extends 'index.html' %}
 {% block main %}
-    {% if form %}
-        {% include 'base/forms.html' with form=form title='Отправить!' action_url='/newtask/' %}
-    {% endif %}
+    <div class="post"><p style="font-size: 14px;">{{ success }}</p></div>
 {% endblock %}
 
 

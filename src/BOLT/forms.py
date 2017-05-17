@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import re
 from .models import UserProfile
 
+
 class SettingsForm(forms.Form):
     username = forms.CharField(required=False, label='Логин')
     email = forms.EmailField(required=False, max_length=100, label="E-mail")
@@ -74,19 +75,35 @@ class RegistrationForm(forms.Form):
 
 class CommentForm(forms.Form):
     text = forms.CharField(
-        max_length=1000, widget=forms.Textarea(attrs={'rows':5,'placeholder':'Введите комментарий', 'class':'form-control'}),
+        max_length=1000,
+        widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Введите комментарий', 'class': 'form-control'}),
         required=True
     )
 
-class NewTask(forms.Form):
-    function = forms.FileField(required=True,label='Файл с функцией')
-    template = forms.FileField(required=True,label='Файл с шаблоном')
+
+class NewTaskForm(forms.Form):
+    sections = [('probabilitytheory', 'Теория вероятности'),
+                ('complexanalysis', 'ТФКП'),
+                ('diffgeometry', 'Дифференциальная геометрия'),
+                ('diffequation', 'Дифференциальные уравнения'),
+                ('functionalanalysis', 'Функциональный анализ'),
+                ('mathanalysis', 'Математический анализ'),
+                ('linearalgebra', 'Линейная алгебра'),
+                ('analyticgeometry', 'Аналитическая геометрия')]
+    title = forms.CharField(required=True,
+                            label='Условие задачи',
+                            widget=forms.Textarea(
+                                attrs={'rows': 5, 'placeholder': 'Введите условие задачи', 'class': 'form-control'}))
+    section = forms.ChoiceField(choices=sections, label='Раздел', required=True)
+    function = forms.FileField(required=True, label='Файл с функцией')
+    template = forms.FileField(required=True, label='Файл с шаблоном')
+
 
     def clean_function(self):
         function = self.cleaned_data['function']
         if function and function.size > 2 * 1024 * 1024:
             raise forms.ValidationError("Слишком большой размер ( > 2mb)")
-        if function.__str__()[len(function.__str__())-2:]!= 'py':
+        if function.__str__()[len(function.__str__()) - 2:] != 'py':
             raise forms.ValidationError("Неверный формат файла!")
 
         return function
@@ -95,7 +112,7 @@ class NewTask(forms.Form):
         template = self.cleaned_data['template']
         if template and template.size > 2 * 1024 * 1024:
             raise forms.ValidationError("Слишком большой размер ( > 2mb)")
-        if template.__str__()[len(template.__str__())-4:] != 'html':
+        if template.__str__()[len(template.__str__()) - 4:] != 'html':
             raise forms.ValidationError("Неверный формат файла!")
 
         return template

@@ -1,4 +1,6 @@
 {% extends 'index.html' %}
+{% load tags %}
+
 {% block main %}
     <div class="post">
         <p>{{ task.title }}</p>
@@ -33,13 +35,17 @@
     {% endif %}
 {% endblock %}
 
-{% block sections %}
-    <div class="hidden-xs col-md-2 col-md-pull-2 text-center">
-        <ul class="nav navbar right-navbar">
-            {% for section in sections %}
-                <li><a href="{{ section.get_absolute_url }}">{{ section.title }}</a></li>
-            {% endfor %}
-        </ul>
+
+{% block loginblock %}
+    <div class="hidden-xs">
+        {% include 'base/loginblock.html' with form=form last_comments=last_comments %}
     </div>
 {% endblock %}
-{% block lastcomments %}{% endblock %}
+
+
+{% block sections %}
+    <div class="hidden-xs">
+        {% include 'base/sectionsblock.html' with sections=sections %}
+    </div>
+{% endblock %}
+

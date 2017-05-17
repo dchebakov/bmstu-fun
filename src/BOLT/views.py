@@ -11,7 +11,7 @@ from django.conf import settings
 import re
 from django.contrib.auth.models import User
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
-from .forms import RegistrationForm, SettingsForm, CommentForm, NewTask
+from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm
 import os
 from .tasks.probabilitytheory import *
 from django.contrib.auth.decorators import login_required
@@ -48,7 +48,6 @@ def paginate(query_set, request):
         posts = paginator.page(paginator.num_pages)
 
     return posts
-
 
 
 def login(request):
@@ -203,28 +202,44 @@ def thanks(request):
     return redirect(main)
 
 
+
+def success(request):
+    return render(request, 'success.html',
+                  {'success': 'Спасибо! В ближайшее время мы проверим решение и опубликуем его на сайте!',
+                   'user': request.user,
+                   'profile': get_profile(request),
+                   'sections': Section.objects.all(),
+                   'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
+
+
 @login_required(login_url=main)
 def newtask(request):
     if request.method == 'POST':
-        form = NewTask(request.POST, request.FILES)
+        form = NewTaskForm(request.POST, request.FILES)
         if form.is_valid():
-            function = form.cleaned_data['function']
-            f_path = default_storage.save('tmp/' + function.name, ContentFile(function.read()))
+            # function = form.cleaned_data['function']
+            # f_path = default_storage.save('tmp/' + function.name, ContentFile(function.read()))
+            #
+            # template = form.cleaned_data['template']
+            # t_path = default_storage.save('tmp/' + template.name, ContentFile(template.read()))
 
-            template = form.cleaned_data['template']
-            t_path = default_storage.save('tmp/' + template.name, ContentFile(template.read()))
+            NewTask.objects.create(
+                title=form.cleaned_data['title'],
+                function=form.cleaned_data['function'],
+                template=form.cleaned_data['template'],
+                section=form.cleaned_data['section']
+            )
 
-
-            return render(request, 'test/testsolution.html', {'templatename'})
-
+            return redirect(success)
     else:
-        form = ()
-    profile = None
-    if request.user.is_authenticated():
-        profile = UserProfile.objects.get(user=request.user)
+        form = NewTaskForm()
+        profile = None
+        if request.user.is_authenticated():
+            profile = UserProfile.objects.get(user=request.user)
 
-    return render(request, 'test/test.html', {'user': request.user,
-                                         'form': form,
-                                         'profile': profile,
-                                         'sections': Section.objects.all(),
-                                         'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
+        return render(request, 'newtask.html', {'user': request.user,
+                                                'form': form,
+                                                'profile': profile,
+                                                'sections': Section.objects.all(),
+                                                'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
+

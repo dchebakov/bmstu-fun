@@ -15,6 +15,7 @@ SIGN_CHOICES = (
 )
 
 
+
 class NewsManager(models.Manager):
     def get_new(self):
         return self.all().order_by('-date_created')
@@ -68,6 +69,9 @@ class Section(models.Model):
     def get_absolute_url(self):
         return reverse('section', args=[str(self.slug)])
 
+    def __str__(self):
+        return self.title
+
 
 class TaskManager(models.Manager):
     def get_new(self):
@@ -114,9 +118,20 @@ def file_url(self, filename):
 
 
 class NewTask(models.Model):
+    sections = [('probabilitytheory','Теория вероятности'),
+                ('complexanalysis','ТФКП'),
+                ('diffgeometry','Дифференциальная геометрия'),
+                ('diffequation','Дифференциальные уравнения'),
+                ('functionalanalysis','Функциональный анализ'),
+                ('mathanalysis','Математический анализ'),
+                ('linearalgebra','Линейная алгебра'),
+                ('analyticgeometry','Аналитическая геометрия')]
+
     title = models.TextField()
     function = models.FileField(upload_to=file_url)
     template = models.FileField(upload_to=file_url)
+    section = models.CharField(max_length=17, choices=sections,
+                               null=True)
 
     def __str__(self):
         return self.title[:30] + '...'
