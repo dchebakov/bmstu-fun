@@ -7,14 +7,13 @@
         <div taskid="{{ task.id }}">
             {% csrf_token %}
             <p>Рейтинг задачи: {{ task.rating }}</p>
-        {% if user.is_authenticated and not is_like %}
-            <button class="btn btn-success thanks">Сказать спасибо!</button>
-        {% endif %}
+            {% if user.is_authenticated and not is_like %}
+                <button class="btn btn-success thanks">Сказать спасибо!</button>
+            {% endif %}
         </div>
     </div>
     {% for comment in comments %}
         <div class="col-xs-12 post">
-
             <div class="col-sm-2 text-center col-xs-4">
                 {% if comment.user.avatar %}
                     <img src="{{ comment.user.avatar_medium.url }}" alt="" class="img-circle">
@@ -24,7 +23,7 @@
                 <p style="font-size: 16px">{{ comment.user.user.username }}</p>
             </div>
             <div class="col-sm-10 col-xs-8">
-                {{ comment.text }}
+                <p style="word-break: break-all;">{{ comment.text }}</p>
             </div>
         </div>
     {% endfor %}
@@ -34,3 +33,13 @@
     {% endif %}
 {% endblock %}
 
+{% block sections %}
+    <div class="hidden-xs col-md-2 col-md-pull-2 text-center">
+        <ul class="nav navbar right-navbar">
+            {% for section in sections %}
+                <li><a href="{{ section.get_absolute_url }}">{{ section.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+{% block lastcomments %}{% endblock %}

@@ -106,7 +106,7 @@
                     <div class="post">
                         <p>Последние комментарии: </p>
                         {% for last_comment in last_comments %}
-                            <a href="{{ last_comment.get_absolute_url }}">{{ last_comment.text | shortern }}</a>
+                            <a href="{{ last_comment.get_absolute_url }}">{{ last_comment.text | shortern }}</a><br>
                         {% endfor %}
                     </div>
                 {% endblock %}
