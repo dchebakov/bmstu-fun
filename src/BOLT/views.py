@@ -28,16 +28,16 @@ def get_profile(request):
     return profile
 
 
-# стандартные данные для всех страниц
 def get_default_data(request):
+    '''стандартные данные для всех страниц'''
     return {'profile': get_profile(request),
             'sections': Section.objects.all(), 'form': login(request),
             'last_comments': Comment.objects.all().order_by('-date_created')[:10]
             }
 
 
-# фукнция пагинации
 def paginate(query_set, request):
+    '''фукнция пагинации'''
     paginator = Paginator(query_set, COUNT_POSTS_ON_PAGE)
     page = request.GET.get('page')
     try:
@@ -50,8 +50,9 @@ def paginate(query_set, request):
     return posts
 
 
-# функция для получения формы авторизации и её обработки
+
 def login(request):
+    '''функция для получения формы авторизации и её обработки'''
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -59,7 +60,7 @@ def login(request):
                                      password=form.cleaned_data['password'])
             if user and user.is_active:
                 auth.login(request, form.get_user())
-                return redirect(main)
+                form = 'login'
     else:
         form = None
         if not request.user.is_authenticated():
@@ -89,9 +90,12 @@ def task(request, id):
 
 
 def main(request):
+    default_data = get_default_data(request)
+    if default_data['form'] == 'login':
+        return redirect(main)
     return render(request, 'index.html',
                   dict({'news': paginate(News.objects.get_new(), request)},
-                       **get_default_data(request)))
+                       **default_data))
 
 
 def signup(request):
@@ -162,9 +166,13 @@ def search(request):
     else:
         posts = paginate(tasks, request)
 
+    default_data = get_default_data(request)
+    if default_data['form'] == 'login':
+        return redirect(main)
+
     return render(request, 'search.html', dict({'tasks': tasks,
                                                 'title': terms},
-                                               **get_default_data(request)))
+                                               **default_data))
 
 
 def comment(request, id):
