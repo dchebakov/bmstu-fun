@@ -29,6 +29,18 @@ def task_decorate(function):
 
     return wrapper
 
+def check_args(*args): # Общая проверка
+    for arg in args:
+        if not arg or not isint(arg):
+            return False
+    return True    
+        
+def isint(s): # Проверка на int 
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
 
 @task_decorate
 def probabilitytheoryEx1(request):
@@ -36,7 +48,7 @@ def probabilitytheoryEx1(request):
         return round(x / 36, 3)
 
     N = request.GET.get('N')
-    if not N:
+    if not check_args(N):
         return {'is_valid': False}
 
     N = int(N)
@@ -49,20 +61,61 @@ def probabilitytheoryEx1(request):
                 b += 1
             if N != 0 and (i * j) % N == 0:
                 c += 1
-
-    return {'N': N, 'a': a, 'ans_a': calc_prob(a), 'b': b, 'ans_b': calc_prob(b), 'c': c,
+    solve = {'N': N, 'a': a, 'ans_a': calc_prob(a), 'b': b, 'ans_b': calc_prob(b), 'c': c,
             'ans_c': calc_prob(c), 'is_valid': True}
+                
+    return solve
 
 
 def ex5(K):
     return {'K': K, 'ans': round(1 - 2 / K, 3)}
 
-
-def ex4(K, N):
-    P = (K - 1) ** N
+@task_decorate
+def probabilitytheoryEx4(request):
+    
+    N = request.GET.get('N')
+    K = request.GET.get('K')
+    if not check_args(N, K):
+        return {'is_valid': False}
+    
+    N = int(N)
+    K = int(K)
+    
+    if N <= 0 or K <= 0 or N>=K:
+        return {'is_valid': False}
+    
+    P = (K - 1) ** N        
     A = math.factorial(K - 1) / math.factorial(K - 1 - N)
-    return {'K': K, 'N': N, 'P': P, 'A': A, 'ans_a': round(A / P, 3), 'ans_b': round(1 - A / P, 3)}
+    
+    solve = {'K': K, 'N': N, 'P': P, 'A': A, 'ans_a': round(A / P, 3), 'ans_b': round(1 - A / P, 3), 'is_valid': True}
+    
+    return solve
 
+@task_decorate
+def probabilitytheoryEx8(request):
+    
+    k1 = request.GET.get('k1')
+    k2 = request.GET.get('k2')
+    if not check_args(k1, k2):
+        return {'is_valid': False}
+    
+    k1 = int(k1)
+    k2 = int(k2)
+    
+    if k1 < 0 or k2 < 0 or k1 > 100 or k2 > 100:
+        return {'is_valid': False}
+    
+    P1 = round(k1/100, 3)
+    P2 = round(k2/100, 3)
+    
+    P = round(P1*P2, 3)
+    Pa = round(1 - P, 3)
+    Pb = round((1-P1)*(1-P2), 3)
+    Pc = round(P1*(1-P2) + P2*(1-P1), 3)
+    
+    solve = {'k1': k1, 'k2': k2, 'P1': P1, 'P2': P2, 'P': P, 'Pa': Pa, 'Pb': Pb, 'Pc': Pc, 'is_valid': True}
+    
+    return solve
 
 def ex7(R, S1, S2):
     ans = (S1 + S2) / (math.pi * R ** 2)
