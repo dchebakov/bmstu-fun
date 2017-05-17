@@ -1,7 +1,17 @@
 {% extends 'index.html' %}
+{% block sections %}
+    <div class="hidden-xs col-md-2 col-md-pull-2 text-center">
+        <ul class="nav navbar right-navbar">
+            {% for section in sections %}
+                <li><a href="{{ section.get_absolute_url }}">{{ section.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+{% block lastcomments %}{% endblock %}
 {% block main %}
-{#    <div class="col-xs-12 col-md-8 col-md-pull-2 main-block">#}
-        {% include 'base/forms.html' with form=form title='Сохранить!' action_url='/settings/' %}
-{#    </div>#}
+    {#    <div class="col-xs-12 col-md-8 col-md-pull-2 main-block">#}
+    {% include 'base/forms.html' with form=form title='Сохранить!' action_url='/settings/' %}
+    {#    </div>#}
 {% endblock %}
 {#{% block loginblock %}{% endblock %}#}
