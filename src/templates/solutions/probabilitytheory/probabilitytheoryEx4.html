@@ -6,9 +6,9 @@
         исходы.<br>
         Это число равно количеству размещений из (К-1) элементов по N.<br>
         А = (К-1)!/(К-1-N)! = ({{ solve.K }}-1)!/({{ solve.K }}-1-{{ solve.N }})! = {{ solve.A }}.<br>
-        Значит, искомая вероятность: Pa = P/A = {{ solve.P }}/{{ solve.A }} = {{ solve.ans_a }}.<br>
+        Значит, искомая вероятность: Pa = P/A = {{ solve.P }}/{{ solve.A }} = <b>{{ solve.ans_a }}</b>.<br>
         б) Это событие противоположно событию а), значит Ра + Рб = 1. Следовательно, Рб = 1 - Ра = 1 - {{ solve.ans_a }}
-        = {{ solve.ans_b }}.</p>
+        = <b>{{ solve.ans_b }}</b>.</p>
 {% else %}
     <form action="{{ task.get_absolute_url }}" method="get">
         <label for="N">Введите N</label>
