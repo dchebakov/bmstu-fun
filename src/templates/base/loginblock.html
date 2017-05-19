@@ -30,5 +30,5 @@
                 <a href="{{ last_comment.get_absolute_url }}">{{ last_comment.text | shortern }}</a><br>
             {% endfor %}
         </div>
-        <a href="{% url 'newtask' %}" class="btn btn-success">Прислать решение!</a>
+        <a href="{% url 'newtask' %}" class="btn btn-success" style="margin-bottom: 2%">Прислать решение!</a>
 {% endif %}

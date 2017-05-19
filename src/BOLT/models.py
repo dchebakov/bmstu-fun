@@ -15,7 +15,6 @@ SIGN_CHOICES = (
 )
 
 
-
 class NewsManager(models.Manager):
     def get_new(self):
         return self.all().order_by('-date_created')
@@ -29,8 +28,14 @@ class News(models.Model):
 
     objects = NewsManager()
 
+    class Meta:
+        verbose_name = 'New'
+
     def get_absolute_url(self):
         return reverse('news', args=[str(self.title)])
+
+    def __str__(self):
+        return self.title
 
 
 def img_url(self, filename):
@@ -47,6 +52,9 @@ class UserProfile(models.Model):
                                     ResizeToFill(70, 70)],
                                    format='JPEG', options={'quality': 90})
 
+    def __str__(self):
+        return self.user.username
+
 
 class Topic(models.Model):
     title = models.CharField(max_length=30)
@@ -57,6 +65,9 @@ class Topic(models.Model):
 
     def get_absolute_url(self):
         return reverse('tag', args=[str(self.title)])
+
+    def __str__(self):
+        return self.title
 
 
 class Section(models.Model):
@@ -89,8 +100,14 @@ class Task(models.Model):
     function_name = models.CharField(max_length=100, null=True)
     objects = TaskManager()
 
+    class Meta:
+        verbose_name = 'Task'
+
     def get_absolute_url(self):
         return reverse('task', args=[str(self.id)])
+
+    def __str__(self):
+        return self.title
 
 
 class Comment(models.Model):
@@ -101,6 +118,9 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return self.task.get_absolute_url()
+
+    def __str__(self):
+        return self.text
 
 
 class Thanks(models.Model):
@@ -118,14 +138,14 @@ def file_url(self, filename):
 
 
 class NewTask(models.Model):
-    sections = [('probabilitytheory','Теория вероятности'),
-                ('complexanalysis','ТФКП'),
-                ('diffgeometry','Дифференциальная геометрия'),
-                ('diffequation','Дифференциальные уравнения'),
-                ('functionalanalysis','Функциональный анализ'),
-                ('mathanalysis','Математический анализ'),
-                ('linearalgebra','Линейная алгебра'),
-                ('analyticgeometry','Аналитическая геометрия')]
+    sections = [('probabilitytheory', 'Теория вероятности'),
+                ('complexanalysis', 'ТФКП'),
+                ('diffgeometry', 'Дифференциальная геометрия'),
+                ('diffequation', 'Дифференциальные уравнения'),
+                ('functionalanalysis', 'Функциональный анализ'),
+                ('mathanalysis', 'Математический анализ'),
+                ('linearalgebra', 'Линейная алгебра'),
+                ('analyticgeometry', 'Аналитическая геометрия')]
 
     title = models.TextField()
     function = models.FileField(upload_to=file_url)
@@ -133,5 +153,8 @@ class NewTask(models.Model):
     section = models.CharField(max_length=17, choices=sections,
                                null=True)
 
+    class Meta:
+        verbose_name = 'New task'
+
     def __str__(self):
-        return self.title[:30] + '...'
+        return self.title

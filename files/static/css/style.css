@@ -75,7 +75,6 @@ hr {
 
 .btn-success {
     background: #66bb6a;
-    margin-bottom: 2%;
 }
 
 .btn-success:hover {
@@ -117,6 +116,10 @@ td {
     font-size: 13px;
 }
 
-.comment{
+.comment {
     background: #fff;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: #b0bec5;
 }
