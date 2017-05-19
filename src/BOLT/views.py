@@ -4,17 +4,19 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import auth
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-import json
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
-import re
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+import json
+import os
+import re
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
 from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm
-import os
 from .tasks.probabilitytheory import *
-from django.contrib.auth.decorators import login_required
+from .tasks.diffgeometry import *
+
 
 COUNT_POSTS_ON_PAGE = 4
 COUNT_TOP_TAGS = 5
