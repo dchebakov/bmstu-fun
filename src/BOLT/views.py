@@ -15,7 +15,7 @@ import re
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
 from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm
 from .tasks.probabilitytheory import *
-#from .tasks.diffgeometry import *
+from .tasks.diffgeometry import *
 
 
 COUNT_POSTS_ON_PAGE = 4
