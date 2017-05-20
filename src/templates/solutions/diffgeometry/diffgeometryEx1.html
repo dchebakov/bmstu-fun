@@ -1,40 +1,32 @@
-<script
-        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-..">
+<script 
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 {% if solve.is_valid %}
 
-    <p><font size=4>Коммутатор векторных полей вычисляется по формуле:</font>
-        <font size=5>$$\left [ X, Y \right ] = \phi ^1 \cdot \frac{\partial }{\partial x} + \phi ^2 \cdot \frac{\partial
-            }{\partial y},$$</font>
+<p><font size=4>Коммутатор векторных полей вычисляется по формуле:</font>
+<font size=5>$$\left [ X, Y \right ] = \phi ^1 \cdot \frac{\partial }{\partial x} + \phi ^2  \cdot \frac{\partial }{\partial y},$$</font>
 
-        <font size=4>где:</font>
-        <font size=4>$$\phi ^i = \xi ^\alpha\cdot \frac{\partial \eta ^i}{\partial x^\alpha } - \eta ^\alpha \cdot
-            \frac{\partial \xi ^i}{\partial x^\alpha }$$</font>
+<font size=4>где:</font>
+<font size=4>$$\phi ^i = \xi ^\alpha\cdot \frac{\partial \eta ^i}{\partial x^\alpha } - \eta ^\alpha \cdot \frac{\partial \xi ^i}{\partial x^\alpha }$$</font>
 
-        <font size=4>$$x ^1 = x,~~~~~ \xi ^1 = {{ solve.xi1 }},~~~~~ \xi ^2 = {{ solve.xi2 }}$$ $$x ^2 = y,~~~~~ \eta ^1
-            = {{ solve.eta1 }},~~~~~ \eta ^2 = {{ solve.eta2 }}$$</font>
+<font size=4>$$x ^1 = x,~~~~~ \xi ^1 = {{ solve.xi1}},~~~~~  \xi ^2 = {{ solve.xi2}}$$ $$x ^2 = y,~~~~~ \eta ^1 = {{ solve.eta1}},~~~~~  \eta ^2 = {{ solve.eta2}}$$</font>
 
-        <font size=4>$$\phi ^{1} = \xi^1 \cdot \frac{\partial \eta ^1}{\partial x^1} - \eta ^1\cdot \frac{\partial \xi
-            ^1}{\partial x^1} + \xi^2 \cdot \frac{\partial \eta ^1}{\partial x^2} - \eta ^2\cdot \frac{\partial \xi
-            ^1}{\partial x^2} = {{ solve.phi1 }}$$</font>
+<font size=4>$$\phi ^{1} = \xi^1 \cdot \frac{\partial \eta ^1}{\partial x^1} - \eta ^1\cdot \frac{\partial \xi ^1}{\partial x^1} + \xi^2 \cdot \frac{\partial \eta ^1}{\partial x^2} - \eta ^2\cdot \frac{\partial \xi ^1}{\partial x^2} = {{ solve.phi1 }}$$</font>
 
-        <font size=4>$$\phi ^{2} = \xi^1 \cdot \frac{\partial \eta ^2}{\partial x^1} - \eta ^1\cdot \frac{\partial \xi
-            ^2}{\partial x^1} + \xi^2 \cdot \frac{\partial \eta ^2}{\partial x^2} - \eta ^2\cdot \frac{\partial \xi
-            ^2}{\partial x^2} = {{ solve.phi2 }}$$</font>
+<font size=4>$$\phi ^{2} = \xi^1 \cdot \frac{\partial \eta ^2}{\partial x^1} - \eta ^1\cdot \frac{\partial \xi ^2}{\partial x^1} + \xi^2 \cdot \frac{\partial \eta ^2}{\partial x^2} - \eta ^2\cdot \frac{\partial \xi ^2}{\partial x^2} = {{ solve.phi2 }}$$</font>
 
-        <font size=4>$$Ответ: \left [ X, Y \right ] = ( {{ solve.phi1 }} ) \cdot \partial_{x} + ( {{ solve.phi2 }} )
-            \cdot \partial_{y}$$</font></p>
+<font size=4>$$Ответ: \left [ X, Y \right ] = ( {{ solve.phi1 }} ) \cdot \partial_{x} + ( {{ solve.phi2 }} ) \cdot \partial_{y}$$</font></p>
 
 {% else %}
-    <form action="{{ task.get_absolute_url }}" method="get">
+     <form action="{{ task.get_absolute_url }}" method="get">
         <label for="X"><font size=3>\(X = ~\)</font></label><input type="text" id="xi1" name="xi1">
         <label for="xi1"><font size=3>\(\partial _{x}~~ + ~~\)</font></label><input type="text" id="xi2" name="xi2">
         <label for="xi2"><font size=3>\(\partial _{y}\)</font></label><br>
-
+        
         <label for="Y"><font size=3>\(Y = ~\)</font></label><input type="text" id="eta1" name="eta1">
         <label for="eta1"><font size=3>\(\partial _{x}~~ + ~~\)</font></label><input type="text" id="eta2" name="eta2">
         <label for="eta2"><font size=3>\(\partial _{y}\)</font></label><br>
-
+        
         <button class="btn btn-success" type="submit">Получить решение!</button>
     </form>
 {% endif %}
