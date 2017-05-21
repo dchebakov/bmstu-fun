@@ -5,6 +5,9 @@ from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 
+from sympy import *
+import re
+
 
 def comments(request, task):
     is_like = True
@@ -120,3 +123,34 @@ def probabilitytheoryEx8(request):
 def ex7(R, S1, S2):
     ans = (S1 + S2) / (math.pi * R ** 2)
     return {'R': R, 'S1': S1, 'S2': S2, 'ans': round(ans, 3)}
+
+
+@task_decorate
+def probabilitytheoryEx19(request):
+    N = request.GET.get('N')
+    M = request.GET.get('M')
+    P = request.GET.get('P')
+
+    if not check_args(N, M):
+        return {'is_valid': False}
+    if not P:
+        return {'is_valid': False}
+    
+    P = re.sub(',', '.', str(P))
+    N = int(N)
+    M = int(M)
+    try:
+        P = float(P)
+    except ValueError:
+        return {'is_valid': False}
+
+    if N <= 0 or M <= 0 or M >= N or P < 0 or P > 1:
+        return {'is_valid': False}
+
+    lam = N * P
+    lam_m = lam**M
+    e_lam = math.exp(-lam).real
+    m_fact = math.factorial(M)
+    Pa = round(lam_m * e_lam/m_fact, 6)
+    solve = {'Pa': Pa, 'N': N, 'M': M, 'P': P, 'lam': lam, 'is_valid': True}
+    return solve
