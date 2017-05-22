@@ -48,6 +48,7 @@
     <div class="col-sm-10">
         <form class="form-horizontal" action="{% url 'createnewtask' id=newtask.id %}" method="post"
               enctype="multipart/form-data">
+        {% csrf_token %}
             {#            <div class="form-group">#}
             {#                <label class="control-label col-xs-3" for="id_title">Условие задачи: </label>#}
             {#                <div class=" col-xs-9">#}
@@ -68,7 +69,7 @@
                 <label class="control-label col-xs-3" for="id_function">Функция: </label>
                 <div class=" col-xs-9">
                     <p>На данный момент: <a href="/media/{{ newtask.function }}">{{ newtask.function }}</a></p>
-                    <input id="d_function" class="form-control" type="file" name="template">
+                    <input id="d_function" class="form-control" type="file" name="function">
                 </div>
             </div>
             <div class="form-group">

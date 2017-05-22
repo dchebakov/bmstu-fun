@@ -250,10 +250,10 @@ def newtask(request):
             profile = UserProfile.objects.get(user=request.user)
 
     return render(request, 'newtask.html', {'user': request.user,
-                                                'form': form,
-                                                'profile': get_profile(request),
-                                                'sections': Section.objects.all(),
-                                                'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
+                                            'form': form,
+                                            'profile': get_profile(request),
+                                            'sections': Section.objects.all(),
+                                            'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
 
 
 def listofsentsolutions(request):
@@ -276,8 +276,8 @@ def checknewsolution(request, id):
         except NewTask.DoesNotExist:
             return redirect(listofsentsolutions)
         form = SectionForm(data={
-            'title':newtask.title,
-            'section':newtask.section,
+            'title': newtask.title,
+            'section': newtask.section,
             'function_name': newtask.section + 'Ex' + str(Task.objects.filter(
                 section=Section.objects.get(slug=newtask.section)
             ).count())
@@ -289,7 +289,7 @@ def checknewsolution(request, id):
                                                          'last_comments': Comment.objects.all().order_by(
                                                              '-date_created')[:5],
                                                          'newtask': newtask,
-                                                         'form':form},
+                                                         'form': form},
                       )
     else:
         return redirect(main)
@@ -297,24 +297,22 @@ def checknewsolution(request, id):
 
 def createnewtask(request, id):
     if request.user.is_superuser:
-        if 'POST' not in request.method:
-            return redirect(listofsentsolutions)
-        form = SectionForm(data={
-            'title':newtask.title,
-            'section':newtask.section,
-            'function_name': newtask.section + 'Ex' + str(Task.objects.filter(
-                section=Section.objects.get(slug=newtask.section)
-            ).count())
-        })
+        if request.method == 'POST':
+            form = SectionForm(request.POST)
+            if form.is_valid():
+                print(form.cleaned_data['title'])
+                print(form.cleaned_data['function_name'])
+                print(form.cleaned_data['section'])
+                if not request.POST['function']:
+                    print(NewTask.objects.get(pk=id).function)
+                if not request.POST['template']:
+                    print(NewTask.objects.get(pk=id).template)
 
-        return render(request, 'checknewsolution.html', {'user': request.user,
-                                                         'profile': get_profile(request),
-                                                         'sections': Section.objects.all(),
-                                                         'last_comments': Comment.objects.all().order_by(
-                                                             '-date_created')[:5],
-                                                         'newtask': newtask,
-                                                         'form':form},
-                      )
+
+            return redirect(listofsentsolutions)
+        else:
+            return redirect(listofsentsolutions)
+
     else:
         return redirect(main)
 
