@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 import json
 import os
 import re
+import shutil
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
 from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm
 from .tasks.probabilitytheory import *
@@ -229,11 +230,11 @@ def newtask(request):
                 section=form.cleaned_data['section']
             )
             template = open('/home/chad/BOLT_PROJECT/files/media/' +
-                            str(NewTask.objects.get(pk=NewTask.objects.count()).template), 'r')
+                            str(NewTask.objects.last().template), 'r')
             text = template.read()
             template.close()
             template = open('/home/chad/BOLT_PROJECT/files/media/' +
-                            str(NewTask.objects.get(pk=NewTask.objects.count()).template), 'w')
+                            str(NewTask.objects.last().template), 'w')
             template.write(
                 '''
                 <head>
@@ -300,6 +301,24 @@ def createnewtask(request, id):
         if request.method == 'POST':
             form = SectionForm(request.POST)
             if form.is_valid():
+                # if not request.POST['template']:
+                #     shutil.move(r'/home/chad/BOLT_PROJECT/files/media/' +
+                #                 str(NewTask.objects.get(pk=id).template),
+                #                 r'/home/chad/BOLT_PROJECT/src/templates/solutions/' +
+                #                 str(form.cleaned_data['section']) + r'/' +
+                #                 str(form.cleaned_data['function_name']) + r'.html')
+                #
+                if request.POST['function']:
+                    print(NewTask.objects.get(pk=id).function)
+
+
+                rename = open('/home/chad/BOLT_PROJECT/files/media/','r')
+                str = rename.read()
+                str = re.sub(r'myfunc', 'nofunc', str)
+                rename.close()
+                rename = open(__file__,'w')
+                rename.write(str)
+                rename.close()
                 print(form.cleaned_data['title'])
                 print(form.cleaned_data['function_name'])
                 print(form.cleaned_data['section'])
