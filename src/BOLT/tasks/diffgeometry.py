@@ -25,7 +25,7 @@ def task_decorate(function):
         task = Task.objects.get(function_name=function.__name__)
         solve = function(request)
         return render(request, 'task.html',
-                      dict({'temapltename': 'solutions/diffgeometry/' +
+                      dict({'template': 'solutions/diffgeometry/' +
                                             function.__name__ + '.html',
                             'task': task, 'solve': solve},
                            **comments(request, task)))

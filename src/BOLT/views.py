@@ -319,7 +319,9 @@ def createnewtask(request, id):
 
 def deletetask(request, id):
     if request.user.is_superuser:
-        NewTask.objects.get(pk=id).delete()
+        newtask = NewTask.objects.get(pk=id)
+        os.remove('/home/chad/BOLT_PROJECT/files/media/' + str(newtask.function))
+        os.remove('/home/chad/BOLT_PROJECT/files/media/' + str(newtask.template))
         return redirect(listofsentsolutions)
     else:
         return redirect(main)
