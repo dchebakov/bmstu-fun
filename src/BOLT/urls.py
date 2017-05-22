@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from .views import (main, search, signup, logout,
                     settings, section, task, comment,
-                    thanks, newtask, success)
+                    thanks, newtask, success, listofsentsolutions,
+                    checknewsolution)
 
 urlpatterns = [
     url(r'^$', main, name='main'),
@@ -14,7 +15,9 @@ urlpatterns = [
     url(r'^comment/(?P<id>\d+)/$', comment, name='comment'),
     url(r'^thanks/$', thanks, name='thanks'),
     url(r'^newtask/$', newtask, name='newtask'),
-    url(r'^success/$', success, name='success')
+    url(r'^success/$', success, name='success'),
+    url(r'^listofsentsolutions/$', listofsentsolutions, name='listofsentsolutions'),
+    url(r'^checknewsolution/(?P<id>\d+)$', checknewsolution, name='checknewsolution')
     # url(r'^test/$', test, name='test')
     # url(r'^rate/$',rate,name='rate')
 ]

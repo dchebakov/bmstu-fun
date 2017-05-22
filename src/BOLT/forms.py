@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 import re
-from .models import UserProfile
-
+from .models import UserProfile, NewTask
+from django.contrib import admin
 
 class SettingsForm(forms.Form):
     username = forms.CharField(required=False, label='Логин')
@@ -116,3 +116,11 @@ class NewTaskForm(forms.Form):
             raise forms.ValidationError("Неверный формат файла!")
 
         return template
+
+class CreateTaskForm(forms.ModelForm):
+    class Meta:
+        model = NewTask
+        fields = {'function','template'}
+
+class TaskAdmin(admin.ModelAdmin):
+    form = CreateTaskForm

@@ -17,7 +17,6 @@ from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm
 from .tasks.probabilitytheory import *
 from .tasks.diffgeometry import *
 
-
 COUNT_POSTS_ON_PAGE = 4
 COUNT_TOP_TAGS = 5
 COUNT_BEST_MEMBERS = 3
@@ -159,8 +158,7 @@ def settings(request):
 
 def search(request):
     terms = request.GET.get('terms')
-    tasks = Task.objects.filter(Q(title__icontains=terms) |
-                                Q(title__icontains=terms.lower()))
+    tasks = Task.objects.filter(title__icontains=terms)
     if len(tasks) == 0:
         tasks = None
         terms = 'Nothing was found'
@@ -204,7 +202,6 @@ def thanks(request):
     return redirect(main)
 
 
-
 def success(request):
     return render(request, 'success.html',
                   {'success': 'Спасибо! В ближайшее время мы проверим решение и опубликуем его на сайте!',
@@ -231,6 +228,19 @@ def newtask(request):
                 template=form.cleaned_data['template'],
                 section=form.cleaned_data['section']
             )
+            template = open('/home/chad/BOLT_PROJECT/files/media/' +
+                            str(NewTask.objects.get(pk=NewTask.objects.count()).template), 'r')
+            text = template.read()
+            template.close()
+            template = open('/home/chad/BOLT_PROJECT/files/media/' +
+                            str(NewTask.objects.get(pk=NewTask.objects.count()).template), 'w')
+            template.write(
+                '''
+                <head>
+                    <meta charset="utf-8">
+                </head>''' + text)
+            template.close()
+            print(text)
 
             return redirect(success)
     else:
@@ -245,3 +255,36 @@ def newtask(request):
                                                 'sections': Section.objects.all(),
                                                 'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
 
+
+def listofsentsolutions(request):
+    if request.user.is_superuser:
+        return render(request, 'listofsentsolutions.html', {'user': request.user,
+                                                            'profile': get_profile(request),
+                                                            'sections': Section.objects.all(),
+                                                            'last_comments': Comment.objects.all().order_by(
+                                                                '-date_created')[:5],
+                                                            'newtasks': NewTask.objects.all()},
+                      )
+    else:
+        return redirect(main)
+
+
+from django.contrib.admin import ModelAdmin
+
+def checknewsolution(request, id):
+    if request.user.is_superuser:
+        try:
+            newtask = NewTask.objects.get(pk=id)
+        except NewTask.DoesNotExist:
+            return redirect(listofsentsolutions)
+        form = ModelAdmin.get_form(newtask,request)
+        return render(request, 'checknewsolution.html', {'user': request.user,
+                                                         'profile': get_profile(request),
+                                                         'sections': Section.objects.all(),
+                                                         'last_comments': Comment.objects.all().order_by(
+                                                             '-date_created')[:5],
+                                                         'newtask': newtask,
+                                                         'form':form},
+                      )
+    else:
+        return redirect(main)

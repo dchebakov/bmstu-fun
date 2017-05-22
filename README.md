@@ -8,8 +8,8 @@
 После того как вы клонировали репозиторий, для запуска проекта вам понадобится выполнить следующие команды:
 ```bash
 #копируем настройки и базу даных в том виде, в котором они необходимы для запуска проекта
-cp src/BOLT_PROJECT/settings-example.py src/BOLT_PROJECT/settings.py
-cp src/db-example.sqlite3 src/db.sqlite3
+cp BOLT_PROJECT/src/BOLT_PROJECT/settings-example.py src/BOLT_PROJECT/settings.py
+cp BOLT_PROJECT/src/db-example.sqlite3 src/db.sqlite3
 #устанавливаем pip3
 sudo apt-get install python3-pip
 #устанавливаем virtualenv
