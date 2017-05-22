@@ -11,12 +11,11 @@ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorM
 {% else %}
             <form action="{{ task.get_absolute_url }}" method="get">
                 <label for="M">Введите M</label>
-                <input type="number" id="M" name="M">
+                <input type="number" id="M" name="M"><br>
                 <label for="N">Введите N</label>
-                <input type="number" id="N" name="N">
+                <input type="number" id="N" name="N"><br>
                 <label for="P">Введите P</label>
-                <input type="text" id="P" name="P">
-
+                <input type="text" id="P" name="P"><br>
                 <button class="btn btn-success" type="submit">Получить решение!</button>
             </form>
 {% endif %}
