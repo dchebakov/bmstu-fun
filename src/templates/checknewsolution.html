@@ -47,12 +47,21 @@
 
     <div class="col-sm-10">
         <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label class="control-label col-xs-3" for="id_title">Условие задачи: </label>
-                <div class=" col-xs-9">
-                    <textarea id="id_title" class="form-control" rows="5" name="title">{{ newtask.title }}</textarea>
+            {#            <div class="form-group">#}
+            {#                <label class="control-label col-xs-3" for="id_title">Условие задачи: </label>#}
+            {#                <div class=" col-xs-9">#}
+            {#                    <textarea id="id_title" class="form-control" rows="5" name="title">{{ newtask.title }}</textarea>#}
+            {#                </div>#}
+            {#            </div>#}
+
+            {% for item in form %}
+                <div class="form-group">
+                    <label class="control-label col-xs-3" for="{{ item.id_for_label }}">{{ item.label }}</label>
+                    <div class=" col-xs-9">
+                        {{ item }}
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
 
             <div class="form-group">
                 <label class="control-label col-xs-3" for="id_function">Функция: </label>
@@ -68,7 +77,6 @@
                     <input id="id_template" class="form-control" type="file" name="template">
                 </div>
             </div>
-            {{ form }}
         </form>
     </div>
 {% endblock %}

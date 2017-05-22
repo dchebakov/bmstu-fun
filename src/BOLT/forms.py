@@ -117,10 +117,22 @@ class NewTaskForm(forms.Form):
 
         return template
 
-class CreateTaskForm(forms.ModelForm):
-    class Meta:
-        model = NewTask
-        fields = {'function','template'}
+class SectionForm(forms.Form):
+    sections = [('probabilitytheory', 'Теория вероятности'),
+                ('complexanalysis', 'ТФКП'),
+                ('diffgeometry', 'Дифференциальная геометрия'),
+                ('diffequation', 'Дифференциальные уравнения'),
+                ('functionalanalysis', 'Функциональный анализ'),
+                ('mathanalysis', 'Математический анализ'),
+                ('linearalgebra', 'Линейная алгебра'),
+                ('analyticgeometry', 'Аналитическая геометрия')]
+    title = forms.CharField(required=True,
+                            label='Условие задачи',
+                            widget=forms.Textarea(
+                                attrs={'rows': 5, 'placeholder': 'Введите условие задачи', 'class': 'form-control'}))
 
-class TaskAdmin(admin.ModelAdmin):
-    form = CreateTaskForm
+    section = forms.ChoiceField(choices=sections, label='Раздел', required=True)
+    function_name = forms.CharField(required=True,
+                                    label='Имя функции',
+                                    widget=forms.TextInput(
+                                        attrs={'placeholder': 'Введите условие задачи', 'class': 'form-control'}))

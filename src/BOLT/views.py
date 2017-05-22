@@ -13,7 +13,7 @@ import json
 import os
 import re
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
-from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm
+from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm
 from .tasks.probabilitytheory import *
 from .tasks.diffgeometry import *
 
@@ -269,21 +269,27 @@ def listofsentsolutions(request):
         return redirect(main)
 
 
-from django.contrib.admin import ModelAdmin
-
 def checknewsolution(request, id):
     if request.user.is_superuser:
         try:
             newtask = NewTask.objects.get(pk=id)
         except NewTask.DoesNotExist:
             return redirect(listofsentsolutions)
+        form = SectionForm(data={
+            'title':newtask.title,
+            'section':newtask.section,
+            'function_name': newtask.section + 'Ex' + str(Task.objects.filter(
+                section=Section.objects.get(slug=newtask.section)
+            ).count())
+        })
+
         return render(request, 'checknewsolution.html', {'user': request.user,
                                                          'profile': get_profile(request),
                                                          'sections': Section.objects.all(),
                                                          'last_comments': Comment.objects.all().order_by(
                                                              '-date_created')[:5],
                                                          'newtask': newtask,
-                                                         },
+                                                         'form':form},
                       )
     else:
         return redirect(main)
