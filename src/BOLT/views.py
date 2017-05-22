@@ -249,9 +249,9 @@ def newtask(request):
         if request.user.is_authenticated():
             profile = UserProfile.objects.get(user=request.user)
 
-        return render(request, 'newtask.html', {'user': request.user,
+    return render(request, 'newtask.html', {'user': request.user,
                                                 'form': form,
-                                                'profile': profile,
+                                                'profile': get_profile(request),
                                                 'sections': Section.objects.all(),
                                                 'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
 
@@ -277,14 +277,13 @@ def checknewsolution(request, id):
             newtask = NewTask.objects.get(pk=id)
         except NewTask.DoesNotExist:
             return redirect(listofsentsolutions)
-        form = ModelAdmin.get_form(newtask,request)
         return render(request, 'checknewsolution.html', {'user': request.user,
                                                          'profile': get_profile(request),
                                                          'sections': Section.objects.all(),
                                                          'last_comments': Comment.objects.all().order_by(
                                                              '-date_created')[:5],
                                                          'newtask': newtask,
-                                                         'form':form},
+                                                         },
                       )
     else:
         return redirect(main)
