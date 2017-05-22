@@ -293,3 +293,35 @@ def checknewsolution(request, id):
                       )
     else:
         return redirect(main)
+
+
+def createnewtask(request, id):
+    if request.user.is_superuser:
+        if 'POST' not in request.method:
+            return redirect(listofsentsolutions)
+        form = SectionForm(data={
+            'title':newtask.title,
+            'section':newtask.section,
+            'function_name': newtask.section + 'Ex' + str(Task.objects.filter(
+                section=Section.objects.get(slug=newtask.section)
+            ).count())
+        })
+
+        return render(request, 'checknewsolution.html', {'user': request.user,
+                                                         'profile': get_profile(request),
+                                                         'sections': Section.objects.all(),
+                                                         'last_comments': Comment.objects.all().order_by(
+                                                             '-date_created')[:5],
+                                                         'newtask': newtask,
+                                                         'form':form},
+                      )
+    else:
+        return redirect(main)
+
+
+def deletetask(request, id):
+    if request.user.is_superuser:
+        NewTask.objects.get(pk=id).delete()
+        return redirect(listofsentsolutions)
+    else:
+        return redirect(main)
