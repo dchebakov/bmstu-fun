@@ -322,6 +322,7 @@ def deletetask(request, id):
         newtask = NewTask.objects.get(pk=id)
         os.remove('/home/chad/BOLT_PROJECT/files/media/' + str(newtask.function))
         os.remove('/home/chad/BOLT_PROJECT/files/media/' + str(newtask.template))
+        newtask.delete()
         return redirect(listofsentsolutions)
     else:
         return redirect(main)
