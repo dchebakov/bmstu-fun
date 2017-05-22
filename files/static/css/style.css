@@ -123,3 +123,22 @@ td {
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
     background-color: #b0bec5;
 }
+
+/*admin*/
+#header {
+    background: #b0bec5;
+
+}
+
+#branding h1{
+    color: #e0e0e0;
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: #e0e0e0;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: #b0bec5;
+     color: #e0e0e0;
+}
