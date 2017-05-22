@@ -3,9 +3,7 @@ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorM
 </script>
 {% if solve.is_valid %}
    
-    <p><font size=4>Все возможные исходы представлены в таблице, где первое число - количество очков, выпавших на первой
-        кости, второе -
-        на второй.</font><br></p>
+    <p><font size=3>Все возможные исходы представлены в таблице, где первое число - количество очков, выпавших на первой кости, второе - на второй.</font><br></p>
     <table class="table-bordered">
         <tr>
             <td>11</td>
@@ -56,9 +54,9 @@ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorM
             <td>66</td>
         </tr>
     </table>
-    <p><font size=4>а) Сумма не превосходит \({{ solve.N }}\) в \({{ solve.a }}\) случаях, значит, искомая вероятность \(P_{a} = \frac{ {{ solve.a }} }{36} = {{ solve.ans_a }}.\)<br>
-        б) Произведение не превосходит \({{ solve.N }}\) в \({{ solve.b }}\) случаях, значит искомая вероятность \(P_{б} = \frac{ {{ solve.b }} }{36} = {{ solve.ans_b }}.\)<br>
-        в) {% if solve.N %}Произведение числа очков делится на \({{ solve.N }}\) в \({{ solve.c }} \) случаях, значит искомая вероятность \(P_{в} = \frac{ {{ solve.c }} }{36} = {{ solve.ans_c }}.\) {% endif %}
+    <p><font size=3>а) Сумма не превосходит \( {{ solve.N }} \) в \( {{ solve.a }} \) случаях, значит, искомая вероятность \( P_{a} = \large \frac{ {{ solve.a }} }{36} \) \(= {{ solve.ans_a }}. \)<br>
+        б) Произведение не превосходит \( {{ solve.N }} \) в \( {{ solve.b }} \) случаях, значит искомая вероятность \( P_{б} = \large \frac{ {{ solve.b }} }{36} \) \(= {{ solve.ans_b }}. \)<br>
+        в) {% if solve.N %}Произведение числа очков делится на \( {{ solve.N }} \) в \({{ solve.c }} \) случаях, значит искомая вероятность \( P_{в} = \large \frac{ {{ solve.c }} }{36} \) \(= {{ solve.ans_c }}. \) {% endif %}
         {% if not solve.N %} На 0 делить нельзя :( {% endif %}</font></p>
         
 {% else %}
