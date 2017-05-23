@@ -16,13 +16,13 @@ import shutil
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
 from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm
 
-# from .tasks.diffgeometry import *
-# from .tasks.analyticgeometry import *
-# from .tasks.diffequation import *
-# from .tasks.functionalanalysis import *
-# from .tasks.linearalgebra import *
-# from .tasks.mathanalysis import *
-#
+from .tasks.diffgeometry import *
+from .tasks.analyticgeometry import *
+from .tasks.diffequation import *
+from .tasks.functionalanalysis import *
+from .tasks.linearalgebra import *
+from .tasks.mathanalysis import *
+
 from BOLT.tasks.complexanalysis import *
 from BOLT.tasks.probabilitytheory import *
 
