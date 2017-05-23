@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^checknewsolution/(?P<id>\d+)$', checknewsolution, name='checknewsolution'),
     url(r'^createnewtask/(?P<id>\d+)$', createnewtask, name='createnewtask'),
     url(r'^deletetask/(?P<id>\d+)$', deletetask, name='deletetask'),
+    url(r'^aboutus/',aboutus,name='aboutus'),
+    url(r'^utility/',utility,name='utility'),
     # url(r'^test/$', test, name='test')
     # url(r'^rate/$',rate,name='rate')
 ]

@@ -359,8 +359,8 @@ def deletetask(request, id):
 
 
 def aboutus(request):
-    return render(request, '')
+    return render(request, 'aboutus.html', get_default_data(request))
 
 
 def utility(request):
-    return render(request,'')
+    return render(request,'utility.html', get_default_data(request))
