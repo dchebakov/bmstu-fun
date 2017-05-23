@@ -32,14 +32,16 @@ def task_decorate(function):
     return wrapper
 
 
-def check_args(*args):  # Общая проверка
+def check_args(*args):
+    '''Общая проверка'''
     for arg in args:
         if not arg or not isint(arg):
             return False
     return True
 
 
-def isint(s):  # Проверка на int
+def isint(s):
+    '''Проверка на int'''
     try:
         int(s)
         return True

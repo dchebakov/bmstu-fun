@@ -2,7 +2,8 @@ from django.conf.urls import url
 from .views import (main, search, signup, logout,
                     settings, section, task, comment,
                     thanks, newtask, success, listofsentsolutions,
-                    checknewsolution, createnewtask, deletetask)
+                    checknewsolution, createnewtask, deletetask,
+                    aboutus, utility)
 
 urlpatterns = [
     url(r'^$', main, name='main'),

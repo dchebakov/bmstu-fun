@@ -356,3 +356,11 @@ def deletetask(request, id):
         return redirect(listofsentsolutions)
     else:
         return redirect(main)
+
+
+def aboutus(request):
+    return render(request, '')
+
+
+def utility(request):
+    return render(request,'')
