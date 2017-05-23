@@ -1,0 +1,18 @@
+<script 
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+{% if solve.is_valid %}
+
+<p>Площадь прямоугольника вычисляется по формуле: \(S = a \cdot b\).<br>
+\(S = {{ solve.a }} \cdot {{ solve.b }} = {{ solve.S }}\)</p>
+
+{% else %}
+     <form action="{{ task.get_absolute_url }}" method="get">
+        <label for="a">Введите \(a\):</label>
+        <input type="text" id="a" name="a">
+        <label for="b">Введите \(b\):</label>
+        <input type="text" id="b" name="b">
+        
+        <button class="btn btn-success" type="submit">Получить решение!</button>
+    </form>
+{% endif %}

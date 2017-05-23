@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+{% load tags %}
+
+{% block main %}
+    <div class="post">
+        <p>{{ task.title }}</p>
+        {% include temapltename with task=task solve=solve %}
+        <hr>
+        <div taskid="{{ task.id }}">
+            {% csrf_token %}
+            
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block sections %}
+    <div class="hidden-xs">
+        {% include 'base/sectionsblock.html' with sections=sections %}
+    </div>
+{% endblock %}
+
