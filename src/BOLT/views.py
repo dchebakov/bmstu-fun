@@ -15,8 +15,16 @@ import re
 import shutil
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
 from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm
-from .tasks.probabilitytheory import *
-from .tasks.diffgeometry import *
+
+# from .tasks.diffgeometry import *
+# from .tasks.analyticgeometry import *
+# from .tasks.diffequation import *
+# from .tasks.functionalanalysis import *
+# from .tasks.linearalgebra import *
+# from .tasks.mathanalysis import *
+#
+from BOLT.tasks.complexanalysis import *
+from BOLT.tasks.probabilitytheory import *
 
 COUNT_POSTS_ON_PAGE = 4
 COUNT_TOP_TAGS = 5
@@ -80,7 +88,7 @@ def section(request, section_title):
 
 def task(request, id):
     try:
-        task = Task.objects.get(id=id)
+        task = Task.objects.get(pk=int(id))
     except Task.DoesNotExist:
         raise Http404
 
@@ -281,7 +289,7 @@ def checknewsolution(request, id):
             'section': newtask.section,
             'function_name': newtask.section + 'Ex' + str(Task.objects.filter(
                 section=Section.objects.get(slug=newtask.section)
-            ).count())
+            ).count() + 1)
         })
 
         return render(request, 'checknewsolution.html', {'user': request.user,
@@ -301,34 +309,38 @@ def createnewtask(request, id):
         if request.method == 'POST':
             form = SectionForm(request.POST)
             if form.is_valid():
-                # if not request.POST['template']:
-                #     shutil.move(r'/home/chad/BOLT_PROJECT/files/media/' +
-                #                 str(NewTask.objects.get(pk=id).template),
-                #                 r'/home/chad/BOLT_PROJECT/src/templates/solutions/' +
-                #                 str(form.cleaned_data['section']) + r'/' +
-                #                 str(form.cleaned_data['function_name']) + r'.html')
-                #
-                if request.POST['function']:
-                    print(NewTask.objects.get(pk=id).function)
+                newtask = NewTask.objects.get(pk=id)
+                try:
+                    template = request.FILES['template'].read()
+                    open(r'/home/chad/BOLT_PROJECT/src/templates/solutions/' +
+                                str(form.cleaned_data['section']) + r'/' +
+                                str(form.cleaned_data['function_name']) + r'.html', 'w').write(template)
+                except:
+                    shutil.move(r'/home/chad/BOLT_PROJECT/files/media/' +
+                                str(newtask.template),
+                                r'/home/chad/BOLT_PROJECT/src/templates/solutions/' +
+                                str(form.cleaned_data['section']) + r'/' +
+                                str(form.cleaned_data['function_name']) + r'.html')
 
+                try:
+                    function = str(request.FILES['function'].read())
+                except:
+                    function = open(r'/home/chad/BOLT_PROJECT/files/media/'
+                                    + str(newtask.function),'r').read()
 
-                rename = open('/home/chad/BOLT_PROJECT/files/media/','r')
-                str = rename.read()
-                str = re.sub(r'myfunc', 'nofunc', str)
-                rename.close()
-                rename = open(__file__,'w')
-                rename.write(str)
-                rename.close()
-                print(form.cleaned_data['title'])
-                print(form.cleaned_data['function_name'])
-                print(form.cleaned_data['section'])
-                if not request.POST['function']:
-                    print(NewTask.objects.get(pk=id).function)
-                if not request.POST['template']:
-                    print(NewTask.objects.get(pk=id).template)
+                function = re.sub(r'solution', form.cleaned_data['function_name'], function)
+                open(r'/home/chad/BOLT_PROJECT/src/BOLT/tasks/' +
+                     form.cleaned_data['section'] + r'.py', 'a').write('\n\n' + r'@task_decorate' +
+                                                                        '\n' + function)
 
+                newtask.delete()
+                Task.objects.create(
+                    title=form.cleaned_data['title'],
+                    section=Section.objects.get(slug=form.cleaned_data['section']),
+                    function_name=form.cleaned_data['function_name']
+                )
 
-            return redirect(listofsentsolutions)
+                return redirect(listofsentsolutions)
         else:
             return redirect(listofsentsolutions)
 
