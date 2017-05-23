@@ -5,12 +5,19 @@ from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 
-from .probabilitytheory import task_decorate, comments, check_args, isint
+from .probabilitytheory import task_decorate, comments
 from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
 import re
 
+def check_args(*args): # Общая проверка
+    for arg in args:
+        if not arg:
+            return False
+    return True
 
+
+@task_decorate
 def diffgeometryEx1(request):
     xi1 = request.GET.get('xi1')
     xi2 = request.GET.get('xi2')
@@ -28,6 +35,7 @@ def diffgeometryEx1(request):
 
     xi = [parse_expr(xi11), parse_expr(xi22)]
     eta = [parse_expr(eta11), parse_expr(eta22)]
+
     phi = [0, 0]
     for i in range(2):
         for a in range(2):
