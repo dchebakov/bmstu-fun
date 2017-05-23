@@ -16,13 +16,12 @@ import shutil
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
 from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm
 
-from .tasks.diffgeometry import *
-from .tasks.analyticgeometry import *
-from .tasks.diffequation import *
-from .tasks.functionalanalysis import *
-from .tasks.linearalgebra import *
-from .tasks.mathanalysis import *
-
+from BOLT.tasks.diffgeometry import *
+from BOLT.tasks.analyticgeometry import *
+from BOLT.tasks.diffequation import *
+from BOLT.tasks.functionalanalysis import *
+from BOLT.tasks.linearalgebra import *
+from BOLT.tasks.mathanalysis import *
 from BOLT.tasks.complexanalysis import *
 from BOLT.tasks.probabilitytheory import *
 
@@ -313,8 +312,8 @@ def createnewtask(request, id):
                 try:
                     template = request.FILES['template'].read()
                     open(r'/home/chad/BOLT_PROJECT/src/templates/solutions/' +
-                                str(form.cleaned_data['section']) + r'/' +
-                                str(form.cleaned_data['function_name']) + r'.html', 'w').write(template)
+                         str(form.cleaned_data['section']) + r'/' +
+                         str(form.cleaned_data['function_name']) + r'.html', 'w').write(template)
                 except:
                     shutil.move(r'/home/chad/BOLT_PROJECT/files/media/' +
                                 str(newtask.template),
@@ -326,12 +325,12 @@ def createnewtask(request, id):
                     function = str(request.FILES['function'].read())
                 except:
                     function = open(r'/home/chad/BOLT_PROJECT/files/media/'
-                                    + str(newtask.function),'r').read()
+                                    + str(newtask.function), 'r').read()
 
                 function = re.sub(r'solution', form.cleaned_data['function_name'], function)
                 open(r'/home/chad/BOLT_PROJECT/src/BOLT/tasks/' +
                      form.cleaned_data['section'] + r'.py', 'a').write('\n\n' + r'@task_decorate' +
-                                                                        '\n' + function)
+                                                                       '\n' + function)
 
                 newtask.delete()
                 Task.objects.create(
