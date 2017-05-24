@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import auth
@@ -9,12 +9,13 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.conf import settings as st
 import json
 import os
 import re
 import shutil
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
-from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm
+from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm, NewTaskModelForm
 
 from BOLT.tasks.diffgeometry import *
 from BOLT.tasks.analyticgeometry import *
@@ -224,12 +225,6 @@ def newtask(request):
     if request.method == 'POST':
         form = NewTaskForm(request.POST, request.FILES)
         if form.is_valid():
-            # function = form.cleaned_data['function']
-            # f_path = default_storage.save('tmp/' + function.name, ContentFile(function.read()))
-            #
-            # template = form.cleaned_data['template']
-            # t_path = default_storage.save('tmp/' + template.name, ContentFile(template.read()))
-
             NewTask.objects.create(
                 title=form.cleaned_data['title'],
                 function=form.cleaned_data['function'],
@@ -263,7 +258,7 @@ def newtask(request):
                                             'sections': Section.objects.all(),
                                             'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
 
-
+@login_required(login_url=main)
 def listofsentsolutions(request):
     if request.user.is_superuser:
         return render(request, 'listofsentsolutions.html', {'user': request.user,
@@ -278,84 +273,64 @@ def listofsentsolutions(request):
 
 
 def checknewsolution(request, id):
-    if request.user.is_superuser:
-        try:
-            newtask = NewTask.objects.get(pk=id)
-        except NewTask.DoesNotExist:
-            return redirect(listofsentsolutions)
-        form = SectionForm(data={
-            'title': newtask.title,
-            'section': newtask.section,
-            'function_name': newtask.section + 'Ex' + str(Task.objects.filter(
-                section=Section.objects.get(slug=newtask.section)
-            ).count() + 1)
-        })
-
-        return render(request, 'checknewsolution.html', {'user': request.user,
-                                                         'profile': get_profile(request),
-                                                         'sections': Section.objects.all(),
-                                                         'last_comments': Comment.objects.all().order_by(
-                                                             '-date_created')[:5],
-                                                         'newtask': newtask,
-                                                         'form': form},
-                      )
-    else:
+    if not request.user.is_superuser:
         return redirect(main)
 
-
-def createnewtask(request, id):
-    if request.user.is_superuser:
-        if request.method == 'POST':
-            form = SectionForm(request.POST)
-            if form.is_valid():
-                newtask = NewTask.objects.get(pk=id)
-                try:
-                    template = request.FILES['template'].read()
-                    open(r'/home/chad/BOLT_PROJECT/src/templates/solutions/' +
-                         str(form.cleaned_data['section']) + r'/' +
-                         str(form.cleaned_data['function_name']) + r'.html', 'w').write(template)
-                except:
-                    shutil.move(r'/home/chad/BOLT_PROJECT/files/media/' +
-                                str(newtask.template),
-                                r'/home/chad/BOLT_PROJECT/src/templates/solutions/' +
-                                str(form.cleaned_data['section']) + r'/' +
-                                str(form.cleaned_data['function_name']) + r'.html')
-
-                try:
-                    function = str(request.FILES['function'].read())
-                except:
-                    function = open(r'/home/chad/BOLT_PROJECT/files/media/'
-                                    + str(newtask.function), 'r').read()
-
-                function = re.sub(r'solution', form.cleaned_data['function_name'], function)
-                open(r'/home/chad/BOLT_PROJECT/src/BOLT/tasks/' +
-                     form.cleaned_data['section'] + r'.py', 'a').write('\n\n' + r'@task_decorate' +
-                                                                       '\n' + function)
-
-                newtask.delete()
-                Task.objects.create(
-                    title=form.cleaned_data['title'],
-                    section=Section.objects.get(slug=form.cleaned_data['section']),
-                    function_name=form.cleaned_data['function_name']
-                )
-
-                return redirect(listofsentsolutions)
-        else:
-            return redirect(listofsentsolutions)
-
-    else:
-        return redirect(main)
-
-
-def deletetask(request, id):
-    if request.user.is_superuser:
+    if 'delete' in request.POST:
         newtask = NewTask.objects.get(pk=id)
-        os.remove('/home/chad/BOLT_PROJECT/files/media/' + str(newtask.function))
-        os.remove('/home/chad/BOLT_PROJECT/files/media/' + str(newtask.template))
+        os.remove(os.path.join(st.MEDIA_ROOT, *re.split(r'/', str(newtask.function))))
+        os.remove(os.path.join(st.MEDIA_ROOT, *re.split(r'/', str(newtask.template))))
         newtask.delete()
         return redirect(listofsentsolutions)
-    else:
-        return redirect(main)
+
+    newtask = get_object_or_404(NewTask, id=id)
+    formset = NewTaskModelForm(request.POST or None, request.FILES or None, instance=newtask)
+
+    newtask_function = newtask.function
+    newtask_template = newtask.template
+
+    if formset.is_valid() and 'save' in request.POST:
+        formset.save(commit=False)
+        function = formset.cleaned_data['function'].read().decode()
+        function = re.sub(r'solution', str(formset.cleaned_data['section']) +
+                          'Ex' + str(formset.cleaned_data['exercise_number']), function)
+
+        template = formset.cleaned_data['template'].read().decode()
+
+        with open(os.path.join(st.BASE_DIR, 'templates', 'solutions',
+                               str(formset.cleaned_data['section']),
+                               str(formset.cleaned_data['section']) + 'Ex' +
+                                       str(formset.cleaned_data['exercise_number']) + r'.html'), 'w') as template_file:
+            template_file.write(template)
+
+        with open(os.path.join(st.BASE_DIR, 'BOLT', 'tasks',
+                               str(formset.cleaned_data['section']) + r'.py'), 'a') as function_file:
+            function_file.write('\n\n' + r'@task_decorate' +
+                                '\n' + function)
+
+
+        os.remove(os.path.join(st.MEDIA_ROOT, *re.split(r'/', str(newtask_function))))
+        os.remove(os.path.join(st.MEDIA_ROOT, *re.split(r'/', str(newtask_template))))
+        newtask.delete()
+
+        Task.objects.create(
+            title=formset.cleaned_data['title'],
+            section=Section.objects.get(slug=formset.cleaned_data['section']),
+            function_name=str(formset.cleaned_data['section']) + 'Ex' + str(formset.cleaned_data['exercise_number'])
+        )
+
+        return redirect(listofsentsolutions)
+
+    return render(request, 'checknewsolution.html', {'formset': formset,
+                                              'user': request.user,
+                                              'profile': get_profile(request),
+                                              'sections': Section.objects.all(),
+                                              'last_comments': Comment.objects.all().order_by(
+                                                  '-date_created')[:5],
+                                              'newtask': newtask,
+                                              })
+
+
 
 
 def aboutus(request):
@@ -363,4 +338,12 @@ def aboutus(request):
 
 
 def utility(request):
-    return render(request,'utility.html', get_default_data(request))
+    return render(request, 'utility.html', get_default_data(request))
+
+
+def test(request, id):
+    instance = get_object_or_404(NewTask, id=id)
+    form = NewTaskModelForm(request.POST or None, instance=instance)
+    if form.is_valid():
+        return redirect(test, id=25)
+    return render(request, 'test/test.html', {'formset': form})

@@ -16,6 +16,3 @@ def check_args(*args):
         if not arg:
             return False
     return True
-
-
-

@@ -1,8 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
-import re
 from .models import UserProfile, NewTask, Task
 from django.contrib import admin
+from django.conf import settings as st
+import re
+import os
 
 
 class SettingsForm(forms.Form):
@@ -149,9 +151,9 @@ class NewTaskModelForm(forms.ModelForm):
 
         labels = {
             'title': 'Условие',
-            'function' : 'Файл с функцией',
-            'template' : 'Файл с шаблоном',
-            'section' : 'Раздел',
+            'function': 'Файл с функцией',
+            'template': 'Файл с шаблоном',
+            'section': 'Раздел',
         }
 
         help_texts = {
@@ -166,7 +168,6 @@ class NewTaskModelForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
-
 
     def clean_exercise_number(self):
         if self.cleaned_data['exercise_number'] == None:

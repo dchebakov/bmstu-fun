@@ -150,7 +150,7 @@ class NewTask(models.Model):
     title = models.TextField()
     function = models.FileField(upload_to=file_url)
     template = models.FileField(upload_to=file_url)
-    section = models.CharField(max_length=17, choices=sections,
+    section = models.CharField(max_length=18, choices=sections,
                                null=True)
 
     class Meta:

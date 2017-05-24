@@ -2,9 +2,15 @@
 {% load tags %}
 
 {% block main %}
-    {% for newtask in newtasks %}
-        <div class="post"><a href="{{ newtask.get_absolute_url }}">{{ newtask.title }}</a></div>
-    {% endfor %}
+    {% if not newtasks %}
+        <div class="post">
+            <p>Новые задачи отсутствуют.</p>
+        </div>
+    {% else %}
+        {% for newtask in newtasks %}
+            <div class="post"><a href="{{ newtask.get_absolute_url }}">{{ newtask.title }}</a></div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
 
 {% block loginblock %}
