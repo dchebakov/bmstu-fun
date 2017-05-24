@@ -10,7 +10,9 @@ from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
 import re
 
-def check_args(*args): # Общая проверка
+
+def check_args(*args):
+    '''Общая проверка'''
     for arg in args:
         if not arg:
             return False
