@@ -11,7 +11,8 @@ def task_decorate(function):
 
     return wrapper
 
-def check_args(*args): # Общая проверка
+def check_args(*args):
+    '''Общая проверка'''
     for arg in args:
         if not arg:
             return False

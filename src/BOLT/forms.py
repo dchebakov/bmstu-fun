@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 import re
-from .models import UserProfile, NewTask
+from .models import UserProfile, NewTask, Task
 from django.contrib import admin
+
 
 class SettingsForm(forms.Form):
     username = forms.CharField(required=False, label='Логин')
@@ -98,7 +99,6 @@ class NewTaskForm(forms.Form):
     function = forms.FileField(required=True, label='Файл с функцией')
     template = forms.FileField(required=True, label='Файл с шаблоном')
 
-
     def clean_function(self):
         function = self.cleaned_data['function']
         if function and function.size > 2 * 1024 * 1024:
@@ -116,6 +116,7 @@ class NewTaskForm(forms.Form):
             raise forms.ValidationError("Неверный формат файла!")
 
         return template
+
 
 class SectionForm(forms.Form):
     sections = [('probabilitytheory', 'Теория вероятности'),
@@ -136,3 +137,64 @@ class SectionForm(forms.Form):
                                     label='Имя функции',
                                     widget=forms.TextInput(
                                         attrs={'placeholder': 'Введите условие задачи', 'class': 'form-control'}))
+
+
+class NewTaskModelForm(forms.ModelForm):
+    class Meta:
+        model = NewTask
+        fields = '__all__'
+        widgets = {
+            'title': forms.Textarea(attrs={'rows': 5})
+        }
+
+        labels = {
+            'title': 'Условие',
+            'function' : 'Файл с функцией',
+            'template' : 'Файл с шаблоном',
+            'section' : 'Раздел',
+        }
+
+        help_texts = {
+            'title': 'Введите условие задачи',
+        }
+
+    exercise_number = forms.IntegerField(label='Номер задачи', required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(NewTaskModelForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
+
+    def clean_exercise_number(self):
+        if self.cleaned_data['exercise_number'] == None:
+            raise forms.ValidationError('Поле обязательно для заполнения при сохранении объекта!')
+        try:
+            task = Task.objects.get(
+                function_name=str(self.cleaned_data['section'] + 'Ex' + str(self.cleaned_data['exercise_number']))
+            )
+            raise forms.ValidationError('Данное упражнение уже существует!')
+        except Task.DoesNotExist:
+            if self.cleaned_data['exercise_number'] <= 0:
+                raise forms.ValidationError('Число должно быть строго больше 0')
+            return self.cleaned_data['exercise_number']
+
+    def clean_function(self):
+        function = self.cleaned_data['function']
+        if function and function.size > 2 * 1024 * 1024:
+            raise forms.ValidationError("Слишком большой размер ( > 2mb)")
+        if function.__str__()[len(function.__str__()) - 2:] != 'py':
+            raise forms.ValidationError("Неверный формат файла!")
+
+        return function
+
+    def clean_template(self):
+        template = self.cleaned_data['template']
+        if template and template.size > 2 * 1024 * 1024:
+            raise forms.ValidationError("Слишком большой размер ( > 2mb)")
+        if template.__str__()[len(template.__str__()) - 4:] != 'html':
+            raise forms.ValidationError("Неверный формат файла!")
+
+        return template
