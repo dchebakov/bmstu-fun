@@ -5,3 +5,4 @@ pillow
 gunicorn
 faker
 Unidecode==0.4.19
+sympy
