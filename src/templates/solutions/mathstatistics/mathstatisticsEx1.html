@@ -13,75 +13,141 @@
     <canvas id="graph-3"></canvas>
     <script type="text/javascript">
 
+let numbers = document.getElementById('input-numbers').value.split(',').map((value, index) => +value);
 
-        let numbers = document.getElementById('input-numbers').value.split(',').map((value, index) => +value);
-
-        let arr_obj = [];
-        let index = [];
-        for (let i = 0; i < numbers.length; i++) {
-            index.push(i + 1);
-            arr_obj.push({x: i, y: numbers[i]});
-        }
+    let arr_obj = [];
+    let index = [];
+    for (let i = 0; i < numbers.length; i++) {
+        index.push(i + 1);
+        arr_obj.push({x: i + 1, y: numbers[i]});
+    }
 
 
-        new Chart(document.getElementById("graph-1").getContext('2d'), {
-            type: 'line',
-            // showTooltips: false,
-            data: {
-                labels: index,
-                datasets: [{
-                    label: 'asdf',
-                    data: arr_obj,
-                    borderColor: 'rgba(93,133,245, 1)',
-                    borderWidth: 3,
-                    fill: false,
-                    // steppedLine: false,
-                    lineTension: 0,
-                    pointBackgroundColor: 'white',
-                    pointBorderColor: 'black',
-                    pointBorderWidth: 1,
-                    pointRadius: 3,
-                    pointHoverBackgroundColor: 'black',
-                    showLine: true,
-                }]
+    new Chart(document.getElementById("graph-1").getContext('2d'), {
+        type: 'line',
+        // showTooltips: false,
+        data: {
+            labels: index,
+            datasets: [{
+                label: 'asdf',
+                data: arr_obj,
+                borderColor: 'rgba(93,133,245, 1)',
+                borderWidth: 3,
+                fill: false,
+                // steppedLine: false,
+                lineTension: 0,
+                pointBackgroundColor: 'white',
+                pointBorderColor: 'black',
+                pointBorderWidth: 1,
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'black',
+                showLine: true,
+            }]
+        },
+        options: {
+            legend: false,
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Первичная статистическая обработка'
             },
-            options: {
-                legend: false,
-                responsive: true,
-                title: {
+            scales: {
+                xAxes: {
                     display: true,
-                    text: 'Chart.js Line Chart - Logarithmic'
+                    type: 'linear',
                 },
-                scales: {
-                    xAxes: {
-                        display: true,
-                        type: 'linear',
-                    },
-                    yAxes: {
-                        display: true,
-                        type: 'linear',
-                    },
-                }
+                yAxes: {
+                    display: true,
+                    type: 'linear',
+                },
             }
-        });
+        }
+    });
 
 
-        new Chart(document.getElementById("graph-2").getContext('2d'), {
+    new Chart(document.getElementById("graph-2").getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: index,
+            datasets: [{
+                label: 'Dataset with',
+                data: numbers.sort((a, b) => a - b),
+                borderColor: 'rgba(93,133,245, 1)',
+                borderWidth: 3,
+                fill: false,
+                // steppedLine: false,
+                lineTension: 0,
+                pointBackgroundColor: 'white',
+                pointBorderColor: 'black',
+                pointBorderWidth: 1,
+                pointRadius: 3,
+                pointHoverBackgroundColor: 'black',
+                showLine: true,
+            }]
+        },
+        options: {
+            legend: false,
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Вариационный график'
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                }],
+                yAxes: [{
+                    display: true,
+                }]
+            }
+        }
+    });
+
+
+    const min = Math.floor(numbers[0]);
+    const max = Math.ceil(numbers[numbers.length - 1]);
+
+    var result = {}; // убираем копии и считаем сколько раз встречается каждое
+    numbers.forEach(function (a) {
+        result[a] = result[a] + 1 || 1;
+    });
+
+    fr = [];
+    for (value of Object.keys(result)) {
+        fr.push({x: +value, y: +result[value]});
+    }
+
+    fr.sort((a, b) => a.x - b.x);
+
+    freq = []; // кол-во чисел, которые <= чем наше уникальное число
+    num = []; // уникальные числа + расширения по бокам
+    k = 0;
+    for (let i = 0; i < fr.length; i++){
+        k += fr[i].y/numbers.length;
+        freq.push(k);
+        num.push(fr[i].x);
+    }
+    freq.unshift(0);
+    freq.push(1);
+    num.unshift(min-1);
+    num.push(max+1);
+
+    new Chart(document.getElementById("graph-3").getContext('2d'), {
             type: 'line',
             data: {
-                labels: index,
+                labels: num,
+
                 datasets: [{
-                    label: 'Dataset with',
-                    data: numbers.sort((a, b) => a - b),
+                    data: freq,
                     borderColor: 'rgba(93,133,245, 1)',
                     borderWidth: 3,
                     fill: false,
-                    // steppedLine: false,
+                    steppedLine: true,
                     lineTension: 0,
                     pointBackgroundColor: 'white',
                     pointBorderColor: 'black',
                     pointBorderWidth: 1,
-                    pointRadius: 3,
+                    pointRadius: 1,
                     pointHoverBackgroundColor: 'black',
                     showLine: true,
                 }]
@@ -91,7 +157,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Chart.js Line Chart - Logarithmic'
+                    text: 'Эмпирическая функция распределения (ЭФР)'
                 },
                 scales: {
                     xAxes: [{
@@ -102,69 +168,11 @@
                     }]
                 }
             }
-        });
-
-
-        const min = Math.floor(numbers[0]) - 1;
-        const max = Math.ceil(numbers[numbers.length - 1]) + 1;
-
-
-        let t = [];
-        for (let i = min; i <= max; i += 0.1) {
-            t.push(Math.round(i * 100) / 100);
         }
-
-        let fr = [];
-        for (let i = 0; i < t.length; i++) {
-            k = 0;
-            for (let j = 0; j < numbers.length; j++) {
-                if (numbers[j] < t[i]) {
-                    k += 1.0 / numbers.length;
-                }
-            }
-            fr.push(k);
-        }
-
-        new Chart(document.getElementById("graph-3").getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: t,
-                    datasets: [{
-                        label: 'Dataset with',
-                        data: fr,
-                        borderColor: 'rgba(93,133,245, 1)',
-                        borderWidth: 3,
-                        fill: false,
-                        // steppedLine: false,
-                        lineTension: 0,
-                        pointBackgroundColor: 'white',
-                        pointBorderColor: 'black',
-                        pointBorderWidth: 1,
-                        pointRadius: 1,
-                        pointHoverBackgroundColor: 'black',
-                        showLine: true,
-                    }]
-                },
-                options: {
-                    legend: false,
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: 'Chart.js Line Chart - Logarithmic'
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                        }],
-                        yAxes: [{
-                            display: true,
-                        }]
-                    }
-                }
-            }
-        );
-    </script>
-
+    );
+</script>
+        
+    
 {% else %}
 
     <form action="{{ task.get_absolute_url }}" method="get">
