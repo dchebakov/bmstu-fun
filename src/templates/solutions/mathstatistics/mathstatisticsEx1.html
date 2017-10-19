@@ -22,14 +22,14 @@ let numbers = document.getElementById('input-numbers').value.split(',').map((val
         arr_obj.push({x: i + 1, y: numbers[i]});
     }
 
-
+    //
     new Chart(document.getElementById("graph-1").getContext('2d'), {
         type: 'line',
         // showTooltips: false,
         data: {
             labels: index,
             datasets: [{
-                label: 'asdf',
+                label: '',
                 data: arr_obj,
                 borderColor: 'rgba(93,133,245, 1)',
                 borderWidth: 3,
@@ -70,7 +70,7 @@ let numbers = document.getElementById('input-numbers').value.split(',').map((val
         data: {
             labels: index,
             datasets: [{
-                label: 'Dataset with',
+                label: '',
                 data: numbers.sort((a, b) => a - b),
                 borderColor: 'rgba(93,133,245, 1)',
                 borderWidth: 3,
@@ -123,7 +123,7 @@ let numbers = document.getElementById('input-numbers').value.split(',').map((val
     num = []; // уникальные числа + расширения по бокам
     k = 0;
     for (let i = 0; i < fr.length; i++){
-        k += fr[i].y/numbers.length;
+        k +=  Math.round(fr[i].y/numbers.length  * 100) / 100;
         freq.push(k);
         num.push(fr[i].x);
     }
@@ -138,6 +138,7 @@ let numbers = document.getElementById('input-numbers').value.split(',').map((val
                 labels: num,
 
                 datasets: [{
+                    label: '',
                     data: freq,
                     borderColor: 'rgba(93,133,245, 1)',
                     borderWidth: 3,
