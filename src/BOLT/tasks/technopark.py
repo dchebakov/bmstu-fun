@@ -61,13 +61,15 @@ def technoparkEx1(request):
 
     sum = int(sum)
     if sum > 500:
-        return {'answer': "Простите, но число слишком большое :(", 'is_valid': True}
+        return {'is_valid': False}
 
     if len(monets) == 2:
         answer = exchange_2(sum, 0, monets)
+    elif len(monets) == 1:
+        answer = 1
     elif len(monets) == 3:
         answer = exchange_3(sum, 0, monets)
     else:
-        answer = "Простите, если количество монет больше трех, то мы бессильны :("
+        return {'is_valid': False}
     solve = {'answer': answer, 'sum': sum, 'monets': monets, 'is_valid': True}
     return solve
