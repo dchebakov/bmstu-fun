@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}БОЛТ-песочница{% endblock %}</title>
+
+    {% load staticfiles %}
+
+    <!-- Стили -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <!-- Иконка сайта -->
+    <link rel="icon" href="{% static 'images/logo_molorok.ico' %}" type="image/x-icon">
+
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{% url 'main' %}"><img class="navbar-brand" src="{% static 'images/logo_bolt.png' %}" alt=""></a>
+        </div>
+    </div>
+</header>
+
+<main class="container top-main">
+
+    <div class="col-xs-12 col-md-2 col-md-push-10 text-center">
+        <a href="{% url 'changetitle' %}" class="btn btn-success">Изменить условие</a>
+    </div>
+
+    <div class="col-xs-12 col-md-2 col-md-pull-2 text-center">
+        {% block sections %}
+            {% include 'base/sectionsblock.html' with sections=sections %}
+        {% endblock %}
+    </div>
+
+    <div class="col-xs-12 col-md-8 col-md-pull-2 main-block">
+        {% block main %}
+            <div class="post">
+                <h3>Благодарим Вас за то, что решили помочь нам!</h3>
+                <hr>
+                <p>Вы находитесь в <b>BOLT-sandbox</b> - урезанной версии проекта, предназначенной для того, чтобы
+                    создавать и тестировать решения задач.</p>
+                <p>Давайте разберемся в структуре проекта. В разделе "Мои задачи" есть пример задачи. Посмотрите на нее.<br>
+                    Для каждой задачи есть своя функция, которая ее решает. Эта функция находится в <b>bolt_miniproject/src/bolt_sandbox/tasks/solutions.py.</b><br>
+                    Кроме того, имеется шаблон, в котором отображается решение, он находится в <b>bolt_miniproject/src/templates/solutions/solution.html.</b><br>
+                    В ходе решения мы используем библиотеку <b>math</b>, для символьных вычислений <b>sympy</b>, тексты
+                    решений пишутся на языке <b>LaTeX</b>. Удачи!</p>
+            </div>
+        {% endblock %}
+    </div>
+
+</main>
+
+<footer>
+    <div class="container text-center">
+        <hr>
+        <div class="col-xs-4">
+            <a href="https://github.com/mindblowingly/BOLT_PROJECT"><i class="fa fa-github footer-icon"
+                                                                       aria-hidden="true"></i></a>
+        </div>
+        <div class="col-xs-4">
+            <a href="mailto:chad-d@mail.ru"><i class="fa fa-envelope footer-icon" aria-hidden="true"></i></a>
+            <p class="footer-copy"><i class="fa fa-copyright" aria-hidden="true"></i> 2017 Alesin and Chebakov</p>
+
+        </div>
+        <div class="col-xs-4">
+            <a href="https://park.mail.ru/profile/d.chebakov/"><i class="fa fa-cogs footer-icon"
+                                                                  aria-hidden="true"></i></a>
+        </div>
+        <div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

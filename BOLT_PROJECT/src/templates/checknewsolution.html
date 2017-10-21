@@ -1,0 +1,126 @@
+{% extends 'index.html' %}
+{% load tags %}
+
+{% block main %}
+    {#    <div class="col-sm-10 col-xs-12">#}
+    {#    {% for error in form.non_field_errors %}#}
+    {#        <div class="btn btn-danger btn-block disabled allert alert-danger">{{ error }}</div>#}
+    {#    {% endfor %}#}
+    {##}
+    {#    <form class="form-horizontal" action="{{ action_url }}" method="post" enctype="multipart/form-data">#}
+    {#        {% csrf_token %}#}
+    {#        {% for item in form %}#}
+    {#            <div class="form-group {% if item.errors %}has-error{% endif %}">#}
+    {#                <label class="control-label col-xs-3" for="{{ item.id_for_label }}">{{ item.label }}</label>#}
+    {#                <div class="col-xs-9">#}
+    {#                    {% if item.field.widget|typename == 'Textarea' %}#}
+    {#                        <textarea id="{{ item.id_for_label }}"#}
+    {#                                  class="form-control"#}
+    {#                                  placeholder="{{ item.field.widget.attrs.place_holder }}" name="{{ item.name }}"#}
+    {#                                  rows="{{ item.field.widget.attrs.rows }}">{% if item.value != None %}{{ item.value }}{% endif %}</textarea>#}
+    {#                    {% elif item.field.widget|typename == 'Select' %}#}
+    {#                        {{ item }}#}
+    {#                    {% else %}#}
+    {#                        <a href="">{{ item.va }}</a>#}
+    {#                        <input type="{{ item.field.widget.input_type }}" id="{{ item.id_for_label }}"#}
+    {#                               class="form-control"#}
+    {#                               placeholder="{% if item.field.widget.attrs.placeholder != None %}  {{ item.field.widget.attrs.placeholder }} {% endif %}"#}
+    {#                               name="{{ item.name }}"#}
+    {#                               value="{% if item.value != None %}{{ item.value }}{% endif %}">#}
+    {##}
+    {#                    {% endif %}#}
+    {#                </div>#}
+    {#                {% if item.errors %}#}
+    {#                    {% for error in item.errors %}<span class="help-block">{{ error }}</span>{% endfor %}#}
+    {#                {% endif %}#}
+    {##}
+    {#            </div>#}
+    {#        {% endfor %}#}
+    {#        <div class="form-group">#}
+    {#            <div class="col-xs-offset-3 col-sm-9">#}
+    {#                <button class="btn btn-primary" type="submit">Сохранить</button>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </form>#}
+    {##}
+    {#    <div class="col-sm-10">#}
+    {#        <form class="form-horizontal" action="{% url 'createnewtask' id=newtask.id %}" method="post"#}
+    {#              enctype="multipart/form-data">#}
+    {#        {% csrf_token %}#}
+    {#            <div class="form-group">#}
+    {#                <label class="control-label col-xs-3" for="id_title">Условие задачи: </label>#}
+    {#                <div class=" col-xs-9">#}
+    {#                    <textarea id="id_title" class="form-control" rows="5" name="title">{{ newtask.title }}</textarea>#}
+    {#                </div>#}
+    {#            </div>#}
+    {##}
+    {#            {% for item in form %}#}
+    {#                <div class="form-group">#}
+    {#                    <label class="control-label col-xs-3" for="{{ item.id_for_label }}">{{ item.label }}</label>#}
+    {#                    <div class=" col-xs-9">#}
+    {#                        {{ item }}#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            {% endfor %}#}
+    {##}
+    {#            <div class="form-group">#}
+    {#                <label class="control-label col-xs-3" for="id_function">Функция: </label>#}
+    {#                <div class=" col-xs-9">#}
+    {#                    <p>На данный момент: <a href="/media/{{ newtask.function }}">{{ newtask.function }}</a></p>#}
+    {#                    <input id="d_function" class="form-control" type="file" name="function">#}
+    {#                </div>#}
+    {#            </div>#}
+    {#            <div class="form-group">#}
+    {#                <label class="control-label col-xs-3" for="id_template">Шаблон: </label>#}
+    {#                <div class=" col-xs-9">#}
+    {#                    <p>На данный момент: <a href="/media/{{ newtask.template }}">{{ newtask.template }}</a></p>#}
+    {#                    <input id="id_template" class="form-control" type="file" name="template">#}
+    {#                </div>#}
+    {#            </div>#}
+    {##}
+    {##}
+    {#            <div class="form-group">#}
+    {#                <div class="col-xs-3"></div>#}
+    {#                <div class="col-xs-9">#}
+    {#                    <button class="btn btn-success" type="submit">Создать задачу</button>#}
+    {#                    <a href="{% url 'deletetask' id=newtask.id %}" class="btn btn-danger">Удалить решение</a>#}
+    {#                </div>#}
+    {#            </div>#}
+    {##}
+    {#        </form>#}
+    {#    </div>#}
+        <form action="{% url 'checknewsolution' id=newtask.id %}" class="form-horizontal" method="post"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in formset %}
+                <div class="form-group {% if field.errors %}has-error{% endif %}">
+                    <label class="control-label col-md-2" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <div class="col-md-10">
+                        {{ field }}
+                    </div>
+                    {% if field.errors %}
+                        {% for error in field.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+            <div class="col-md-offset-2 col-md-10">
+                <button class="btn btn-success" name="save" type="submit" value="save">Сохранить</button>
+                <button class="btn btn-danger" name="delete" type="submit" value="delete">Удалить</button>
+            </div>
+        </form>
+{% endblock %}
+
+{% block loginblock %}
+    <div class="hidden-xs">
+        {% include 'base/loginblock.html' with form=form last_comments=last_comments %}
+    </div>
+{% endblock %}
+
+
+{% block sections %}
+    <div class="hidden-xs">
+        {% include 'base/sectionsblock.html' with sections=sections %}
+    </div>
+{% endblock %}
+

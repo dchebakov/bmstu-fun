@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+{% load tags %}
+{% block main %}
+    {% if tasks %}
+        {% for task in tasks %}
+            <div class="post">
+                <a href="{{ task.get_absolute_url }}">{{ task.title }}</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="post">
+            <p>Не нашли, что искали? Добавьте задачу, и мы её обязательно решим!</p>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block loginblock %}
+    <div class="hidden-xs">
+        {% include 'base/loginblock.html' with form=form last_comments=last_comments %}
+    </div>
+{% endblock %}
+
+{% block sections %}
+    <div class="hidden-xs">
+        {% include 'base/sectionsblock.html' with sections=sections %}
+    </div>
+{% endblock %}

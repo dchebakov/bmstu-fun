@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+{% load tags %}
+
+{% block main %}
+    {% include 'base/forms.html' with form=form title='Сохранить!' action_url='/settings/' %}
+{% endblock %}
+
+{% block loginblock %}
+    <div class="hidden-xs">
+        {% include 'base/loginblock.html' with form=form last_comments=last_comments %}
+    </div>
+{% endblock %}
+
+
+{% block sections %}
+    <div class="hidden-xs">
+        {% include 'base/sectionsblock.html' with sections=sections %}
+    </div>
+{% endblock %}
+
