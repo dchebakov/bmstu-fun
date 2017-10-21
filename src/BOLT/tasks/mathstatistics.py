@@ -9,7 +9,7 @@ from .probabilitytheory import task_decorate, comments
 from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
 import re
-
+import json
 
 @task_decorate
 def mathstatisticsEx1(request):
@@ -17,4 +17,6 @@ def mathstatisticsEx1(request):
     if not numbers:
         return {'is_valid': False}
 
-    return {'numbers': numbers, 'is_valid': True}
+    myvalue = {'make': 1, 'top': 2}
+
+    return {'numbers': numbers, 'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}
