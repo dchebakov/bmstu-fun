@@ -94,6 +94,7 @@ class TaskManager(models.Manager):
 
 class Task(models.Model):
     title = models.TextField()
+    description = models.TextField(default='')
     section = models.ForeignKey(Section)
     rating = models.IntegerField(default=0)
     date_created = models.DateTimeField(auto_now_add=True)

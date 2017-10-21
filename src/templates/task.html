@@ -4,6 +4,7 @@
 {% block main %}
     <div class="post">
         <p>{{ task.title }}</p>
+        <p>{{ task.description }}</p>
         {% include template with task=task solve=solve %}
         <hr>
         <div taskid="{{ task.id }}">
