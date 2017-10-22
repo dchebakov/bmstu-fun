@@ -8,8 +8,11 @@
     <meta name="google-site-verification" content="KKP2BgF1gRj6WRB1UC6xrcl3hAE8LXzs11DiS6R2pVI" />
     <meta name="google-site-verification" content="n_grbYUmuOEZzIfMmY_-cU_Tz6_HcLgvc8LOrW6TrsE" />
     <meta name="yandex-verification" content="c7aaffb7785253d6" />
+    <meta name="description" content="Cайт-помощник для студентов технических специальностей. Здесь представлена масса задач по различным дисциплинам. Выберите нужный раздел, найдите интересующую вас задачу, введите свои исходные данные и наслаждайтесь подробным решением именно вашей задачи!">
+    <meta name="keywords" content="bmstu.ru, мгту, электронный, университет, решение, задач, студент, bmstu, помощь, baumanki, ak3, бауман, бауманка">
 
-    <title>{% block title %}BMSTU{% endblock %}</title>
+
+    <title>{% block title %}bmstu.fun - решим все!{% endblock %}</title>
 
     {% load staticfiles %}
     {% load tags %}
@@ -84,7 +87,7 @@
             {% include 'base/sectionsblock.html' with sections=sections %}
         {% endblock %}
     </div>
-
+{% autoescape off %}
     <div class="col-xs-12 col-md-8 col-md-pull-2 main-block">
         {% block main %}
             {% for item  in news %}
@@ -96,7 +99,7 @@
             {% endfor %}
         {% endblock %}
     </div>
-
+{% endautoescape %}
 </main>
 
 <footer>
