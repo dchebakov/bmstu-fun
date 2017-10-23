@@ -7,31 +7,20 @@
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
-    <input type="hidden" id="input-numbers" value="{{ solve.numbers }}">
+    <p>Ваша генеральная совокупность: {{ solve.numbers }}</p>
     <canvas id="graph-1"></canvas>
     <canvas id="graph-2"></canvas>
     <canvas id="graph-3"></canvas>
     <script type="text/javascript">
 
-
-        let numbers = document.getElementById('input-numbers').value.split(',').map((value, index) => +value);
-
-        let arr_obj = [];
-        let index = [];
-        for (let i = 0; i < numbers.length; i++) {
-            index.push(i + 1);
-            arr_obj.push({x: i, y: numbers[i]});
-        }
-
-
         new Chart(document.getElementById("graph-1").getContext('2d'), {
             type: 'line',
             // showTooltips: false,
             data: {
-                labels: index,
+                labels: {{ solve.index }},
                 datasets: [{
-                    label: 'asdf',
-                    data: arr_obj,
+                    label: '',
+                    data: {{ solve.numbers }},
                     borderColor: 'rgba(93,133,245, 1)',
                     borderWidth: 3,
                     fill: false,
@@ -50,7 +39,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Chart.js Line Chart - Logarithmic'
+                    text: 'Первичная статистическая обработка'
                 },
                 scales: {
                     xAxes: {
@@ -69,10 +58,10 @@
         new Chart(document.getElementById("graph-2").getContext('2d'), {
             type: 'line',
             data: {
-                labels: index,
+                labels: {{ solve.index }},
                 datasets: [{
                     label: 'Dataset with',
-                    data: numbers.sort((a, b) => a - b),
+                    data: {{ solve.numbers_sort }},
                     borderColor: 'rgba(93,133,245, 1)',
                     borderWidth: 3,
                     fill: false,
@@ -91,7 +80,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Chart.js Line Chart - Logarithmic'
+                    text: 'Вариационный график'
                 },
                 scales: {
                     xAxes: [{
@@ -104,38 +93,17 @@
             }
         });
 
-
-        const min = Math.floor(numbers[0]) - 1;
-        const max = Math.ceil(numbers[numbers.length - 1]) + 1;
-
-
-        let t = [];
-        for (let i = min; i <= max; i += 0.1) {
-            t.push(Math.round(i * 100) / 100);
-        }
-
-        let fr = [];
-        for (let i = 0; i < t.length; i++) {
-            k = 0;
-            for (let j = 0; j < numbers.length; j++) {
-                if (numbers[j] < t[i]) {
-                    k += 1.0 / numbers.length;
-                }
-            }
-            fr.push(k);
-        }
-
         new Chart(document.getElementById("graph-3").getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: t,
+                    labels: {{ solve.index_efr }},
                     datasets: [{
                         label: 'Dataset with',
-                        data: fr,
+                        data: {{ solve.efr }},
                         borderColor: 'rgba(93,133,245, 1)',
                         borderWidth: 3,
                         fill: false,
-                        // steppedLine: false,
+                        steppedLine: true,
                         lineTension: 0,
                         pointBackgroundColor: 'white',
                         pointBorderColor: 'black',
@@ -150,7 +118,7 @@
                     responsive: true,
                     title: {
                         display: true,
-                        text: 'Chart.js Line Chart - Logarithmic'
+                        text: 'Эмпирическая функция распределения (ЭФР)'
                     },
                     scales: {
                         xAxes: [{
