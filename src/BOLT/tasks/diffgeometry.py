@@ -35,8 +35,11 @@ def diffgeometryEx1(request):
     eta22 = re.sub(r'\^', '**', str(eta2))
     x = [Symbol('x'), Symbol('y')]
 
-    xi = [parse_expr(xi11), parse_expr(xi22)]
-    eta = [parse_expr(eta11), parse_expr(eta22)]
+    try:
+        xi = [parse_expr(xi11), parse_expr(xi22)]
+        eta = [parse_expr(eta11), parse_expr(eta22)]
+    except:
+        return {'is_valid': False}
 
     phi = [0, 0]
     for i in range(2):

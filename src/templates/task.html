@@ -14,6 +14,9 @@
                 <button class="btn btn-success thanks">Сказать спасибо!</button>
             {% endif %}
         </div>
+        <script type="text/javascript" async
+                src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
     </div>
     {% for comment in comments %}
         <div class="col-xs-12 post">
@@ -49,4 +52,5 @@
         {% include 'base/sectionsblock.html' with sections=sections %}
     </div>
 {% endblock %}
+
 
