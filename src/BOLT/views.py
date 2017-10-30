@@ -110,6 +110,8 @@ def main(request):
 
 
 def signup(request):
+    if request.user.is_authenticated():
+        return redirect(settings)
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
