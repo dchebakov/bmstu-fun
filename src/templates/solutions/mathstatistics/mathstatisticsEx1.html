@@ -10,6 +10,7 @@
     <canvas id="graph-1"></canvas>
     <canvas id="graph-2"></canvas>
     <canvas id="graph-3"></canvas>
+    <canvas id="graph-4"></canvas>
     <script type="text/javascript">
 
         new Chart(document.getElementById("graph-1").getContext('2d'), {
@@ -59,7 +60,6 @@
             data: {
                 labels: {{ solve.index }},
                 datasets: [{
-                    label: 'Dataset with',
                     data: {{ solve.numbers_sort }},
                     borderColor: 'rgba(93,133,245, 1)',
                     borderWidth: 3,
@@ -97,7 +97,7 @@
                 data: {
                     labels: {{ solve.index_efr }},
                     datasets: [{
-                        label: 'Dataset with',
+                        label: 'ЭФР',
                         data: {{ solve.efr }},
                         borderColor: 'rgba(93,133,245, 1)',
                         borderWidth: 3,
@@ -130,6 +130,59 @@
                 }
             }
         );
+
+    new Chart(document.getElementById("graph-4").getContext('2d'), {
+        type: 'bar',
+            data: {
+                labels: {{ solve.index_polygon }},
+                datasets: [{
+                    type: 'line',
+                    data: {{ solve.gist }},
+                    borderColor: 'rgba(93,133,245, 1)',
+                    borderWidth: 3,
+                    fill: false,
+                    // steppedLine: false,
+                    lineTension: 0,
+                    pointBackgroundColor: 'white',
+                    pointBorderColor: 'black',
+                    pointBorderWidth: 1,
+                    pointRadius: 3,
+                    pointHoverBackgroundColor: 'black',
+                    showLine: true,
+                }, {
+                    type: 'bar',
+                    data: {{ solve.gist }},
+                    borderColor: 'rgba(93,133,245, 1)',
+                    borderWidth: 3,
+                    fill: false,
+                    // steppedLine: false,
+                    lineTension: 0,
+                    pointBackgroundColor: 'white',
+                    pointBorderColor: 'black',
+                    pointBorderWidth: 1,
+                    pointRadius: 3,
+                    pointHoverBackgroundColor: 'black',
+                    showLine: true,}]
+            },
+            options: {
+                legend: false,
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Гистограмма + полигон'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        barThickness: 60,
+                    }],
+                    yAxes: [{
+                        display: true,
+                    }]
+                }
+            }
+        });
+
     </script>
 
 {% else %}
