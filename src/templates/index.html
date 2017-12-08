@@ -74,21 +74,21 @@
     </div>
 </header>
 
-<main class="container top-main">
+<main class="container-fluid top-main">
 
-    <div class="col-xs-12 col-md-2 col-md-push-10 text-center">
+    <div class="col-xs-12 col-md-2 col-md-push-10 col-lg-2 text-center navigation">
         {% block loginblock %}
             {% include 'base/loginblock.html' with form=form last_comments=last_comments %}
         {% endblock %}
     </div>
 
-    <div class="col-xs-12 col-md-2 col-md-pull-2 text-center">
+    <div class="col-xs-12 col-md-2 col-md-pull-2 col-lg-2 text-center navigation">
         {% block sections %}
             {% include 'base/sectionsblock.html' with sections=sections %}
         {% endblock %}
     </div>
 {% autoescape off %}
-    <div class="col-xs-12 col-md-8 col-md-pull-2 main-block">
+    <div class="col-xs-12 col-md-8 col-md-pull-2 col-lg-8 main-block">
         {% block main %}
             {% for item  in news %}
                 <div class="post">

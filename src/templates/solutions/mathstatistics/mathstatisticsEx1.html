@@ -1,8 +1,79 @@
 <head>
     <meta charset="utf-8">
+    <style type="text/css">
+        .tftable {
+            font-size: 12px;
+            color: #333333;
+            width: 100%;
+            border-width: 1px;
+            border-color: #bcaf91;
+            border-collapse: collapse;
+        }
+
+        .tftable th {
+            font-size: 12px;
+            background-color: #ded0b0;
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #bcaf91;
+            text-align: left;
+        }
+
+        .tftable tr {
+            background-color: #ffffff;
+        }
+
+        .tftable td {
+            font-size: 12px;
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #bcaf91;
+        }
+
+        .tftable tr:hover {
+            background-color: #ffff99;
+        }
+    </style>
 </head>
 
+
+<table class="tftable" border="1">
+    <tr>
+        <th>mde</th>
+        <th>kek</th>
+        <th>Header 3</th>
+        <th>Header 4</th>
+        <th>Header 5</th>
+        <th>Header 6</th>
+        <th>Header 7</th>
+        <th>Header 8</th>
+        <th>Header 9</th>
+    </tr>
+</table>
+
 {% load staticfiles %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let table = document.querySelector('.tftable');
+        let uniqueNumbers = {{ solve.unique_numbers }},
+            ki = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            zi = {{ solve.grid_gist }},
+            ziPlus1 = {{ solve.grid_gist }},
+            nI = {{ solve.grid_gist }};
+
+
+        for (let i = 0; i < 10; i++) {
+            let row = document.createElement('tr');
+            row.innerHTML = `<td>${i + 1}</td><td>${uniqueNumbers[i]}</td><td>${ki[i]}</td><td>${zi[i]}</td>
+<td>${ziPlus1[i]}</td><td>${nI[i]}</td><td>${1}</td><td>${1}</td><td>${1}</td>`;
+            table.append(row);
+        }
+
+    });
+</script>
 
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
@@ -131,8 +202,8 @@
             }
         );
 
-    new Chart(document.getElementById("graph-4").getContext('2d'), {
-        type: 'bar',
+        new Chart(document.getElementById("graph-4").getContext('2d'), {
+            type: 'bar',
             data: {
                 labels: {{ solve.index_polygon }},
                 datasets: [{
@@ -162,7 +233,8 @@
                     pointBorderWidth: 1,
                     pointRadius: 3,
                     pointHoverBackgroundColor: 'black',
-                    showLine: true,}]
+                    showLine: true,
+                }]
             },
             options: {
                 legend: false,

@@ -130,7 +130,7 @@ td {
 
 }
 
-#branding h1{
+#branding h1 {
     color: #e0e0e0;
 }
 
@@ -140,9 +140,20 @@ td {
 
 .module h2, .module caption, .inline-group h2 {
     background: #b0bec5;
-     color: #e0e0e0;
+    color: #e0e0e0;
 }
 
 .post-row {
     padding-top: 10px;
+}
+
+@media screen and (min-width: 1000px) {
+    .navigation {
+        max-width:  20%;
+        box-sizing: border-box;
+    }
+
+    .top-main {
+        max-width: 90vw;
+    }
 }

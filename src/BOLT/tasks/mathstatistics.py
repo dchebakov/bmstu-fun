@@ -71,5 +71,5 @@ def mathstatisticsEx1(request):
     myvalue = {'make': 1, 'top': 2}
 
     return {'numbers': numbers, 'index': index, 'numbers_sort': numbers_sort, 'efr': efr, 'index_efr': index_efr,
-            'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist,
+            'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}
