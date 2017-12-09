@@ -33,15 +33,17 @@ def mathstatisticsEx1(request):
     unique_numbers = set(numbers_sort)
     unique_numbers = list(unique_numbers)
     unique_numbers.sort()
+    NUMBER_OF_UNIQUE_VALUES = len(unique_numbers)
+    counts = [numbers_sort.count(unique_number) for unique_number in unique_numbers]
 
-    max = unique_numbers[len(unique_numbers)-1]
+    max = unique_numbers[NUMBER_OF_UNIQUE_VALUES-1]
     min = unique_numbers[0]
 
-    count = 0
+    efr_value = 0
     efr = [0.0, 0.0]
-    for unique_number in unique_numbers:
-        count += numbers_sort.count(unique_number) / NUMBER_OF_VALUES
-        efr.append(round(count, 2))
+    for count in counts:
+        efr_value += count / NUMBER_OF_VALUES
+        efr.append(round(efr_value, 2))
     efr.append(1.0)
 
     index_efr = [min - 0.5]
@@ -50,8 +52,14 @@ def mathstatisticsEx1(request):
     index_efr.append(max + 1.0)
 
     # data for the fourth graph (gistogramma)
-    NUMBER_OF_INTERVALS = 10
+    if NUMBER_OF_UNIQUE_VALUES > 10:
+        NUMBER_OF_INTERVALS = 10
+    else:
+        NUMBER_OF_INTERVALS = NUMBER_OF_UNIQUE_VALUES
+
     step = (max - min) / NUMBER_OF_INTERVALS
+    if step == 0:
+        step = 1
     grid_gist = [round(min + i*step, 2) for i in range(NUMBER_OF_INTERVALS + 1)]
 
     gist = []
@@ -59,17 +67,19 @@ def mathstatisticsEx1(request):
     gist.append(round(gist_value / NUMBER_OF_VALUES / step, 2))
     gist_sum = gist_value
 
+    gist_values = [gist_value]
     for i in range(2, len(grid_gist)):
         gist_value = (bisect(numbers_sort, grid_gist[i]) - gist_sum)
         gist.append(round(gist_value / NUMBER_OF_VALUES / step, 2))
+        gist_values.append(gist_value)
         gist_sum += gist_value
 
     index_polygon = [round((grid_gist[i]+grid_gist[i+1])/2, 2) for i in range(len(grid_gist)-1)]
-
 
 
     myvalue = {'make': 1, 'top': 2}
 
     return {'numbers': numbers, 'index': index, 'numbers_sort': numbers_sort, 'efr': efr, 'index_efr': index_efr,
             'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
+            'counts': counts, 'gist_values': gist_values, 'step': step, 'number_of_values': NUMBER_OF_VALUES,
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}
