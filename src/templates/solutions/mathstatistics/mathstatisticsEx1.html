@@ -35,6 +35,11 @@
         .tftable tr:hover {
             background-color: #ffff99;
         }
+
+        .hidden {
+            display: none;
+        }
+
     </style>
 </head>
 
@@ -43,56 +48,104 @@
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
     <p>Ваша генеральная совокупность: {{ solve.numbers }}<br>
-    Количество чисел: \(n = {{ solve.number_of_values }}\)<br>
-    Шаг: \(h = {{ solve.step }}\)</p>
+        Количество чисел: \(n = {{ solve.number_of_values }}\)<br>
+        Шаг: \(h = {{ solve.step }}\)</p>
 
     <table class="tftable" border="1">
-    <tr>
-        <th>№</th>
-        <th>\(x_{i}\)</th>
-        <th>\(k_{i}\)</th>
-        <th>\(z_{i}\)</th>
-        <th>\(z_{i+1}\)</th>
-        <th>\(n_{i}\)</th>
-        <th>\(\frac{n_{i}}{h}\)</th>
-        <th>\(\frac{n_{i}}{h\cdot n}\)</th>
-        <th>\(z_{i}*\)</th>
-    </tr>
-</table>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let table = document.querySelector('.tftable');
-        let uniqueNumbers = {{ solve.unique_numbers }},
-            zi = {{ solve.grid_gist }},
-            counts = {{ solve.counts }},
-            gistValues = {{ solve.gist_values }},
-            index_polygon = {{ solve.index_polygon }},
-            step = '{{ solve.step }}'.replace(',', '.'),
-            numberOfValues = {{ solve.number_of_values }};
-
-
-        for (let i = 0; i < uniqueNumbers.length; i++) {
-            let row = document.createElement('tr');
-            row.innerHTML =
-                `<td>${i + 1}</td>
-                <td>${uniqueNumbers[i]}</td>
-                <td>${counts[i]}</td>
-                <td>${(zi[i+1]==undefined)?`---`:zi[i]}</td>
-                <td>${(zi[i+1]==undefined)?`---`:zi[i+1]}</td>
-                <td>${(gistValues[i]==undefined)?`---`:gistValues[i]}</td>
-                <td>${(isNaN(gistValues[i]/step))?`---`:((gistValues[i]/step).toFixed(2))}</td>
-                <td>${(isNaN(gistValues[i]/step/numberOfValues))?'---':((gistValues[i]/step/numberOfValues).toFixed(2))}</td>
-                <td>${(index_polygon[i]==undefined)?`---`:index_polygon[i]}</td>`;
-            table.append(row);
-        }
-
-    });
-</script>
+        <tr>
+            <th>№</th>
+            <th>\(x_{i}\)</th>
+            <th>\(k_{i}\)</th>
+            <th>\(z_{i}\)</th>
+            <th>\(z_{i+1}\)</th>
+            <th>\(n_{i}\)</th>
+            <th>\(\frac{n_{i}}{h}\)</th>
+            <th>\(\frac{n_{i}}{h\cdot n}\)</th>
+            <th>\(z_{i}*\)</th>
+        </tr>
+    </table>
 
     <canvas id="graph-1"></canvas>
     <canvas id="graph-2"></canvas>
     <canvas id="graph-3"></canvas>
     <canvas id="graph-4"></canvas>
+    <div><p style="font-size: 16px">На основании графика, предположите тип распределения: </p></div>
+    <form class="form-horizontal" style="padding-left: 25px" name="dist">
+        <div class="form-group">
+            <input type="radio" id="norm" name="type" checked>
+            <label for="norm">Нормальное распределение</label>
+        </div>
+        <div class="form-group">
+            <input type="radio" id="even" name="type">
+            <label for="even">Равномерное распределение</label>
+        </div>
+
+        <div class="form-group">
+            <input type="radio" id="exp" name="type">
+            <label for="exp">Показательное распределение</label>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="Перейти к дальнейшим вычислениям">
+    </form>
+
+    <div class="hidden norm dist">
+        <p>Нормальное распределение</p>
+    </div>
+    <div class="hidden even dist">
+        <p>Равномерное распределение</p>
+    </div>
+    <div class="hidden exp dist">
+        <p>Показательное распределение</p>
+    </div>
+
+    <script>
+        document.forms['dist'].addEventListener('submit', function (event) {
+            event.preventDefault();
+            [].slice.call(document.querySelectorAll('.dist')).forEach(function (e) {
+                if (!e.classList.contains('hidden')) {
+                    e.classList.add('hidden');
+                }
+            });
+
+            [].slice.call(this.querySelectorAll('[name=type]')).forEach(function (e) {
+                if (e.checked) {
+                    document.querySelector(`.${e.id}`).classList.toggle('hidden');
+                }
+            });
+        })
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let table = document.querySelector('.tftable');
+            let uniqueNumbers = {{ solve.unique_numbers }},
+                zi = {{ solve.grid_gist }},
+                counts = {{ solve.counts }},
+                gistValues = {{ solve.gist_values }},
+                index_polygon = {{ solve.index_polygon }},
+                step = '{{ solve.step }}'.replace(',', '.'),
+                numberOfValues = {{ solve.number_of_values }};
+
+
+            for (let i = 0; i < uniqueNumbers.length; i++) {
+                let row = document.createElement('tr');
+                row.innerHTML =
+                    `<td>${i + 1}</td>
+                <td>${uniqueNumbers[i]}</td>
+                <td>${counts[i]}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
+                <td>${(isNaN(gistValues[i] / step)) ? `---` : ((gistValues[i] / step).toFixed(2))}</td>
+                <td>${(isNaN(gistValues[i] / step / numberOfValues)) ? '---' : ((gistValues[i] / step / numberOfValues).toFixed(2))}</td>
+                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>`;
+                table.append(row);
+            }
+
+        });
+    </script>
+
+
     <script type="text/javascript">
 
         new Chart(document.getElementById("graph-1").getContext('2d'), {
@@ -252,7 +305,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Гистограмма + полигон'
+                    text: 'Гистограмма и полигон'
                 },
                 scales: {
                     xAxes: [{
