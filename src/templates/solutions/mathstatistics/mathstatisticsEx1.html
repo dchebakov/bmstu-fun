@@ -80,7 +80,7 @@
                 <td>${(zi[i+1]==undefined)?`---`:zi[i]}</td>
                 <td>${(zi[i+1]==undefined)?`---`:zi[i+1]}</td>
                 <td>${(gistValues[i]==undefined)?`---`:gistValues[i]}</td>
-                <td>${(isNaN(gistValues[i]/step))?`---`:gistValues[i]/step}</td>
+                <td>${(isNaN(gistValues[i]/step))?`---`:((gistValues[i]/step).toFixed(2))}</td>
                 <td>${(isNaN(gistValues[i]/step/numberOfValues))?'---':((gistValues[i]/step/numberOfValues).toFixed(2))}</td>
                 <td>${(index_polygon[i]==undefined)?`---`:index_polygon[i]}</td>`;
             table.append(row);
