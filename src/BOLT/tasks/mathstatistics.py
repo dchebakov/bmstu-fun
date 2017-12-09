@@ -76,10 +76,15 @@ def mathstatisticsEx1(request):
 
     index_polygon = [round((grid_gist[i]+grid_gist[i+1])/2, 2) for i in range(len(grid_gist)-1)]
 
+    # Ravnomernoe raspredelenie
+    ravn_a = ( NUMBER_OF_VALUES * min - max ) /(NUMBER_OF_VALUES-1)
+    ravn_b = ( NUMBER_OF_VALUES * max - min ) /(NUMBER_OF_VALUES-1)
+
 
     myvalue = {'make': 1, 'top': 2}
 
     return {'numbers': numbers, 'index': index, 'numbers_sort': numbers_sort, 'efr': efr, 'index_efr': index_efr,
             'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
-            'counts': counts, 'gist_values': gist_values, 'step': step, 'number_of_values': NUMBER_OF_VALUES,
+            'counts': counts, 'gist_values': gist_values, 'step': round(step, 2), 'number_of_values': NUMBER_OF_VALUES,
+            'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2),
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}
