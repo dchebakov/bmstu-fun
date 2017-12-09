@@ -87,19 +87,20 @@
             {% include 'base/sectionsblock.html' with sections=sections %}
         {% endblock %}
     </div>
-{% autoescape off %}
+
     <div class="col-xs-12 col-md-8 col-md-pull-2 col-lg-8 main-block">
         {% block main %}
             {% for item  in news %}
                 <div class="post">
+                {% autoescape off %}
                     <p class="post-title">{{ item.title }}</p>
                     <hr>
                     <p>{{ item.text }}</p>
+                {% endautoescape %}
                 </div>
             {% endfor %}
         {% endblock %}
     </div>
-{% endautoescape %}
 </main>
 
 <footer>
