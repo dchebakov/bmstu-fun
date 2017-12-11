@@ -15,11 +15,14 @@ import json
 @task_decorate
 def mathstatisticsEx1(request):
     numbers_input = request.GET.get('numbers')
+    alpha = request.GET.get('alpha')
 
-    if not numbers_input:
+    if not numbers_input or not alpha:
         return {'is_valid': False}
+    alpha = re.sub(',', '.', str(alpha))
     try:
         numbers = [float(v) for v in filter(None, re.split("[, ]+", numbers_input))]
+        alpha = float(alpha)
     except ValueError:
         return {'is_valid': False}
 
@@ -79,6 +82,8 @@ def mathstatisticsEx1(request):
     # Ravnomernoe raspredelenie
     ravn_a = ( NUMBER_OF_VALUES * min - max ) /(NUMBER_OF_VALUES-1)
     ravn_b = ( NUMBER_OF_VALUES * max - min ) /(NUMBER_OF_VALUES-1)
+    ravn_levo_a = min - (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
+    ravn_pravo_b = max + (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
 
 
     myvalue = {'make': 1, 'top': 2}
@@ -86,5 +91,6 @@ def mathstatisticsEx1(request):
     return {'numbers': numbers, 'index': index, 'numbers_sort': numbers_sort, 'efr': efr, 'index_efr': index_efr,
             'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
             'counts': counts, 'gist_values': gist_values, 'step': round(step, 2), 'number_of_values': NUMBER_OF_VALUES,
-            'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2),
+            'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2), 'ravn_levo_a': round(ravn_levo_a, 2), 'ravn_pravo_b': round(ravn_pravo_b, 2),
+            'min': min, 'max': max,
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}

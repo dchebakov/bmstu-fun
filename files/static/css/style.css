@@ -149,11 +149,17 @@ td {
 
 @media screen and (min-width: 1000px) {
     .navigation {
-        max-width:  20%;
+        max-width: 20%;
         box-sizing: border-box;
     }
 
     .top-main {
         max-width: 90vw;
+    }
+}
+
+@media print {
+    footer, footer, .dist, .navigation, .ignore-to-pdf {
+        display: none;
     }
 }

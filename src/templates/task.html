@@ -11,7 +11,7 @@
     {% endautoescape %}
         {% include template with task=task solve=solve %}
         <hr>
-        <div taskid="{{ task.id }}">
+        <div taskid="{{ task.id }}" class="ignore-to-pdf">
             {% csrf_token %}
             <p>Рейтинг задачи: {{ task.rating }}</p>
             {% if user.is_authenticated and not is_like %}
@@ -23,7 +23,7 @@
         </script>
     </div>
     {% for comment in comments %}
-        <div class="col-xs-12 post">
+        <div class="col-xs-12 post ignore-to-pdf">
             <div class="col-sm-2 text-center col-xs-4">
                 {% if comment.user.avatar %}
                     <img src="{{ comment.user.avatar_medium.url }}" alt="" class="img-circle">
