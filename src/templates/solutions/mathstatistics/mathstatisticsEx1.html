@@ -121,11 +121,10 @@
             <th>\(x_{i}\)</th>
             <th>\(x_{i+1}\)</th>
             <th>\(x_{i} \ast \)</th>
-            <th>\(z_{i+1}\)</th>
             <th>\(n_{i}\)</th>
-            <th>\(\frac{n_{i}}{h}\)</th>
-            <th>\(\frac{n_{i}}{h\cdot n}\)</th>
-            <th>\(z_{i}*\)</th>
+            <th>\(p_{i}\)</th>
+            <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
+            <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
         </tr>
     </table>
 
@@ -154,6 +153,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let table1 = document.querySelector('#table1');
+            let table2 = document.querySelector('#table2');
             let uniqueNumbers = {{ solve.unique_numbers }},
                 zi = {{ solve.grid_gist }},
                 counts = {{ solve.counts }},
@@ -164,8 +164,8 @@
 
 
             for (let i = 0; i < uniqueNumbers.length; i++) {
-                let row = document.createElement('tr');
-                row.innerHTML =
+                let row1 = document.createElement('tr');
+                row1.innerHTML =
                     `<td>${i + 1}</td>
                 <td>${uniqueNumbers[i]}</td>
                 <td>${counts[i]}</td>
@@ -175,7 +175,21 @@
                 <td>${(isNaN(gistValues[i] / step)) ? `---` : ((gistValues[i] / step).toFixed(2))}</td>
                 <td>${(isNaN(gistValues[i] / step / numberOfValues)) ? '---' : ((gistValues[i] / step / numberOfValues).toFixed(2))}</td>
                 <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>`;
-                table1.append(row);
+                table1.append(row1);
+            }
+
+            for (let i = 0; i < zi.length-1; i++){
+                let row2 = document.createElement('tr');
+                row2.innerHTML =
+                    `<td>${i + 1}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
+                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
+                <td>pi</td>
+                <td>npi</td>
+                <td>ni2/nit</td>`;
+                table2.append(row2);
             }
 
         });
@@ -205,7 +219,7 @@
 
 
          document.addEventListener('DOMContentLoaded', function () {
-            let table1 = document.querySelector('#table4');
+            let table = document.querySelector('#table4');
             let numbers_sort = {{ solve.numbers_sort }};
 
 
@@ -222,13 +236,10 @@
                      <td>${numbers_sort[i+7]}</td>
                        <td>${numbers_sort[i+8]}</td>
                         <td>${numbers_sort[i+9]}</td>`;
-                table1.append(row);
+                table.append(row);
             }
 
         });
-
-
-
     </script>
 
 
