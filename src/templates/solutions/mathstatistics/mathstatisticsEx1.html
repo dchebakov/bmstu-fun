@@ -52,7 +52,7 @@
         Количество чисел: \(n = {{ solve.number_of_values }}\)<br>
         Шаг: \(h = {{ solve.step }}\)</p>
 
-    <table class="tftable" border="1">
+    <table class="tftable" id="table1" border="1">
         <tr>
             <th>№</th>
             <th>\(x_{i}\)</th>
@@ -64,7 +64,15 @@
             <th>\(\frac{n_{i}}{h\cdot n}\)</th>
             <th>\(z_{i}*\)</th>
         </tr>
-    </table>
+    </table><br><br>
+
+    <table class="tftable" id="table3" border="1">
+
+    </table><br><br>
+
+    <table class="tftable" id="table4" border="1">
+
+    </table><br><br>
 
     <canvas id="graph-1"></canvas>
     <canvas id="graph-2"></canvas>
@@ -93,18 +101,34 @@
         <p>Нормальное распределение</p>
     </div>
     <div class="hidden even dist">
-        <h4>Равномерное распределение</h4>
-        <p><font size="4">
-            $$ f(x) = \left\{\begin{matrix} 0, & x &#60;a \\ \frac{1}{b-a}, & a\leq x\leq b \\ 0, &
-            x>b\end{matrix}\right. $$
-            Используем ММП метод:<br>
-            \( a\approx \frac{n}{n-1}\cdot x_{(1)} - \frac{1}{n-1}\cdot x_{n} \approx {{ solve.ravn_a }} \)<br>
-            \( b\approx \frac{n}{n-1}\cdot x_{(n)} - \frac{1}{n-1}\cdot x_{1} \approx {{ solve.ravn_b }} \)<br>
-            Построим доверительный интервал:<br>
-        \( x_{(1)} - l\cdot (1-\alpha^\frac{1}{n}) &#60; a &#60; x_{(1)} \), <br> \( x_{(n)} &#60; b &#60; x_{(n)} + l\cdot (1-\alpha^\frac{1}{n}) \),
-            <br> где \( \alpha - \) надежность, \( l = x_{(n)} - x_{(1)} \)<br>
-        \( {{ solve.ravn_levo_a }} &#60; a &#60; {{ solve.min }} \)<br>
-        \( {{ solve.max }} &#60; b &#60; {{ solve.ravn_pravo_b }} \)</font></p>
+        <h4>Равномерное распределение:</h4>
+        <p>
+            $$ f(x) = \left\{\begin{matrix} 0, & x &#60;a \\ \frac{1}{b-a}, & a\leq x\leq b \\ 0, & x>b\end{matrix}\right. $$
+            Используем ММП метод:
+            $$ a\approx \frac{n}{n-1}\cdot x_{(1)} - \frac{1}{n-1}\cdot x_{n} \approx {{ solve.ravn_a }} $$
+            $$ b\approx \frac{n}{n-1}\cdot x_{(n)} - \frac{1}{n-1}\cdot x_{1} \approx {{ solve.ravn_b }} $$
+            Построим доверительный интервал:
+            $$ x_{(1)} - l\cdot (1-\alpha^\frac{1}{n}) &#60; a &#60; x_{(1)} ,$$
+            $$ x_{(n)} &#60; b &#60; x_{(n)} + l\cdot (1-\alpha^\frac{1}{n}) ,$$
+            где \( \alpha \ - \) уровень значимости,  \( (1 - \alpha) \ - \) надежность, \( l = x_{(n)} - x_{(1)} \)
+            $$ {{ solve.ravn_levo_a }} &#60; a &#60; {{ solve.min }} $$
+            $$ {{ solve.max }} &#60; b &#60; {{ solve.ravn_pravo_b }} $$
+            Проверяем гипотезу по критерию Пирсона:
+        </p>
+        <table class="tftable" id="table2" border="1">
+        <tr>
+            <th>№</th>
+            <th>\(x_{i}\)</th>
+            <th>\(x_{i+1}\)</th>
+            <th>\(x_{i} \ast \)</th>
+            <th>\(z_{i+1}\)</th>
+            <th>\(n_{i}\)</th>
+            <th>\(\frac{n_{i}}{h}\)</th>
+            <th>\(\frac{n_{i}}{h\cdot n}\)</th>
+            <th>\(z_{i}*\)</th>
+        </tr>
+    </table>
+
     </div>
     <div class="hidden exp dist">
         <p>Показательное распределение</p>
@@ -129,7 +153,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let table = document.querySelector('.tftable');
+            let table1 = document.querySelector('#table1');
             let uniqueNumbers = {{ solve.unique_numbers }},
                 zi = {{ solve.grid_gist }},
                 counts = {{ solve.counts }},
@@ -151,10 +175,60 @@
                 <td>${(isNaN(gistValues[i] / step)) ? `---` : ((gistValues[i] / step).toFixed(2))}</td>
                 <td>${(isNaN(gistValues[i] / step / numberOfValues)) ? '---' : ((gistValues[i] / step / numberOfValues).toFixed(2))}</td>
                 <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>`;
-                table.append(row);
+                table1.append(row);
             }
 
         });
+
+         document.addEventListener('DOMContentLoaded', function () {
+            let table1 = document.querySelector('#table3');
+            let numbers = {{ solve.numbers }};
+
+
+            for (let i = 0; i < numbers.length; i += 10) {
+                let row = document.createElement('tr');
+                row.innerHTML =
+                    `<td>${numbers[i]}</td>
+                    <td>${numbers[i+1]}</td>
+                     <td>${numbers[i+2]}</td>
+                       <td>${numbers[i+3]}</td>
+                        <td>${numbers[i+4]}</td>
+                    <td>${numbers[i+5]}</td>
+                    <td>${numbers[i+6]}</td>
+                     <td>${numbers[i+7]}</td>
+                       <td>${numbers[i+8]}</td>
+                        <td>${numbers[i+9]}</td>`;
+                table1.append(row);
+            }
+
+        });
+
+
+         document.addEventListener('DOMContentLoaded', function () {
+            let table1 = document.querySelector('#table4');
+            let numbers_sort = {{ solve.numbers_sort }};
+
+
+            for (let i = 0; i < numbers_sort.length; i += 10) {
+                let row = document.createElement('tr');
+                row.innerHTML =
+                    `<td>${numbers_sort[i]}</td>
+                    <td>${numbers_sort[i+1]}</td>
+                     <td>${numbers_sort[i+2]}</td>
+                       <td>${numbers_sort[i+3]}</td>
+                        <td>${numbers_sort[i+4]}</td>
+                    <td>${numbers_sort[i+5]}</td>
+                    <td>${numbers_sort[i+6]}</td>
+                     <td>${numbers_sort[i+7]}</td>
+                       <td>${numbers_sort[i+8]}</td>
+                        <td>${numbers_sort[i+9]}</td>`;
+                table1.append(row);
+            }
+
+        });
+
+
+
     </script>
 
 
@@ -341,8 +415,8 @@
                   placeholder="Введите генеральную совокупность, состоящую из случайных величин: "
                   name="numbers" required="" maxlength="1000" rows="4"></textarea>
         </div>
-         <label for="N">Введите надежность: </label>
-        <input type="text" id="alpha" name="alpha">
+         <label for="1-alpha">Введите надежность: </label>
+        <input type="text" id="1-alpha" name="1-alpha">
         <button class="btn btn-success" type="submit">Получить решение!</button>
     </form>
 

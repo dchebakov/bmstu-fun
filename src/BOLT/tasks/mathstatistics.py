@@ -15,14 +15,14 @@ import json
 @task_decorate
 def mathstatisticsEx1(request):
     numbers_input = request.GET.get('numbers')
-    alpha = request.GET.get('alpha')
+    znachimost = request.GET.get('1-alpha')
 
-    if not numbers_input or not alpha:
+    if not numbers_input or not znachimost:
         return {'is_valid': False}
-    alpha = re.sub(',', '.', str(alpha))
+    znachimost = re.sub(',', '.', str(znachimost))
     try:
         numbers = [float(v) for v in filter(None, re.split("[, ]+", numbers_input))]
-        alpha = float(alpha)
+        alpha = 1 - float(znachimost)
     except ValueError:
         return {'is_valid': False}
 
