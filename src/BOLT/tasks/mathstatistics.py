@@ -1,5 +1,6 @@
 import math
 from bisect import bisect, bisect_left
+from scipy.stats import chi2
 from django.shortcuts import render
 from ..models import Task, Section
 from .. import views
@@ -15,16 +16,18 @@ import json
 @task_decorate
 def mathstatisticsEx1(request):
     numbers_input = request.GET.get('numbers')
-    znachimost = request.GET.get('1-alpha')
+    nadezhnost = request.GET.get('1-alpha')
 
-    if not numbers_input or not znachimost:
+    if not numbers_input or not nadezhnost:
         return {'is_valid': False}
-    znachimost = re.sub(',', '.', str(znachimost))
+    nadezhnost = re.sub(',', '.', str(nadezhnost))
     try:
         numbers = [float(v) for v in filter(None, re.split("[, ]+", numbers_input))]
-        alpha = 1 - float(znachimost)
+        nadezhnost = float(nadezhnost)
     except ValueError:
         return {'is_valid': False}
+
+    alpha = 1 - nadezhnost
 
     # data for the first graph
     index = [i for i in range(1, len(numbers) + 1)]
@@ -80,6 +83,7 @@ def mathstatisticsEx1(request):
     index_polygon = [round((grid_gist[i]+grid_gist[i+1])/2, 2) for i in range(len(grid_gist)-1)]
 
     # Ravnomernoe raspredelenie
+    L_RAVN = 2
     ravn_a = ( NUMBER_OF_VALUES * min - max ) /(NUMBER_OF_VALUES-1)
     ravn_b = ( NUMBER_OF_VALUES * max - min ) /(NUMBER_OF_VALUES-1)
     ravn_levo_a = min - (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
@@ -87,11 +91,24 @@ def mathstatisticsEx1(request):
 
     ravn_p = [round((grid_gist[i+1] - grid_gist[i])/(ravn_b - ravn_a), 2) for i in range(len(grid_gist)-1)]
 
+    ravn_w = 0
+    for i in range(NUMBER_OF_INTERVALS):
+        ravn_w += (gist_values[i])**2/NUMBER_OF_VALUES/ravn_p[i]
+    ravn_w -= NUMBER_OF_VALUES
+    ravn_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS-1-L_RAVN)
+    if ravn_w < ravn_wkr:
+        ravn_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается."
+    else:
+        ravn_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется."
+
     myvalue = {'make': 1, 'top': 2}
 
     return {'numbers': numbers, 'index': index, 'numbers_sort': numbers_sort, 'efr': efr, 'index_efr': index_efr,
             'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
             'counts': counts, 'gist_values': gist_values, 'step': round(step, 2), 'number_of_values': NUMBER_OF_VALUES,
+            'number_of_intervals': NUMBER_OF_INTERVALS, 'min': min, 'max': max, 'nadezhnost': nadezhnost, 'l_ravn': L_RAVN,
+
             'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2), 'ravn_levo_a': round(ravn_levo_a, 2), 'ravn_pravo_b': round(ravn_pravo_b, 2),
-            'min': min, 'max': max, 'ravn_p': ravn_p,
+            'ravn_p': ravn_p, 'ravn_w': round(ravn_w, 2), 'ravn_wkr': round(ravn_wkr, 2), 'ravn_answer': ravn_answer,
+
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}

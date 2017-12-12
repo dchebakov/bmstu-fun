@@ -134,7 +134,12 @@
         </table>
         <p>
             Следовательно:
-            $$ W =  $$
+            $$ W \approx {{ solve.ravn_w }} $$
+            Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
+            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_ravn }} ) =
+            {{ solve.ravn_wkr }} ,$$
+            где \(k - \) количество интервалов разбиения, \(l - \) количество параметров распределения.
+            {{ solve.ravn_answer }}
         </p>
     </div>
     <div class="hidden exp dist">
@@ -196,8 +201,8 @@
                 <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
                 <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
                 <td>${pi[i]}</td>
-                <td>${numberOfValues*pi[i].toFixed(2)}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i])^2/(numberOfValues*pi[i])).toFixed(2)}</td>`;
+                <td>${(numberOfValues*pi[i]).toFixed(2)}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i])*(gistValues[i])/numberOfValues/pi[i]).toFixed(2)}</td>`;
                 table2.append(row2);
             }
 
