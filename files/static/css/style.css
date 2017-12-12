@@ -22,6 +22,7 @@
     margin-bottom: 2%;
     background: #fff;
     border-radius: 1%;
+    overflow-x: scroll;
 }
 
 .post-title {

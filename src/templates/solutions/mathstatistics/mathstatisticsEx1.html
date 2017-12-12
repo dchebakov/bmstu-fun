@@ -114,6 +114,11 @@
             $$ {{ solve.ravn_levo_a }} &#60; a &#60; {{ solve.min }} $$
             $$ {{ solve.max }} &#60; b &#60; {{ solve.ravn_pravo_b }} $$
             Проверяем гипотезу по критерию Пирсона:
+            Для равномерного распределения:
+            $$ P(\alpha &#60; \xi &#60; \beta) = \frac{\beta - \alpha}{b - a} $$
+            Статистика Пирсона:
+            $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
+            где \( n_i^T = n\cdot p_i \)
         </p>
         <table class="tftable" id="table2" border="1">
         <tr>
@@ -126,8 +131,11 @@
             <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
             <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
         </tr>
-    </table>
-
+        </table>
+        <p>
+            Следовательно:
+            $$ W =  $$
+        </p>
     </div>
     <div class="hidden exp dist">
         <p>Показательное распределение</p>
@@ -160,7 +168,8 @@
                 gistValues = {{ solve.gist_values }},
                 index_polygon = {{ solve.index_polygon }},
                 step = '{{ solve.step }}'.replace(',', '.'),
-                numberOfValues = {{ solve.number_of_values }};
+                numberOfValues = {{ solve.number_of_values }},
+                pi = {{ solve.ravn_p }};
 
 
             for (let i = 0; i < uniqueNumbers.length; i++) {
@@ -186,9 +195,9 @@
                 <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
                 <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
                 <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                <td>pi</td>
-                <td>npi</td>
-                <td>ni2/nit</td>`;
+                <td>${pi[i]}</td>
+                <td>${numberOfValues*pi[i].toFixed(2)}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i])^2/(numberOfValues*pi[i])).toFixed(2)}</td>`;
                 table2.append(row2);
             }
 

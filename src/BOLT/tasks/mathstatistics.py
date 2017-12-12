@@ -85,6 +85,7 @@ def mathstatisticsEx1(request):
     ravn_levo_a = min - (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
     ravn_pravo_b = max + (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
 
+    ravn_p = [round((grid_gist[i+1] - grid_gist[i])/(ravn_b - ravn_a), 2) for i in range(len(grid_gist)-1)]
 
     myvalue = {'make': 1, 'top': 2}
 
@@ -92,5 +93,5 @@ def mathstatisticsEx1(request):
             'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
             'counts': counts, 'gist_values': gist_values, 'step': round(step, 2), 'number_of_values': NUMBER_OF_VALUES,
             'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2), 'ravn_levo_a': round(ravn_levo_a, 2), 'ravn_pravo_b': round(ravn_pravo_b, 2),
-            'min': min, 'max': max,
+            'min': min, 'max': max, 'ravn_p': ravn_p,
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}
