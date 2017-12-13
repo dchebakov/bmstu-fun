@@ -1,6 +1,6 @@
 import math
 from bisect import bisect, bisect_left
-from scipy.stats import chi2
+from scipy.stats import chi2, norm
 from django.shortcuts import render
 from ..models import Task, Section
 from .. import views
@@ -89,7 +89,7 @@ def mathstatisticsEx1(request):
     ravn_levo_a = min - (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
     ravn_pravo_b = max + (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
 
-    ravn_p = [round((grid_gist[i+1] - grid_gist[i])/(ravn_b - ravn_a), 2) for i in range(len(grid_gist)-1)]
+    ravn_p = [(grid_gist[i + 1] - grid_gist[i]) / (ravn_b - ravn_a) for i in range(NUMBER_OF_INTERVALS)]
 
     ravn_w = 0
     for i in range(NUMBER_OF_INTERVALS):
@@ -97,9 +97,11 @@ def mathstatisticsEx1(request):
     ravn_w -= NUMBER_OF_VALUES
     ravn_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS-1-L_RAVN)
     if ravn_w < ravn_wkr:
-        ravn_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается."
+        ravn_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью " + str(
+            nadezhnost) + "."
     else:
-        ravn_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется."
+        ravn_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью " + str(
+            nadezhnost) + "."
 
     # Pokazatelnoe raspredelenie
     L_POKAZ = 1
@@ -109,7 +111,25 @@ def mathstatisticsEx1(request):
     pokaz_x = pokaz_x / NUMBER_OF_VALUES
     pokaz_lambda = 1 / pokaz_x
 
-    pokaz_p = 0
+    pokaz_levo_lambda = float(pokaz_lambda * (1 - norm.ppf(1 - alpha / 2) / sqrt(NUMBER_OF_VALUES)))
+    pokaz_pravo_lambda = float(pokaz_lambda * (1 + norm.ppf(1 - alpha / 2) / sqrt(NUMBER_OF_VALUES)))
+    print(pokaz_pravo_lambda)
+
+    pokaz_p = [math.exp(-pokaz_lambda * grid_gist[i]) - math.exp(-pokaz_lambda * grid_gist[i + 1]) for i in
+               range(NUMBER_OF_INTERVALS)]
+
+    pokaz_w = 0
+    for i in range(NUMBER_OF_INTERVALS):
+        pokaz_w += (gist_values[i]) ** 2 / NUMBER_OF_VALUES / pokaz_p[i]
+    pokaz_w -= NUMBER_OF_VALUES
+    pokaz_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS - 1 - L_POKAZ)
+    if pokaz_w < pokaz_wkr:
+        pokaz_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью " + str(
+            nadezhnost) + "."
+    else:
+        pokaz_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью " + str(
+            nadezhnost) + "."
+
 
     myvalue = {'make': 1, 'top': 2}
 
@@ -123,5 +143,8 @@ def mathstatisticsEx1(request):
             'ravn_p': ravn_p, 'ravn_w': round(ravn_w, 2), 'ravn_wkr': round(ravn_wkr, 2), 'ravn_answer': ravn_answer,
 
             'pokaz_x': round(pokaz_x, 2), 'pokaz_lambda': round(pokaz_lambda, 2), 'pokaz_p': pokaz_p,
+            'pokaz_w': round(pokaz_w), 'pokaz_wkr': round(pokaz_wkr, 2),
+            'pokaz_answer': pokaz_answer, 'pokaz_levo_lambda': round(pokaz_levo_lambda, 2),
+            'pokaz_pravo_lambda': round(pokaz_pravo_lambda, 2),
 
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}

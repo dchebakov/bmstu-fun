@@ -151,7 +151,7 @@
             $$ \frac{1}{\bar x} \left ( 1 - \frac{\lambda_{1-\frac{\alpha}{2}}}{\sqrt{n}} \right ) &#60; \lambda &#60;
             \frac{1}{\bar x} \left ( 1 + \frac{\lambda_{1-\frac{\alpha}{2}}}{\sqrt{n}} \right ) ,$$
             где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность
-            $$ &#60; \lambda &#60; $$
+            $$ {{ solve.pokaz_levo_lambda }} &#60; \lambda &#60; {{ solve.pokaz_pravo_lambda }} $$
             Проверяем гипотезу по критерию Пирсона:<br>
             Для показательного распределения:
             $$ P(\alpha &#60; \xi &#60; \beta) = e^{-\lambda \alpha} - e^{-\lambda \beta} $$
@@ -176,12 +176,12 @@
         </table>
         <p>
             Следовательно:
-            $$ W \approx {{ solve.ravn_w }} $$
+            $$ W \approx {{ solve.pokaz_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
-            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_ravn }} ) =
-            {{ solve.ravn_wkr }} ,$$
+            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_pokaz }} ) =
+            {{ solve.pokaz_wkr }} ,$$
             где \(k - \) количество интервалов разбиения, \(l - \) количество параметров распределения.
-            {{ solve.ravn_answer }}
+            {{ solve.pokaz_answer }}
         </p>
 
     </div>
@@ -203,8 +203,8 @@
             });
 
             let mainBlock = document.querySelector('.main-block');
-            mainBlock.classList.remove('col-lg-8');
-            mainBlock.classList.add('col-lg-12');
+            mainBlock.classList.remove('col-md-8');
+            mainBlock.classList.add('col-md-12');
             document.querySelector('main').classList.remove('top-main');
 
             console.log(mainBlock.classList);
@@ -217,8 +217,8 @@
                 print();
                 resolve();
             }).then(() => {
-                mainBlock.classList.remove('col-lg-12');
-                mainBlock.classList.add('col-lg-8');
+                mainBlock.classList.remove('col-md-12');
+                mainBlock.classList.add('col-md-8');
                 document.querySelector('main').classList.add('top-main');
                 document.querySelector('.post').style.fontSize = '14px';
             });
@@ -258,7 +258,8 @@
                 step = '{{ solve.step }}'.replace(',', '.'),
                 numberOfValues = {{ solve.number_of_values }},
                 ravnPi = {{ solve.ravn_p }},
-                pokazPi = {{ solve.pokaz_p }};
+                pokazPi = {{ solve.pokaz_p }},
+                pokazLambda = '{{ solve.pokaz_lambda }}'.replace(',', '.');
 
 
             for (let i = 0; i < zi.length - 1; i++) {
@@ -278,13 +279,13 @@
                 let row2 = document.createElement('tr');
                 row2.innerHTML =
                     `<td>${i + 1}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
-                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                <td>${ravnPi[i]}</td>
-                <td>${(numberOfValues * ravnPi[i]).toFixed(2)}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / ravnPi[i]).toFixed(2)}</td>`;
+                     <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
+                     <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
+                     <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
+                     <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
+                     <td>${ravnPi[i]}</td>
+                     <td>${(numberOfValues * ravnPi[i]).toFixed(2)}</td>
+                     <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / ravnPi[i]).toFixed(2)}</td>`;
                 table2.append(row2);
             }
 
@@ -297,9 +298,9 @@
                 <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
                 <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
                 <td>${(index_polygon[i] === undefined) ? `---` : (index_polygon[i] * gistValues[i]).toFixed(2)}</td>
-                <td></td>
-                <td></td>
-                <td>${pokazPi[i]}</td>
+                <td>${(Math.exp(-pokazLambda * zi[i])).toFixed(2)}</td>
+                <td>${(Math.exp(-pokazLambda * zi[i + 1])).toFixed(2)}</td>
+                <td>${pokazPi[i].toFixed(2)}</td>
                 <td>${(numberOfValues * pokazPi[i]).toFixed(2)}</td>
                 <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / pokazPi[i]).toFixed(2)}</td>`;
                 table5.append(row5);
@@ -315,16 +316,16 @@
             for (let i = 0; i < numbers.length; i += 10) {
                 let row = document.createElement('tr');
                 row.innerHTML =
-                    `<td>${numbers[i]}</td>
-                    <td>${numbers[i + 1]}</td>
-                     <td>${numbers[i + 2]}</td>
-                       <td>${numbers[i + 3]}</td>
-                        <td>${numbers[i + 4]}</td>
-                    <td>${numbers[i + 5]}</td>
-                    <td>${numbers[i + 6]}</td>
-                     <td>${numbers[i + 7]}</td>
-                       <td>${numbers[i + 8]}</td>
-                        <td>${numbers[i + 9]}</td>`;
+                    `<td>${(numbers[i] === undefined) ? `---` : numbers[i]}</td>
+                     <td>${(numbers[i + 1] === undefined) ? `---` : numbers[i + 1]}</td>
+                     <td>${(numbers[i + 2] === undefined) ? `---` : numbers[i + 2]}</td>
+                     <td>${(numbers[i + 3] === undefined) ? `---` : numbers[i + 3]}</td>
+                     <td>${(numbers[i + 4] === undefined) ? `---` : numbers[i + 4]}</td>
+                     <td>${(numbers[i + 5] === undefined) ? `---` : numbers[i + 5]}</td>
+                     <td>${(numbers[i + 6] === undefined) ? `---` : numbers[i + 6]}</td>
+                     <td>${(numbers[i + 7] === undefined) ? `---` : numbers[i + 7]}</td>
+                     <td>${(numbers[i + 8] === undefined) ? `---` : numbers[i + 8]}</td>
+                     <td>${(numbers[i + 9] === undefined) ? `---` : numbers[i + 9]}</td>`;
                 table1.append(row);
             }
 
