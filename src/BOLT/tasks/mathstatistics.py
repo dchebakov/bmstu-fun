@@ -1,6 +1,6 @@
 import math
 from bisect import bisect, bisect_left
-from scipy.stats import chi2, norm
+from scipy.stats import chi2, norm, t
 from django.shortcuts import render
 from ..models import Task, Section
 from .. import views
@@ -97,11 +97,11 @@ def mathstatisticsEx1(request):
     ravn_w -= NUMBER_OF_VALUES
     ravn_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS-1-L_RAVN)
     if ravn_w < ravn_wkr:
-        ravn_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью " + str(
-            nadezhnost) + "."
+        ravn_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью \(" + str(
+            nadezhnost) + "\)."
     else:
-        ravn_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью " + str(
-            nadezhnost) + "."
+        ravn_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью \(" + str(
+            nadezhnost) + "\)."
 
     # Pokazatelnoe raspredelenie
     L_POKAZ = 1
@@ -113,7 +113,6 @@ def mathstatisticsEx1(request):
 
     pokaz_levo_lambda = float(pokaz_lambda * (1 - norm.ppf(1 - alpha / 2) / sqrt(NUMBER_OF_VALUES)))
     pokaz_pravo_lambda = float(pokaz_lambda * (1 + norm.ppf(1 - alpha / 2) / sqrt(NUMBER_OF_VALUES)))
-    print(pokaz_pravo_lambda)
 
     pokaz_p = [math.exp(-pokaz_lambda * grid_gist[i]) - math.exp(-pokaz_lambda * grid_gist[i + 1]) for i in
                range(NUMBER_OF_INTERVALS)]
@@ -124,12 +123,49 @@ def mathstatisticsEx1(request):
     pokaz_w -= NUMBER_OF_VALUES
     pokaz_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS - 1 - L_POKAZ)
     if pokaz_w < pokaz_wkr:
-        pokaz_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью " + str(
-            nadezhnost) + "."
+        pokaz_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью \(" + str(
+            nadezhnost) + "\)."
     else:
-        pokaz_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью " + str(
-            nadezhnost) + "."
+        pokaz_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью \(" + str(
+            nadezhnost) + "\)."
 
+    # Normalnoe raspredelenie
+    L_NORM = 2
+    norm_a = 0
+    for i in range(NUMBER_OF_INTERVALS):
+        norm_a += gist_values[i] * index_polygon[i]
+    norm_a = norm_a / NUMBER_OF_VALUES
+
+    norm_sigma = 0
+    for i in range(NUMBER_OF_INTERVALS):
+        norm_sigma += (index_polygon[i] - norm_a) ** 2
+    norm_sigma = norm_sigma / (NUMBER_OF_VALUES - 1)
+
+    norm_levo_a = float(norm_a - norm_sigma / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_pravo_a = float(norm_a + norm_sigma / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_levo_sigma = float((NUMBER_OF_VALUES - 1) * (norm_sigma ** 2) / chi2.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_pravo_sigma = float((NUMBER_OF_VALUES - 1) * (norm_sigma ** 2) / chi2.ppf(alpha / 2, NUMBER_OF_VALUES - 1))
+
+    norm_zi = [(grid_gist[i] - norm_a) / norm_sigma for i in range(1, NUMBER_OF_INTERVALS)]
+    norm_Fzi = [norm.cdf(zi) - 0.5 for zi in norm_zi]
+    norm_Fzi.append(0.5)
+    norm_Fzi.reverse()
+    norm_Fzi.append(-0.5)
+    norm_Fzi.reverse()
+
+    norm_p = [norm_Fzi[i + 1] - norm_Fzi[i] for i in range(NUMBER_OF_INTERVALS)]
+
+    norm_w = 0
+    for i in range(NUMBER_OF_INTERVALS):
+        norm_w += (gist_values[i]) ** 2 / NUMBER_OF_VALUES / norm_p[i]
+    norm_w -= NUMBER_OF_VALUES
+    norm_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS - 1 - L_NORM)
+    if norm_w < norm_wkr:
+        norm_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью \(" + str(
+            nadezhnost) + "\)."
+    else:
+        norm_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью \(" + str(
+            nadezhnost) + "\)."
 
     myvalue = {'make': 1, 'top': 2}
 
@@ -137,7 +173,7 @@ def mathstatisticsEx1(request):
             'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
             'counts': counts, 'gist_values': gist_values, 'step': round(step, 2), 'number_of_values': NUMBER_OF_VALUES,
             'number_of_intervals': NUMBER_OF_INTERVALS, 'min': min, 'max': max, 'nadezhnost': nadezhnost,
-            'l_ravn': L_RAVN, 'l_pokaz': L_POKAZ,
+            'l_ravn': L_RAVN, 'l_pokaz': L_POKAZ, 'l_norm': L_NORM,
 
             'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2), 'ravn_levo_a': round(ravn_levo_a, 2), 'ravn_pravo_b': round(ravn_pravo_b, 2),
             'ravn_p': ravn_p, 'ravn_w': round(ravn_w, 2), 'ravn_wkr': round(ravn_wkr, 2), 'ravn_answer': ravn_answer,
@@ -146,5 +182,11 @@ def mathstatisticsEx1(request):
             'pokaz_w': round(pokaz_w), 'pokaz_wkr': round(pokaz_wkr, 2),
             'pokaz_answer': pokaz_answer, 'pokaz_levo_lambda': round(pokaz_levo_lambda, 2),
             'pokaz_pravo_lambda': round(pokaz_pravo_lambda, 2),
+
+            'norm_a': round(norm_a, 2), 'norm_sigma': round(norm_sigma, 2), 'norm_levo_a': round(norm_levo_a, 2),
+            'norm_pravo_a': round(norm_pravo_a, 2), 'norm_levo_sigma': round(norm_levo_sigma, 2),
+            'norm_pravo_sigma': round(norm_pravo_sigma, 2),
+            'norm_zi': norm_zi, 'norm_Fzi': norm_Fzi, 'norm_p': norm_p, 'norm_w': round(norm_w, 2),
+            'norm_wkr': round(norm_wkr, 2), 'norm_answer': norm_answer,
 
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}

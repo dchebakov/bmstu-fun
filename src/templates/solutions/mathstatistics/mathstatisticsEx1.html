@@ -95,7 +95,61 @@
         </form>
     </div>
     <div class="hidden norm dist">
-        <p>Нормальное распределение</p>
+
+        <h4>Нормальное распределение:</h4>
+        <p>
+            $$ f(x) = \frac{1}{\sigma \sqrt{2\pi}}e^{ -\frac{(x-a)^2}{2 \sigma^2} } $$
+            Используем ММП метод:
+            $$ a \approx \bar x = \frac{1}{n} \sum_{i=1}^k n_i x_i^{\ast} \approx {{ solve.norm_a }} $$
+            $$ \sigma^2 \approx \tilde s^2 = \frac{1}{n - 1} \sum_{i=1}^k (x_i^{\ast} - \bar x)^2
+            \approx {{ solve.norm_sigma }} $$
+            Построим доверительный интервал:
+            $$ \bar x - \frac{s}{\sqrt{n}}t_{1-\frac{\alpha}{2}}(n-1) &#60; a &#60; \bar x +
+            \frac{s}{\sqrt{n}}t_{1-\frac{\alpha}{2}}(n-1) $$
+            $$ \frac{n-1}{ \chi_{1 - \frac{\alpha}{2}}^2 (n-1) } s^2 \lt \sigma^2 \lt \frac{n-1}{
+            \chi_{\frac{\alpha}{2}}^2 (n-1) } s^2 $$
+            где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность, \( t_{1-\frac{\alpha}{2}}(n-1) -
+            \) квантили распределения Стьюдента,
+            \( \chi_{\frac{\alpha}{2}}^2(n-1), \ \chi_{1 - \frac{\alpha}{2}}^2(n-1) \ - \) квантили распределения
+            хи-квадрат.
+            $$ {{ solve.norm_levo_a }} &#60; a &#60; {{ solve.norm_pravo_a }} $$
+            $$ {{ solve.norm_levo_sigma }} &#60; \sigma^2 &#60; {{ solve.norm_pravo_sigma }} $$
+            Проверяем гипотезу по критерию Пирсона:<br>
+            Для нормального распределения:
+            $$ P(\alpha &#60; \xi &#60; \beta) = \Phi \left ( \frac{\beta - a}{\sigma} \right ) - \Phi \left (
+            \frac{\alpha - a}{\sigma} \right ) $$
+            Статистика Пирсона:
+            $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
+            где \( n_i^T = n\cdot p_i \)
+        </p>
+        <table class="tftable" id="table6" border="1">
+            <tr>
+                <th>№</th>
+                <th>\(x_{i}\)</th>
+                <th>\(x_{i+1}\)</th>
+                <th>\(x_{i}^{\ast} \)</th>
+                <th>\(n_{i} \)</th>
+                <th>\(x_{i}^{\ast}\cdot n_i \)</th>
+                <th>\( z_{i} = \frac{x_{i} - a}{\sigma} \)</th>
+                <th>\( z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)</th>
+                <th>\( \Phi \left ( z_i \right ) \)</th>
+                <th>\( \Phi \left ( z_{i+1} \right ) \)</th>
+                <th>\(p_{i}\)</th>
+                <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
+                <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
+            </tr>
+        </table>
+        <p>
+            Следовательно:
+            $$ W \approx {{ solve.norm_w }} $$
+            Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
+            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_norm }} ) =
+            {{ solve.norm_wkr }} ,$$
+            где \(k - \) количество интервалов разбиения, \(l - \) количество параметров распределения.
+            {{ solve.norm_answer }}
+        </p>
+
+
     </div>
     <div class="hidden even dist">
         <h4>Равномерное распределение:</h4>
@@ -150,7 +204,8 @@
             Построим доверительный интервал:
             $$ \frac{1}{\bar x} \left ( 1 - \frac{\lambda_{1-\frac{\alpha}{2}}}{\sqrt{n}} \right ) &#60; \lambda &#60;
             \frac{1}{\bar x} \left ( 1 + \frac{\lambda_{1-\frac{\alpha}{2}}}{\sqrt{n}} \right ) ,$$
-            где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность
+            где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность, \( \lambda_{1-\frac{\alpha}{2}}
+            - \) квантили нормального распределения.
             $$ {{ solve.pokaz_levo_lambda }} &#60; \lambda &#60; {{ solve.pokaz_pravo_lambda }} $$
             Проверяем гипотезу по критерию Пирсона:<br>
             Для показательного распределения:
@@ -250,6 +305,7 @@
             let table1 = document.querySelector('#table1');
             let table2 = document.querySelector('#table2');
             let table5 = document.querySelector('#table5');
+            let table6 = document.querySelector('#table6');
             let uniqueNumbers = {{ solve.unique_numbers }},
                 zi = {{ solve.grid_gist }},
                 counts = {{ solve.counts }},
@@ -259,7 +315,12 @@
                 numberOfValues = {{ solve.number_of_values }},
                 ravnPi = {{ solve.ravn_p }},
                 pokazPi = {{ solve.pokaz_p }},
-                pokazLambda = '{{ solve.pokaz_lambda }}'.replace(',', '.');
+                pokazLambda = '{{ solve.pokaz_lambda }}'.replace(',', '.'),
+                normZi = {{ solve.norm_zi }},
+                normFzi = {{ solve.norm_Fzi }},
+                normPi = {{ solve.norm_p }};
+            normZi.push(Infinity);
+            normZi.unshift(-Infinity);
 
 
             for (let i = 0; i < zi.length - 1; i++) {
@@ -283,7 +344,7 @@
                      <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
                      <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
                      <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                     <td>${ravnPi[i]}</td>
+                     <td>${ravnPi[i].toFixed(2)}</td>
                      <td>${(numberOfValues * ravnPi[i]).toFixed(2)}</td>
                      <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / ravnPi[i]).toFixed(2)}</td>`;
                 table2.append(row2);
@@ -304,6 +365,25 @@
                 <td>${(numberOfValues * pokazPi[i]).toFixed(2)}</td>
                 <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / pokazPi[i]).toFixed(2)}</td>`;
                 table5.append(row5);
+            }
+
+            for (let i = 0; i < zi.length - 1; i++) {
+                let row6 = document.createElement('tr');
+                row6.innerHTML =
+                    `<td>${i + 1}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
+                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
+                <td>${(index_polygon[i] === undefined) ? `---` : (index_polygon[i] * gistValues[i]).toFixed(2)}</td>
+                <td>${(normZi[i]).toFixed(2)}</td>
+                <td>${(normZi[i + 1]).toFixed(2)}</td>
+                <td>${normFzi[i].toFixed(4)}</td>
+                <td>${normFzi[i + 1].toFixed(4)}</td>
+                <td>${normPi[i].toFixed(4)}</td>
+                <td>${(numberOfValues * normPi[i]).toFixed(2)}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / normPi[i]).toFixed(2)}</td>`;
+                table6.append(row6);
             }
 
         });
