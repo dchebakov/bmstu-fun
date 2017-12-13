@@ -101,7 +101,7 @@
             $$ f(x) = \frac{1}{\sigma \sqrt{2\pi}}e^{ -\frac{(x-a)^2}{2 \sigma^2} } $$
             Используем ММП метод:
             $$ a \approx \bar x = \frac{1}{n} \sum_{i=1}^k n_i x_i^{\ast} \approx {{ solve.norm_a }} $$
-            $$ \sigma^2 \approx \tilde s^2 = \frac{1}{n - 1} \sum_{i=1}^k (x_i^{\ast} - \bar x)^2
+            $$ \sigma^2 \approx \tilde s^2 = \frac{1}{n - 1} \sum_{i=1}^k (x_i^{\ast} - \bar x)^2 n_i
             \approx {{ solve.norm_sigma }} $$
             Построим доверительный интервал:
             $$ \bar x - \frac{s}{\sqrt{n}}t_{1-\frac{\alpha}{2}}(n-1) &#60; a &#60; \bar x +

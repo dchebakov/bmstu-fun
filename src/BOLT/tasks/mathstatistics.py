@@ -138,15 +138,17 @@ def mathstatisticsEx1(request):
 
     norm_sigma = 0
     for i in range(NUMBER_OF_INTERVALS):
-        norm_sigma += (index_polygon[i] - norm_a) ** 2
+        norm_sigma += ((index_polygon[i] - norm_a) ** 2) * gist_values[i]
     norm_sigma = norm_sigma / (NUMBER_OF_VALUES - 1)
 
-    norm_levo_a = float(norm_a - norm_sigma / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
-    norm_pravo_a = float(norm_a + norm_sigma / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
-    norm_levo_sigma = float((NUMBER_OF_VALUES - 1) * (norm_sigma ** 2) / chi2.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
-    norm_pravo_sigma = float((NUMBER_OF_VALUES - 1) * (norm_sigma ** 2) / chi2.ppf(alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_levo_a = float(
+        norm_a - math.sqrt(norm_sigma) / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_pravo_a = float(
+        norm_a + math.sqrt(norm_sigma) / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_levo_sigma = float((NUMBER_OF_VALUES - 1) * norm_sigma / chi2.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_pravo_sigma = float((NUMBER_OF_VALUES - 1) * norm_sigma / chi2.ppf(alpha / 2, NUMBER_OF_VALUES - 1))
 
-    norm_zi = [(grid_gist[i] - norm_a) / norm_sigma for i in range(1, NUMBER_OF_INTERVALS)]
+    norm_zi = [(grid_gist[i] - norm_a) / math.sqrt(norm_sigma) for i in range(1, NUMBER_OF_INTERVALS)]
     norm_Fzi = [norm.cdf(zi) - 0.5 for zi in norm_zi]
     norm_Fzi.append(0.5)
     norm_Fzi.reverse()
