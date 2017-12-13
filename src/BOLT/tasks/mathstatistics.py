@@ -101,14 +101,27 @@ def mathstatisticsEx1(request):
     else:
         ravn_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется."
 
+    # Pokazatelnoe raspredelenie
+    L_POKAZ = 1
+    pokaz_x = 0
+    for i in range(NUMBER_OF_INTERVALS):
+        pokaz_x += gist_values[i] * index_polygon[i]
+    pokaz_x = pokaz_x / NUMBER_OF_VALUES
+    pokaz_lambda = 1 / pokaz_x
+
+    pokaz_p = 0
+
     myvalue = {'make': 1, 'top': 2}
 
     return {'numbers': numbers, 'index': index, 'numbers_sort': numbers_sort, 'efr': efr, 'index_efr': index_efr,
             'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
             'counts': counts, 'gist_values': gist_values, 'step': round(step, 2), 'number_of_values': NUMBER_OF_VALUES,
-            'number_of_intervals': NUMBER_OF_INTERVALS, 'min': min, 'max': max, 'nadezhnost': nadezhnost, 'l_ravn': L_RAVN,
+            'number_of_intervals': NUMBER_OF_INTERVALS, 'min': min, 'max': max, 'nadezhnost': nadezhnost,
+            'l_ravn': L_RAVN, 'l_pokaz': L_POKAZ,
 
             'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2), 'ravn_levo_a': round(ravn_levo_a, 2), 'ravn_pravo_b': round(ravn_pravo_b, 2),
             'ravn_p': ravn_p, 'ravn_w': round(ravn_w, 2), 'ravn_wkr': round(ravn_wkr, 2), 'ravn_answer': ravn_answer,
+
+            'pokaz_x': round(pokaz_x, 2), 'pokaz_lambda': round(pokaz_lambda, 2), 'pokaz_p': pokaz_p,
 
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}

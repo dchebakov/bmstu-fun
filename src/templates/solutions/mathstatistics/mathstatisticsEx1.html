@@ -48,30 +48,27 @@
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
 
-    <p>Ваша генеральная совокупность: {{ solve.numbers }}<br>
-        Количество чисел: \(n = {{ solve.number_of_values }}\)<br>
-        Шаг: \(h = {{ solve.step }}\)</p>
+    <p> Количество чисел: \(n = {{ solve.number_of_values }}\) <br>
+        Шаг: \(h = {{ solve.step }}\) <br></p>
+
+    <h4>Ваша генеральная совокупность:</h4>
+    <table class="tftable" id="table3" border="1">
+    </table>
+
+    <h4>После сортировки:</h4>
+    <table class="tftable" id="table4" border="1">
+    </table><br>
 
     <table class="tftable" id="table1" border="1">
         <tr>
             <th>№</th>
-            <th>\(x_{i}\)</th>
-            <th>\(k_{i}\)</th>
             <th>\(z_{i}\)</th>
             <th>\(z_{i+1}\)</th>
             <th>\(n_{i}\)</th>
             <th>\(\frac{n_{i}}{h}\)</th>
             <th>\(\frac{n_{i}}{h\cdot n}\)</th>
-            <th>\(z_{i}*\)</th>
+            <th>\(z_{i}^{\ast}\)</th>
         </tr>
-    </table><br><br>
-
-    <table class="tftable" id="table3" border="1">
-
-    </table><br><br>
-
-    <table class="tftable" id="table4" border="1">
-
     </table><br><br>
 
     <canvas id="graph-1"></canvas>
@@ -113,7 +110,7 @@
             где \( \alpha \ - \) уровень значимости,  \( (1 - \alpha) \ - \) надежность, \( l = x_{(n)} - x_{(1)} \)
             $$ {{ solve.ravn_levo_a }} &#60; a &#60; {{ solve.min }} $$
             $$ {{ solve.max }} &#60; b &#60; {{ solve.ravn_pravo_b }} $$
-            Проверяем гипотезу по критерию Пирсона:
+            Проверяем гипотезу по критерию Пирсона:<br>
             Для равномерного распределения:
             $$ P(\alpha &#60; \xi &#60; \beta) = \frac{\beta - \alpha}{b - a} $$
             Статистика Пирсона:
@@ -125,7 +122,7 @@
             <th>№</th>
             <th>\(x_{i}\)</th>
             <th>\(x_{i+1}\)</th>
-            <th>\(x_{i} \ast \)</th>
+            <th>\(x_{i}^{\ast} \)</th>
             <th>\(n_{i}\)</th>
             <th>\(p_{i}\)</th>
             <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
@@ -143,7 +140,49 @@
         </p>
     </div>
     <div class="hidden exp dist">
-        <p>Показательное распределение</p>
+        <h4>Показательное распределение:</h4>
+        <p>
+            $$ f(x) = \left\{\begin{matrix} \lambda\cdot e^{-\lambda x}, & x \ge 0 \\ 0, & x\lt 0 \end{matrix}\right. $$
+            Используем ММП метод:
+            $$ \bar x = \frac{1}{n} \sum_{i=1}^k n_i x_i^{\ast} \approx {{ solve.pokaz_x }} $$
+            $$ \hat \lambda = \frac{1}{\bar x} \approx {{ solve.pokaz_lambda }}$$
+            Построим доверительный интервал:
+            $$ \frac{1}{\bar x} \left ( 1 - \frac{\lambda_{1-\frac{\alpha}{2}}}{\sqrt{n}} \right ) &#60; \lambda &#60;
+            \frac{1}{\bar x} \left ( 1 + \frac{\lambda_{1-\frac{\alpha}{2}}}{\sqrt{n}} \right ) ,$$
+            где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность
+            $$ &#60; \lambda &#60; $$
+            Проверяем гипотезу по критерию Пирсона:<br>
+            Для показательного распределения:
+            $$ P(\alpha &#60; \xi &#60; \beta) = e^{-\lambda \alpha} - e^{-\lambda \beta} $$
+            Статистика Пирсона:
+            $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
+            где \( n_i^T = n\cdot p_i \)
+        </p>
+        <table class="tftable" id="table5" border="1">
+            <tr>
+                <th>№</th>
+                <th>\(x_{i}\)</th>
+                <th>\(x_{i+1}\)</th>
+                <th>\(x_{i}^{\ast} \)</th>
+                <th>\(n_{i} \)</th>
+                <th>\(x_{i}^{\ast}\cdot n_i \)</th>
+                <th>\( e^{-\lambda x_{i}} \)</th>
+                <th>\( e^{-\lambda x_{i+1}} \)</th>
+                <th>\(p_{i}\)</th>
+                <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
+                <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
+            </tr>
+        </table>
+        <p>
+            Следовательно:
+            $$ W \approx {{ solve.ravn_w }} $$
+            Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
+            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_ravn }} ) =
+            {{ solve.ravn_wkr }} ,$$
+            где \(k - \) количество интервалов разбиения, \(l - \) количество параметров распределения.
+            {{ solve.ravn_answer }}
+        </p>
+
     </div>
 
     <script>
@@ -167,6 +206,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             let table1 = document.querySelector('#table1');
             let table2 = document.querySelector('#table2');
+            let table5 = document.querySelector('#table5');
             let uniqueNumbers = {{ solve.unique_numbers }},
                 zi = {{ solve.grid_gist }},
                 counts = {{ solve.counts }},
@@ -174,15 +214,14 @@
                 index_polygon = {{ solve.index_polygon }},
                 step = '{{ solve.step }}'.replace(',', '.'),
                 numberOfValues = {{ solve.number_of_values }},
-                pi = {{ solve.ravn_p }};
+                ravnPi = {{ solve.ravn_p }},
+                pokazPi = {{ solve.pokaz_p }};
 
 
-            for (let i = 0; i < uniqueNumbers.length; i++) {
+            for (let i = 0; i < zi.length - 1; i++) {
                 let row1 = document.createElement('tr');
                 row1.innerHTML =
                     `<td>${i + 1}</td>
-                <td>${uniqueNumbers[i]}</td>
-                <td>${counts[i]}</td>
                 <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
                 <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
                 <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
@@ -200,10 +239,27 @@
                 <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
                 <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
                 <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                <td>${pi[i]}</td>
-                <td>${(numberOfValues*pi[i]).toFixed(2)}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i])*(gistValues[i])/numberOfValues/pi[i]).toFixed(2)}</td>`;
+                <td>${ravnPi[i]}</td>
+                <td>${(numberOfValues * ravnPi[i]).toFixed(2)}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / ravnPi[i]).toFixed(2)}</td>`;
                 table2.append(row2);
+            }
+
+            for (let i = 0; i < zi.length - 1; i++) {
+                let row5 = document.createElement('tr');
+                row5.innerHTML =
+                    `<td>${i + 1}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
+                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
+                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
+                <td>${(index_polygon[i] === undefined) ? `---` : (index_polygon[i] * gistValues[i]).toFixed(2)}</td>
+                <td></td>
+                <td></td>
+                <td>${pokazPi[i]}</td>
+                <td>${(numberOfValues * pokazPi[i]).toFixed(2)}</td>
+                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / pokazPi[i]).toFixed(2)}</td>`;
+                table5.append(row5);
             }
 
         });

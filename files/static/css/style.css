@@ -22,7 +22,6 @@
     margin-bottom: 2%;
     background: #fff;
     border-radius: 1%;
-    overflow-x: scroll;
 }
 
 .post-title {
@@ -162,5 +161,11 @@ td {
 @media print {
     footer, footer, .dist, .navigation, .ignore-to-pdf {
         display: none;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .post {
+        overflow-x: scroll;
     }
 }
