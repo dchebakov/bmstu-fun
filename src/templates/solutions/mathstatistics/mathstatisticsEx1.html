@@ -44,7 +44,6 @@
 </head>
 
 {% load staticfiles %}
-
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
 
@@ -75,39 +74,41 @@
     <canvas id="graph-2"></canvas>
     <canvas id="graph-3"></canvas>
     <canvas id="graph-4"></canvas>
-    <div><p style="font-size: 16px">На основании графиков предположите тип распределения: </p></div>
-    <form class="form-horizontal" style="padding-left: 25px" name="dist">
-        <div class="form-group">
-            <input type="radio" id="norm" name="type" checked>
-            <label for="norm">Нормальное распределение</label>
-        </div>
-        <div class="form-group">
-            <input type="radio" id="even" name="type">
-            <label for="even">Равномерное распределение</label>
-        </div>
+    <div id="select-visible-type-of-dist"><p style="font-size: 16px">На основании графиков предположите тип
+        распределения: </p>
+        <form class="form-horizontal" style="padding-left: 25px" name="dist">
+            <div class="form-group">
+                <input type="radio" id="norm" name="type" checked>
+                <label for="norm">Нормальное распределение</label>
+            </div>
+            <div class="form-group">
+                <input type="radio" id="even" name="type">
+                <label for="even">Равномерное распределение</label>
+            </div>
 
-        <div class="form-group">
-            <input type="radio" id="exp" name="type">
-            <label for="exp">Показательное распределение</label>
-        </div>
+            <div class="form-group">
+                <input type="radio" id="exp" name="type">
+                <label for="exp">Показательное распределение</label>
+            </div>
 
-        <input type="submit" class="btn btn-success" value="Перейти к дальнейшим вычислениям">
-    </form>
-
+            <input type="submit" class="btn btn-success" value="Перейти к дальнейшим вычислениям">
+        </form>
+    </div>
     <div class="hidden norm dist">
         <p>Нормальное распределение</p>
     </div>
     <div class="hidden even dist">
         <h4>Равномерное распределение:</h4>
         <p>
-            $$ f(x) = \left\{\begin{matrix} 0, & x &#60;a \\ \frac{1}{b-a}, & a\leq x\leq b \\ 0, & x>b\end{matrix}\right. $$
+            $$ f(x) = \left\{\begin{matrix} 0, & x &#60;a \\ \frac{1}{b-a}, & a\leq x\leq b \\ 0, &
+            x>b\end{matrix}\right. $$
             Используем ММП метод:
             $$ a\approx \frac{n}{n-1}\cdot x_{(1)} - \frac{1}{n-1}\cdot x_{n} \approx {{ solve.ravn_a }} $$
             $$ b\approx \frac{n}{n-1}\cdot x_{(n)} - \frac{1}{n-1}\cdot x_{1} \approx {{ solve.ravn_b }} $$
             Построим доверительный интервал:
             $$ x_{(1)} - l\cdot (1-\alpha^\frac{1}{n}) &#60; a &#60; x_{(1)} ,$$
             $$ x_{(n)} &#60; b &#60; x_{(n)} + l\cdot (1-\alpha^\frac{1}{n}) ,$$
-            где \( \alpha \ - \) уровень значимости,  \( (1 - \alpha) \ - \) надежность, \( l = x_{(n)} - x_{(1)} \)
+            где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность, \( l = x_{(n)} - x_{(1)} \)
             $$ {{ solve.ravn_levo_a }} &#60; a &#60; {{ solve.min }} $$
             $$ {{ solve.max }} &#60; b &#60; {{ solve.ravn_pravo_b }} $$
             Проверяем гипотезу по критерию Пирсона:<br>
@@ -118,16 +119,16 @@
             где \( n_i^T = n\cdot p_i \)
         </p>
         <table class="tftable" id="table2" border="1">
-        <tr>
-            <th>№</th>
-            <th>\(x_{i}\)</th>
-            <th>\(x_{i+1}\)</th>
-            <th>\(x_{i}^{\ast} \)</th>
-            <th>\(n_{i}\)</th>
-            <th>\(p_{i}\)</th>
-            <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
-            <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
-        </tr>
+            <tr>
+                <th>№</th>
+                <th>\(x_{i}\)</th>
+                <th>\(x_{i+1}\)</th>
+                <th>\(x_{i}^{\ast} \)</th>
+                <th>\(n_{i}\)</th>
+                <th>\(p_{i}\)</th>
+                <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
+                <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
+            </tr>
         </table>
         <p>
             Следовательно:
@@ -185,6 +186,48 @@
 
     </div>
 
+    <button id="save-to-pdf" class="btn btn-success" style="margin: 10px 12px;">Сохранить в pdf</button>
+
+    <script>
+        document.querySelector('#save-to-pdf').addEventListener('click', function () {
+            document.querySelector('.task-description').classList.add('ignore-to-pdf');
+            document.querySelector('#select-visible-type-of-dist').classList.add('ignore-to-pdf');
+            this.classList.add('ignore-to-pdf');
+            [].slice.call(document.querySelectorAll('hr')).forEach(function (e) {
+                e.classList.add('ignore-to-pdf');
+            });
+
+            document.querySelector('header').classList.add('ignore-to-pdf');
+            [].slice.call(document.querySelectorAll('navigation')).forEach(function (value) {
+                value.classList.add('ignore-to-pdf');
+            });
+
+            let mainBlock = document.querySelector('.main-block');
+            mainBlock.classList.remove('col-lg-8');
+            mainBlock.classList.add('col-lg-12');
+            document.querySelector('main').classList.remove('top-main');
+
+            console.log(mainBlock.classList);
+
+            document.querySelector('footer').classList.add('ignore-to-pdf');
+            document.querySelector('.post').style.fontSize = '18px';
+
+
+            new Promise((resolve) => {
+                print();
+                resolve();
+            }).then(() => {
+                mainBlock.classList.remove('col-lg-12');
+                mainBlock.classList.add('col-lg-8');
+                document.querySelector('main').classList.add('top-main');
+                document.querySelector('.post').style.fontSize = '14px';
+            });
+
+
+        });
+
+    </script>
+
     <script>
         document.forms['dist'].addEventListener('submit', function (event) {
             event.preventDefault();
@@ -231,7 +274,7 @@
                 table1.append(row1);
             }
 
-            for (let i = 0; i < zi.length-1; i++){
+            for (let i = 0; i < zi.length - 1; i++) {
                 let row2 = document.createElement('tr');
                 row2.innerHTML =
                     `<td>${i + 1}</td>
@@ -264,7 +307,7 @@
 
         });
 
-         document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
             let table1 = document.querySelector('#table3');
             let numbers = {{ solve.numbers }};
 
@@ -273,22 +316,22 @@
                 let row = document.createElement('tr');
                 row.innerHTML =
                     `<td>${numbers[i]}</td>
-                    <td>${numbers[i+1]}</td>
-                     <td>${numbers[i+2]}</td>
-                       <td>${numbers[i+3]}</td>
-                        <td>${numbers[i+4]}</td>
-                    <td>${numbers[i+5]}</td>
-                    <td>${numbers[i+6]}</td>
-                     <td>${numbers[i+7]}</td>
-                       <td>${numbers[i+8]}</td>
-                        <td>${numbers[i+9]}</td>`;
+                    <td>${numbers[i + 1]}</td>
+                     <td>${numbers[i + 2]}</td>
+                       <td>${numbers[i + 3]}</td>
+                        <td>${numbers[i + 4]}</td>
+                    <td>${numbers[i + 5]}</td>
+                    <td>${numbers[i + 6]}</td>
+                     <td>${numbers[i + 7]}</td>
+                       <td>${numbers[i + 8]}</td>
+                        <td>${numbers[i + 9]}</td>`;
                 table1.append(row);
             }
 
         });
 
 
-         document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
             let table = document.querySelector('#table4');
             let numbers_sort = {{ solve.numbers_sort }};
 
@@ -297,15 +340,15 @@
                 let row = document.createElement('tr');
                 row.innerHTML =
                     `<td>${numbers_sort[i]}</td>
-                    <td>${numbers_sort[i+1]}</td>
-                     <td>${numbers_sort[i+2]}</td>
-                       <td>${numbers_sort[i+3]}</td>
-                        <td>${numbers_sort[i+4]}</td>
-                    <td>${numbers_sort[i+5]}</td>
-                    <td>${numbers_sort[i+6]}</td>
-                     <td>${numbers_sort[i+7]}</td>
-                       <td>${numbers_sort[i+8]}</td>
-                        <td>${numbers_sort[i+9]}</td>`;
+                    <td>${numbers_sort[i + 1]}</td>
+                     <td>${numbers_sort[i + 2]}</td>
+                       <td>${numbers_sort[i + 3]}</td>
+                        <td>${numbers_sort[i + 4]}</td>
+                    <td>${numbers_sort[i + 5]}</td>
+                    <td>${numbers_sort[i + 6]}</td>
+                     <td>${numbers_sort[i + 7]}</td>
+                       <td>${numbers_sort[i + 8]}</td>
+                        <td>${numbers_sort[i + 9]}</td>`;
                 table.append(row);
             }
 
@@ -496,7 +539,7 @@
                   placeholder="Введите генеральную совокупность, состоящую из случайных величин: "
                   name="numbers" required="" maxlength="1000" rows="4"></textarea>
         </div>
-         <label for="1-alpha">Введите надежность: </label>
+        <label for="1-alpha">Введите надежность: </label>
         <input type="text" id="1-alpha" name="1-alpha">
         <button class="btn btn-success" type="submit">Получить решение!</button>
     </form>

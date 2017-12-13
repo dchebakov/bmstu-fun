@@ -159,9 +159,10 @@ td {
 }
 
 @media print {
-    footer, footer, .dist, .navigation, .ignore-to-pdf {
+     .ignore-to-pdf {
         display: none;
     }
+
 }
 
 @media screen and (max-width: 700px) {

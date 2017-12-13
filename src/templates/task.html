@@ -6,8 +6,8 @@
 {% block main %}
     <div class="post">
     {% autoescape off %}
-        <p>{{ task.title }}</p>
-        <p>{{ task.description }}</p>
+        <p class="task-title">{{ task.title }}</p>
+        <p class="task-description">{{ task.description }}</p>
     {% endautoescape %}
         {% include template with task=task solve=solve %}
         <hr>
