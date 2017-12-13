@@ -89,6 +89,16 @@ def mathstatisticsEx1(request):
     ravn_levo_a = min - (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
     ravn_pravo_b = max + (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
 
+    if (ravn_a - ravn_levo_a) > (min - ravn_a):
+        ravn_apm = ravn_a - ravn_levo_a
+    else:
+        ravn_apm = min - ravn_a
+
+    if (ravn_b - max) > (ravn_pravo_b - ravn_b):
+        ravn_bpm = ravn_b - max
+    else:
+        ravn_bpm = ravn_pravo_b - ravn_b
+
     ravn_p = [(grid_gist[i + 1] - grid_gist[i]) / (ravn_b - ravn_a) for i in range(NUMBER_OF_INTERVALS)]
 
     ravn_w = 0
@@ -114,6 +124,11 @@ def mathstatisticsEx1(request):
     pokaz_levo_lambda = float(pokaz_lambda * (1 - norm.ppf(1 - alpha / 2) / sqrt(NUMBER_OF_VALUES)))
     pokaz_pravo_lambda = float(pokaz_lambda * (1 + norm.ppf(1 - alpha / 2) / sqrt(NUMBER_OF_VALUES)))
 
+    if (pokaz_lambda - pokaz_levo_lambda) > (pokaz_pravo_lambda - pokaz_lambda):
+        pokaz_lambdapm = pokaz_lambda - pokaz_levo_lambda
+    else:
+        pokaz_lambdapm = pokaz_pravo_lambda - pokaz_lambda
+
     pokaz_p = [math.exp(-pokaz_lambda * grid_gist[i]) - math.exp(-pokaz_lambda * grid_gist[i + 1]) for i in
                range(NUMBER_OF_INTERVALS)]
 
@@ -136,19 +151,32 @@ def mathstatisticsEx1(request):
         norm_a += gist_values[i] * index_polygon[i]
     norm_a = norm_a / NUMBER_OF_VALUES
 
-    norm_sigma = 0
+    norm_sigmakv = 0
     for i in range(NUMBER_OF_INTERVALS):
-        norm_sigma += ((index_polygon[i] - norm_a) ** 2) * gist_values[i]
-    norm_sigma = norm_sigma / (NUMBER_OF_VALUES - 1)
+        norm_sigmakv += ((index_polygon[i] - norm_a) ** 2) * gist_values[i]
+    norm_sigmakv = norm_sigmakv / (NUMBER_OF_VALUES - 1)
+    norm_sigma = math.sqrt(norm_sigmakv)
 
     norm_levo_a = float(
-        norm_a - math.sqrt(norm_sigma) / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+        norm_a - math.sqrt(norm_sigmakv) / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
     norm_pravo_a = float(
-        norm_a + math.sqrt(norm_sigma) / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
-    norm_levo_sigma = float((NUMBER_OF_VALUES - 1) * norm_sigma / chi2.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
-    norm_pravo_sigma = float((NUMBER_OF_VALUES - 1) * norm_sigma / chi2.ppf(alpha / 2, NUMBER_OF_VALUES - 1))
+        norm_a + math.sqrt(norm_sigmakv) / sqrt(NUMBER_OF_VALUES) * t.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_levo_sigmakv = float((NUMBER_OF_VALUES - 1) * norm_sigmakv / chi2.ppf(1 - alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_pravo_sigmakv = float((NUMBER_OF_VALUES - 1) * norm_sigmakv / chi2.ppf(alpha / 2, NUMBER_OF_VALUES - 1))
+    norm_levo_sigma = math.sqrt(norm_levo_sigmakv)
+    norm_pravo_sigma = math.sqrt(norm_pravo_sigmakv)
 
-    norm_zi = [(grid_gist[i] - norm_a) / math.sqrt(norm_sigma) for i in range(1, NUMBER_OF_INTERVALS)]
+    if (norm_a - norm_levo_a) > (norm_pravo_a - norm_a):
+        norm_apm = norm_a - norm_levo_a
+    else:
+        norm_apm = norm_pravo_a - norm_a
+
+    if (norm_sigma - norm_levo_sigma) > (norm_pravo_sigma - norm_sigma):
+        norm_sigmapm = norm_sigma - norm_levo_sigma
+    else:
+        norm_sigmapm = norm_pravo_sigma - norm_sigma
+
+    norm_zi = [(grid_gist[i] - norm_a) / math.sqrt(norm_sigmakv) for i in range(1, NUMBER_OF_INTERVALS)]
     norm_Fzi = [norm.cdf(zi) - 0.5 for zi in norm_zi]
     norm_Fzi.append(0.5)
     norm_Fzi.reverse()
@@ -179,16 +207,19 @@ def mathstatisticsEx1(request):
 
             'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2), 'ravn_levo_a': round(ravn_levo_a, 2), 'ravn_pravo_b': round(ravn_pravo_b, 2),
             'ravn_p': ravn_p, 'ravn_w': round(ravn_w, 2), 'ravn_wkr': round(ravn_wkr, 2), 'ravn_answer': ravn_answer,
+            'ravn_apm': round(ravn_apm, 2), 'ravn_bpm': round(ravn_bpm, 2),
 
             'pokaz_x': round(pokaz_x, 2), 'pokaz_lambda': round(pokaz_lambda, 2), 'pokaz_p': pokaz_p,
             'pokaz_w': round(pokaz_w), 'pokaz_wkr': round(pokaz_wkr, 2),
             'pokaz_answer': pokaz_answer, 'pokaz_levo_lambda': round(pokaz_levo_lambda, 2),
-            'pokaz_pravo_lambda': round(pokaz_pravo_lambda, 2),
+            'pokaz_pravo_lambda': round(pokaz_pravo_lambda, 2), 'pokaz_lambdapm': round(pokaz_lambdapm, 2),
 
-            'norm_a': round(norm_a, 2), 'norm_sigma': round(norm_sigma, 2), 'norm_levo_a': round(norm_levo_a, 2),
-            'norm_pravo_a': round(norm_pravo_a, 2), 'norm_levo_sigma': round(norm_levo_sigma, 2),
-            'norm_pravo_sigma': round(norm_pravo_sigma, 2),
+            'norm_a': round(norm_a, 2), 'norm_sigmakv': round(norm_sigmakv, 2), 'norm_levo_a': round(norm_levo_a, 2),
+            'norm_pravo_a': round(norm_pravo_a, 2), 'norm_levo_sigmakv': round(norm_levo_sigmakv, 2),
+            'norm_pravo_sigmakv': round(norm_pravo_sigmakv, 2),
             'norm_zi': norm_zi, 'norm_Fzi': norm_Fzi, 'norm_p': norm_p, 'norm_w': round(norm_w, 2),
-            'norm_wkr': round(norm_wkr, 2), 'norm_answer': norm_answer,
+            'norm_wkr': round(norm_wkr, 2), 'norm_answer': norm_answer, 'norm_sigma': round(norm_sigma, 2),
+            'norm_levo_sigma': round(norm_levo_sigma, 2), 'norm_pravo_sigma': round(norm_pravo_sigma, 2),
+            'norm_sigmapm': round(norm_sigmapm, 2), 'norm_apm': round(norm_apm, 2),
 
             'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}

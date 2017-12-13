@@ -4,26 +4,28 @@
 {% block title %}bmstu.fun: {{ task.title }}{% endblock %}
 
 {% block main %}
-    <div class="post">
+<div class="post">
     {% autoescape off %}
-        <p class="task-title">{{ task.title }}</p>
-        <p class="task-description">{{ task.description }}</p>
+    <p class="task-title">{{ task.title }}</p>
+    <p class="task-description">{{ task.description }}</p>
     {% endautoescape %}
-        {% include template with task=task solve=solve %}
-        <hr>
-        <div taskid="{{ task.id }}" class="ignore-to-pdf">
-            {% csrf_token %}
-            <p>Рейтинг задачи: {{ task.rating }}</p>
-            {% if user.is_authenticated and not is_like %}
-                <button class="btn btn-success thanks">Сказать спасибо!</button>
-            {% endif %}
-        </div>
-        <script type="text/javascript" async
-                src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-        </script>
+    {% include template with task=task solve=solve %}
+    <hr>
+    <div taskid="{{ task.id }}" class="ignore-to-pdf">
+        {% csrf_token %}
+        <p>Рейтинг задачи: {{ task.rating }}</p>
+        {% if user.is_authenticated and not is_like %}
+            <button class="btn btn-success thanks">Сказать спасибо!</button>
+        {% endif %}
     </div>
+    <script type="text/javascript" async
+            src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</div>
+
+<div class="ignore-to-pdf">
     {% for comment in comments %}
-        <div class="col-xs-12 post ignore-to-pdf">
+        <div class="col-xs-12 post">
             <div class="col-sm-2 text-center col-xs-4">
                 {% if comment.user.avatar %}
                     <img src="{{ comment.user.avatar_medium.url }}" alt="" class="img-circle">
@@ -41,6 +43,7 @@
     {% if user.is_authenticated %}
         {% include 'base/comment_form.html' with comment_form=comment_form task=task %}
     {% endif %}
+</div>
 {% endblock %}
 
 

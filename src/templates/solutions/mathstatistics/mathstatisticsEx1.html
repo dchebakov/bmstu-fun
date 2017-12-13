@@ -47,7 +47,7 @@
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
 
-    <p> Количество чисел: \(n = {{ solve.number_of_values }}\) <br>
+    <p class="big-formuls-ftnz"> Количество чисел: \(n = {{ solve.number_of_values }}\) <br>
         Шаг: \(h = {{ solve.step }}\) <br></p>
 
     <h4>Ваша генеральная совокупность:</h4>
@@ -96,13 +96,14 @@
     </div>
     <div class="hidden norm dist">
 
-        <h4>Нормальное распределение:</h4>
-        <p>
+        <h3>Нормальное распределение:</h3>
+        <p class="big-formuls-ftnz">
             $$ f(x) = \frac{1}{\sigma \sqrt{2\pi}}e^{ -\frac{(x-a)^2}{2 \sigma^2} } $$
             Используем ММП метод:
             $$ a \approx \bar x = \frac{1}{n} \sum_{i=1}^k n_i x_i^{\ast} \approx {{ solve.norm_a }} $$
             $$ \sigma^2 \approx \tilde s^2 = \frac{1}{n - 1} \sum_{i=1}^k (x_i^{\ast} - \bar x)^2 n_i
-            \approx {{ solve.norm_sigma }} $$
+            \approx {{ solve.norm_sigmakv }} $$
+            $$ \sigma \approx {{ solve.norm_sigma }} $$
             Построим доверительный интервал:
             $$ \bar x - \frac{s}{\sqrt{n}}t_{1-\frac{\alpha}{2}}(n-1) &#60; a &#60; \bar x +
             \frac{s}{\sqrt{n}}t_{1-\frac{\alpha}{2}}(n-1) $$
@@ -112,8 +113,11 @@
             \) квантили распределения Стьюдента,
             \( \chi_{\frac{\alpha}{2}}^2(n-1), \ \chi_{1 - \frac{\alpha}{2}}^2(n-1) \ - \) квантили распределения
             хи-квадрат.
-            $$ {{ solve.norm_levo_a }} &#60; a &#60; {{ solve.norm_pravo_a }} $$
-            $$ {{ solve.norm_levo_sigma }} &#60; \sigma^2 &#60; {{ solve.norm_pravo_sigma }} $$
+            $$ {{ solve.norm_levo_a }} &#60; a &#60; {{ solve.norm_pravo_a }} \Rightarrow a \approx {{ solve.norm_a }}
+            \pm {{ solve.norm_apm }} $$
+            $$ {{ solve.norm_levo_sigmakv }} &#60; \sigma^2 &#60; {{ solve.norm_pravo_sigmakv }} $$
+            $$ {{ solve.norm_levo_sigma }} &#60; \sigma &#60; {{ solve.norm_pravo_sigma }} \Rightarrow \sigma
+            \approx {{ solve.norm_sigma }} \pm {{ solve.norm_sigmapm }}$$
             Проверяем гипотезу по критерию Пирсона:<br>
             Для нормального распределения:
             $$ P(\alpha &#60; \xi &#60; \beta) = \Phi \left ( \frac{\beta - a}{\sigma} \right ) - \Phi \left (
@@ -139,7 +143,7 @@
                 <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
             </tr>
         </table>
-        <p>
+        <p class="big-formuls-ftnz">
             Следовательно:
             $$ W \approx {{ solve.norm_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
@@ -152,8 +156,8 @@
 
     </div>
     <div class="hidden even dist">
-        <h4>Равномерное распределение:</h4>
-        <p>
+        <h3>Равномерное распределение:</h3>
+        <p class="big-formuls-ftnz">
             $$ f(x) = \left\{\begin{matrix} 0, & x &#60;a \\ \frac{1}{b-a}, & a\leq x\leq b \\ 0, &
             x>b\end{matrix}\right. $$
             Используем ММП метод:
@@ -163,8 +167,10 @@
             $$ x_{(1)} - l\cdot (1-\alpha^\frac{1}{n}) &#60; a &#60; x_{(1)} ,$$
             $$ x_{(n)} &#60; b &#60; x_{(n)} + l\cdot (1-\alpha^\frac{1}{n}) ,$$
             где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность, \( l = x_{(n)} - x_{(1)} \)
-            $$ {{ solve.ravn_levo_a }} &#60; a &#60; {{ solve.min }} $$
-            $$ {{ solve.max }} &#60; b &#60; {{ solve.ravn_pravo_b }} $$
+            $$ {{ solve.ravn_levo_a }} &#60; a &#60; {{ solve.min }} \Rightarrow a \approx {{ solve.ravn_a }}
+            \pm {{ solve.ravn_apm }} $$
+            $$ {{ solve.max }} &#60; b &#60; {{ solve.ravn_pravo_b }} \Rightarrow b \approx {{ solve.ravn_b }}
+            \pm {{ solve.ravn_bpm }} $$
             Проверяем гипотезу по критерию Пирсона:<br>
             Для равномерного распределения:
             $$ P(\alpha &#60; \xi &#60; \beta) = \frac{\beta - \alpha}{b - a} $$
@@ -184,7 +190,7 @@
                 <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
             </tr>
         </table>
-        <p>
+        <p class="big-formuls-ftnz">
             Следовательно:
             $$ W \approx {{ solve.ravn_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
@@ -195,8 +201,8 @@
         </p>
     </div>
     <div class="hidden exp dist">
-        <h4>Показательное распределение:</h4>
-        <p>
+        <h3>Показательное распределение:</h3>
+        <p class="big-formuls-ftnz">
             $$ f(x) = \left\{\begin{matrix} \lambda\cdot e^{-\lambda x}, & x \ge 0 \\ 0, & x\lt 0 \end{matrix}\right. $$
             Используем ММП метод:
             $$ \bar x = \frac{1}{n} \sum_{i=1}^k n_i x_i^{\ast} \approx {{ solve.pokaz_x }} $$
@@ -206,7 +212,8 @@
             \frac{1}{\bar x} \left ( 1 + \frac{\lambda_{1-\frac{\alpha}{2}}}{\sqrt{n}} \right ) ,$$
             где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность, \( \lambda_{1-\frac{\alpha}{2}}
             - \) квантили нормального распределения.
-            $$ {{ solve.pokaz_levo_lambda }} &#60; \lambda &#60; {{ solve.pokaz_pravo_lambda }} $$
+            $$ {{ solve.pokaz_levo_lambda }} &#60; \lambda &#60; {{ solve.pokaz_pravo_lambda }} \Rightarrow \lambda
+            \approx {{ solve.pokaz_lambda }} \pm {{ solve.pokaz_lambdapm }} $$
             Проверяем гипотезу по критерию Пирсона:<br>
             Для показательного распределения:
             $$ P(\alpha &#60; \xi &#60; \beta) = e^{-\lambda \alpha} - e^{-\lambda \beta} $$
@@ -229,7 +236,7 @@
                 <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
             </tr>
         </table>
-        <p>
+        <p class="big-formuls-ftnz">
             Следовательно:
             $$ W \approx {{ solve.pokaz_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
