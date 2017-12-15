@@ -2,7 +2,6 @@
     <meta charset="utf-8">
     <style type="text/css">
         .tftable {
-            font-size: 16px;
             color: #333333;
             width: 100%;
             border-width: 1px;
@@ -11,13 +10,13 @@
         }
 
         .tftable th {
-            font-size: 16px;
+            font-size: 24px;
             background-color: #e0e0e0;
             border-width: 1px;
-            padding: 8px;
+            padding: 4px 8px;
             border-style: solid;
             border-color: #bcaf91;
-            text-align: left;
+            text-align: center;
         }
 
         .tftable tr {
@@ -25,11 +24,12 @@
         }
 
         .tftable td {
-            font-size: 12px;
+            font-size: 16px;
             border-width: 1px;
-            padding: 8px;
+            padding: 4px 8px;
             border-style: solid;
             border-color: #bcaf91;
+            text-align: center;
         }
 
         .tftable tr:hover {
@@ -51,16 +51,16 @@
         Шаг: \(h = {{ solve.step }}\) <br></p>
 
     <h4>Ваша генеральная совокупность:</h4>
-    <table class="tftable" id="table3" border="1">
+    <table class="tftable" id="numbers" border="1">
     </table>
 
     <h4>После сортировки:</h4>
-    <table class="tftable" id="table4" border="1">
+    <table class="tftable" id="numbers-sort" border="1">
     </table><br>
 
-    <table class="tftable" id="table1" border="1">
+    <table class="tftable" id="main" border="1">
         <tr>
-            <th>№</th>
+            <th>\(№\)</th>
             <th>\(z_{i}\)</th>
             <th>\(z_{i+1}\)</th>
             <th>\(n_{i}\)</th>
@@ -70,10 +70,10 @@
         </tr>
     </table><br><br>
 
-    <canvas id="graph-1"></canvas>
-    <canvas id="graph-2"></canvas>
-    <canvas id="graph-3"></canvas>
-    <canvas id="graph-4"></canvas>
+    <canvas id="numbers-chart"></canvas>
+    <canvas id="numbers-sort-chart"></canvas>
+    <canvas id="efr-chart"></canvas>
+    <canvas id="polygon-chart"></canvas>
     <div id="select-visible-type-of-dist"><p style="font-size: 16px">На основании графиков предположите тип
         распределения: </p>
         <form class="form-horizontal" style="padding-left: 25px" name="dist">
@@ -124,22 +124,22 @@
             \frac{\alpha - a}{\sigma} \right ) $$
             Статистика Пирсона:
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
-            где \( n_i^T = n\cdot p_i \)
+            где \( n_i^T = n\cdot p_i, z_{i} = \frac{x_{i} - a}{\sigma}, z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)
         </p>
-        <table class="tftable" id="table6" border="1">
+        <table class="tftable" id="norm-table" border="1">
             <tr>
-                <th>№</th>
+                <th>\(№\)</th>
                 <th>\(x_{i}\)</th>
                 <th>\(x_{i+1}\)</th>
                 <th>\(x_{i}^{\ast} \)</th>
                 <th>\(n_{i} \)</th>
                 <th>\(x_{i}^{\ast}\cdot n_i \)</th>
-                <th>\( z_{i} = \frac{x_{i} - a}{\sigma} \)</th>
-                <th>\( z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)</th>
+                <th>\( z_{i} \)</th>
+                <th>\( z_{i+1} \)</th>
                 <th>\( \Phi \left ( z_i \right ) \)</th>
                 <th>\( \Phi \left ( z_{i+1} \right ) \)</th>
                 <th>\(p_{i}\)</th>
-                <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
+                <th>\(\ n_{i}^T \)</th>
                 <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
             </tr>
         </table>
@@ -178,15 +178,15 @@
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
             где \( n_i^T = n\cdot p_i \)
         </p>
-        <table class="tftable" id="table2" border="1">
+        <table class="tftable" id="even-table" border="1">
             <tr>
-                <th>№</th>
+                <th>\(№\)</th>
                 <th>\(x_{i}\)</th>
                 <th>\(x_{i+1}\)</th>
                 <th>\(x_{i}^{\ast} \)</th>
                 <th>\(n_{i}\)</th>
                 <th>\(p_{i}\)</th>
-                <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
+                <th>\(\ n_{i}^T \)</th>
                 <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
             </tr>
         </table>
@@ -221,9 +221,9 @@
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
             где \( n_i^T = n\cdot p_i \)
         </p>
-        <table class="tftable" id="table5" border="1">
+        <table class="tftable" id="exp-table" border="1">
             <tr>
-                <th>№</th>
+                <th>\(№\)</th>
                 <th>\(x_{i}\)</th>
                 <th>\(x_{i+1}\)</th>
                 <th>\(x_{i}^{\ast} \)</th>
@@ -232,7 +232,7 @@
                 <th>\( e^{-\lambda x_{i}} \)</th>
                 <th>\( e^{-\lambda x_{i+1}} \)</th>
                 <th>\(p_{i}\)</th>
-                <th>\(\ n_{i}^T = n\cdot p_{i}\)</th>
+                <th>\(\ n_{i}^T \)</th>
                 <th>\(\frac{n_{i}^2}{n_{i}^T}\)</th>
             </tr>
         </table>
@@ -301,7 +301,7 @@
 
             [].slice.call(this.querySelectorAll('[name=type]')).forEach(function (e) {
                 if (e.checked) {
-                    document.querySelector(`.${e.id}`).classList.toggle('hidden');
+                    document.querySelector('.' + e.id).classList.toggle('hidden');
                 }
             });
         })
@@ -309,15 +309,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let table1 = document.querySelector('#table1');
-            let table2 = document.querySelector('#table2');
-            let table5 = document.querySelector('#table5');
-            let table6 = document.querySelector('#table6');
-            let uniqueNumbers = {{ solve.unique_numbers }},
-                zi = {{ solve.grid_gist }},
-                counts = {{ solve.counts }},
+            let zi = {{ solve.grid_gist }},
                 gistValues = {{ solve.gist_values }},
-                index_polygon = {{ solve.index_polygon }},
+                indexPolygon = {{ solve.index_polygon }},
                 step = '{{ solve.step }}'.replace(',', '.'),
                 numberOfValues = {{ solve.number_of_values }},
                 ravnPi = {{ solve.ravn_p }},
@@ -330,115 +324,82 @@
             normZi.unshift(-Infinity);
 
 
-            for (let i = 0; i < zi.length - 1; i++) {
-                let row1 = document.createElement('tr');
-                row1.innerHTML =
-                    `<td>${i + 1}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                <td>${(isNaN(gistValues[i] / step)) ? `---` : ((gistValues[i] / step).toFixed(2))}</td>
-                <td>${(isNaN(gistValues[i] / step / numberOfValues)) ? '---' : ((gistValues[i] / step / numberOfValues).toFixed(2))}</td>
-                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>`;
-                table1.append(row1);
+            function undefinedChecksAndFixed(elem) {
+                return (elem.precision) ? elem.value.toFixed(elem.precision) : elem.toFixed(2);
             }
 
-            for (let i = 0; i < zi.length - 1; i++) {
-                let row2 = document.createElement('tr');
-                row2.innerHTML =
-                    `<td>${i + 1}</td>
-                     <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
-                     <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
-                     <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
-                     <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                     <td>${ravnPi[i].toFixed(2)}</td>
-                     <td>${(numberOfValues * ravnPi[i]).toFixed(2)}</td>
-                     <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / ravnPi[i]).toFixed(2)}</td>`;
-                table2.append(row2);
+            function appendTableRow(tableId, elements) {
+                let tr = document.createElement('tr');
+                let td = document.createElement('td');
+                td.innerHTML = String(elements[0]);
+                tr.appendChild(td);
+
+                for (let i = 1; i < elements.length; i++) {
+                    let td = document.createElement('td');
+
+                    td.innerHTML = String(undefinedChecksAndFixed(elements[i]));
+                    tr.appendChild(td);
+                }
+
+                document.querySelector('#' + tableId).appendChild(tr);
             }
 
-            for (let i = 0; i < zi.length - 1; i++) {
-                let row5 = document.createElement('tr');
-                row5.innerHTML =
-                    `<td>${i + 1}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
-                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                <td>${(index_polygon[i] === undefined) ? `---` : (index_polygon[i] * gistValues[i]).toFixed(2)}</td>
-                <td>${(Math.exp(-pokazLambda * zi[i])).toFixed(2)}</td>
-                <td>${(Math.exp(-pokazLambda * zi[i + 1])).toFixed(2)}</td>
-                <td>${pokazPi[i].toFixed(2)}</td>
-                <td>${(numberOfValues * pokazPi[i]).toFixed(2)}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / pokazPi[i]).toFixed(2)}</td>`;
-                table5.append(row5);
-            }
 
             for (let i = 0; i < zi.length - 1; i++) {
-                let row6 = document.createElement('tr');
-                row6.innerHTML =
-                    `<td>${i + 1}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i]}</td>
-                <td>${(zi[i + 1] === undefined) ? `---` : zi[i + 1]}</td>
-                <td>${(index_polygon[i] === undefined) ? `---` : index_polygon[i]}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : gistValues[i]}</td>
-                <td>${(index_polygon[i] === undefined) ? `---` : (index_polygon[i] * gistValues[i]).toFixed(2)}</td>
-                <td>${(normZi[i]).toFixed(2)}</td>
-                <td>${(normZi[i + 1]).toFixed(2)}</td>
-                <td>${normFzi[i].toFixed(4)}</td>
-                <td>${normFzi[i + 1].toFixed(4)}</td>
-                <td>${normPi[i].toFixed(4)}</td>
-                <td>${(numberOfValues * normPi[i]).toFixed(2)}</td>
-                <td>${(gistValues[i] === undefined) ? `---` : ((gistValues[i]) * (gistValues[i]) / numberOfValues / normPi[i]).toFixed(2)}</td>`;
-                table6.append(row6);
+                appendTableRow('main', [
+                        i + 1,
+                        zi[i], zi[i + 1],
+                        gistValues[i], gistValues[i] / step, gistValues[i] / step / numberOfValues,
+                        indexPolygon[i]
+                    ]
+                );
+
+                appendTableRow('even-table', [
+                        i + 1,
+                        zi[i], zi[i + 1],
+                        indexPolygon[i],
+                        gistValues[i],
+                        ravnPi[i], numberOfValues * ravnPi[i],
+                        (gistValues[i]) * (gistValues[i]) / numberOfValues / ravnPi[i]
+                    ]
+                );
+
+                appendTableRow('exp-table', [
+                        i + 1,
+                        zi[i], zi[i + 1],
+                        indexPolygon[i],
+                        gistValues[i],
+                        indexPolygon[i] * gistValues[i],
+                        Math.exp(-pokazLambda * zi[i]), Math.exp(-pokazLambda * zi[i + 1]),
+                        pokazPi[i], numberOfValues * pokazPi[i],
+                        (gistValues[i]) * (gistValues[i]) / numberOfValues / pokazPi[i]
+                    ]
+                );
+
+                appendTableRow('norm-table', [
+                        i + 1,
+                        zi[i], zi[i + 1],
+                        indexPolygon[i],
+                        gistValues[i],
+                        indexPolygon[i] * gistValues[i],
+                        normZi[i], normZi[i + 1],
+                        {value: normFzi[i], precision: 4}, {value: normFzi[i + 1], precision: 4},
+                        {value: normPi[i], precision: 4},
+                        numberOfValues * normPi[i],
+                        (gistValues[i]) * (gistValues[i]) / numberOfValues / normPi[i]
+                    ]
+                );
             }
 
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            let table1 = document.querySelector('#table3');
             let numbers = {{ solve.numbers }};
-
-
-            for (let i = 0; i < numbers.length; i += 10) {
-                let row = document.createElement('tr');
-                row.innerHTML =
-                    `<td>${(numbers[i] === undefined) ? `---` : numbers[i]}</td>
-                     <td>${(numbers[i + 1] === undefined) ? `---` : numbers[i + 1]}</td>
-                     <td>${(numbers[i + 2] === undefined) ? `---` : numbers[i + 2]}</td>
-                     <td>${(numbers[i + 3] === undefined) ? `---` : numbers[i + 3]}</td>
-                     <td>${(numbers[i + 4] === undefined) ? `---` : numbers[i + 4]}</td>
-                     <td>${(numbers[i + 5] === undefined) ? `---` : numbers[i + 5]}</td>
-                     <td>${(numbers[i + 6] === undefined) ? `---` : numbers[i + 6]}</td>
-                     <td>${(numbers[i + 7] === undefined) ? `---` : numbers[i + 7]}</td>
-                     <td>${(numbers[i + 8] === undefined) ? `---` : numbers[i + 8]}</td>
-                     <td>${(numbers[i + 9] === undefined) ? `---` : numbers[i + 9]}</td>`;
-                table1.append(row);
-            }
-
-        });
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-            let table = document.querySelector('#table4');
             let numbers_sort = {{ solve.numbers_sort }};
 
 
-            for (let i = 0; i < numbers_sort.length; i += 10) {
-                let row = document.createElement('tr');
-                row.innerHTML =
-                    `<td>${numbers_sort[i]}</td>
-                    <td>${numbers_sort[i + 1]}</td>
-                     <td>${numbers_sort[i + 2]}</td>
-                       <td>${numbers_sort[i + 3]}</td>
-                        <td>${numbers_sort[i + 4]}</td>
-                    <td>${numbers_sort[i + 5]}</td>
-                    <td>${numbers_sort[i + 6]}</td>
-                     <td>${numbers_sort[i + 7]}</td>
-                       <td>${numbers_sort[i + 8]}</td>
-                        <td>${numbers_sort[i + 9]}</td>`;
-                table.append(row);
+            for (let i = 0; i < numbers.length; i += 10) {
+                appendTableRow('numbers', numbers.slice(i, i + 10));
+                appendTableRow('numbers-sort', numbers_sort.slice(i, i + 10));
             }
+
 
         });
     </script>
@@ -446,176 +407,105 @@
 
     <script type="text/javascript">
 
-        new Chart(document.getElementById("graph-1").getContext('2d'), {
-            type: 'line',
-            // showTooltips: false,
-            data: {
-                labels: {{ solve.index }},
-                datasets: [{
-                    label: '',
+        createChart(
+            'numbers-chart', 'line', {{ solve.index }},
+            [
+                {
+                    type: 'line',
                     data: {{ solve.numbers }},
-                    borderColor: 'rgba(93,133,245, 1)',
-                    borderWidth: 3,
-                    fill: false,
-                    // steppedLine: false,
-                    lineTension: 0,
-                    pointBackgroundColor: 'white',
-                    pointBorderColor: 'black',
-                    pointBorderWidth: 1,
-                    pointRadius: 3,
-                    pointHoverBackgroundColor: 'black',
-                    showLine: true,
-                }]
-            },
-            options: {
-                legend: false,
-                responsive: true,
-                title: {
-                    display: true,
-                    text: 'Первичная статистическая обработка'
                 },
-                scales: {
-                    xAxes: {
-                        display: true,
-                        type: 'linear',
-                    },
-                    yAxes: {
-                        display: true,
-                        type: 'linear',
-                    },
-                }
-            }
-        });
+            ],
+            'Первичная статистическая обработка'
+        );
 
-
-        new Chart(document.getElementById("graph-2").getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: {{ solve.index }},
-                datasets: [{
+        createChart(
+            'numbers-sort-chart', 'line', {{ solve.index }},
+            [
+                {
+                    type: 'line',
                     data: {{ solve.numbers_sort }},
-                    borderColor: 'rgba(93,133,245, 1)',
-                    borderWidth: 3,
-                    fill: false,
-                    // steppedLine: false,
-                    lineTension: 0,
-                    pointBackgroundColor: 'white',
-                    pointBorderColor: 'black',
-                    pointBorderWidth: 1,
-                    pointRadius: 3,
-                    pointHoverBackgroundColor: 'black',
-                    showLine: true,
-                }]
-            },
-            options: {
-                legend: false,
-                responsive: true,
-                title: {
-                    display: true,
-                    text: 'Вариационный график'
                 },
-                scales: {
-                    xAxes: [{
-                        display: true,
-                    }],
-                    yAxes: [{
-                        display: true,
-                    }]
-                }
-            }
-        });
+            ],
+            'Вариационный график'
+        );
 
-        new Chart(document.getElementById("graph-3").getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: {{ solve.index_efr }},
-                    datasets: [{
-                        label: 'ЭФР',
-                        data: {{ solve.efr }},
+        createChart(
+            'efr-chart', 'line', {{ solve.index_efr }},
+            [
+                {
+                    type: 'line',
+                    data: {{ solve.efr }},
+                    steppedLine: true,
+                },
+            ],
+            'Эмпирическая функция распределения (ЭФР)'
+        );
+
+
+        createChart(
+            'polygon-chart', 'bar', {{ solve.index_polygon  }},
+            [
+                {
+                    type: 'line',
+                    data: {{ solve.gist }}
+                },
+                {
+                    type: 'bar',
+                    data: {{ solve.gist }}
+                },
+            ],
+            'Гистограмма и полигон', 60
+        );
+
+
+        function createChart(canvasId, type, labels, datasets, title, barThickness) {
+
+            let chartDataset = [];
+            for (let i = 0; i < datasets.length; i++) {
+                chartDataset.push(
+                    {
+                        type: datasets[i].type,
+                        data: datasets[i].data,
                         borderColor: 'rgba(93,133,245, 1)',
                         borderWidth: 3,
                         fill: false,
-                        steppedLine: true,
+                        steppedLine: datasets[i].steppedLine,
                         lineTension: 0,
                         pointBackgroundColor: 'white',
                         pointBorderColor: 'black',
                         pointBorderWidth: 1,
-                        pointRadius: 1,
+                        pointRadius: 3,
                         pointHoverBackgroundColor: 'black',
                         showLine: true,
-                    }]
+                    }
+                )
+            }
+
+            new Chart(document.getElementById(canvasId).getContext('2d'), {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: chartDataset
                 },
                 options: {
                     legend: false,
                     responsive: true,
                     title: {
                         display: true,
-                        text: 'Эмпирическая функция распределения (ЭФР)'
+                        text: title
                     },
                     scales: {
                         xAxes: [{
                             display: true,
+                            barThickness: barThickness,
                         }],
                         yAxes: [{
                             display: true,
                         }]
                     }
                 }
-            }
-        );
-
-        new Chart(document.getElementById("graph-4").getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: {{ solve.index_polygon }},
-                datasets: [{
-                    type: 'line',
-                    data: {{ solve.gist }},
-                    borderColor: 'rgba(93,133,245, 1)',
-                    borderWidth: 3,
-                    fill: false,
-                    // steppedLine: false,
-                    lineTension: 0,
-                    pointBackgroundColor: 'white',
-                    pointBorderColor: 'black',
-                    pointBorderWidth: 1,
-                    pointRadius: 3,
-                    pointHoverBackgroundColor: 'black',
-                    showLine: true,
-                }, {
-                    type: 'bar',
-                    data: {{ solve.gist }},
-                    borderColor: 'rgba(93,133,245, 1)',
-                    borderWidth: 3,
-                    fill: false,
-                    // steppedLine: false,
-                    lineTension: 0,
-                    pointBackgroundColor: 'white',
-                    pointBorderColor: 'black',
-                    pointBorderWidth: 1,
-                    pointRadius: 3,
-                    pointHoverBackgroundColor: 'black',
-                    showLine: true,
-                }]
-            },
-            options: {
-                legend: false,
-                responsive: true,
-                title: {
-                    display: true,
-                    text: 'Гистограмма и полигон'
-                },
-                scales: {
-                    xAxes: [{
-                        display: true,
-                        barThickness: 60,
-                    }],
-                    yAxes: [{
-                        display: true,
-                    }]
-                }
-            }
-        });
+            });
+        }
 
     </script>
 

@@ -165,6 +165,14 @@ td {
 
 }
 
+.task-title {
+    font-size: 18px;
+}
+
+.task-description {
+    font-size: 16px;
+}
+
 @media screen and (max-width: 700px) {
     .post {
         overflow-x: scroll;
