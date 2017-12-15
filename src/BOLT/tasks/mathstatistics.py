@@ -41,11 +41,10 @@ def mathstatisticsEx1(request):
     try:
         numbers = [float(v) for v in filter(None, re.split("[, ]+", numbers_input))]
         nadezhnost = float(nadezhnost)
-        NUMBER_OF_INTERVALS = int(NUMBER_OF_INTERVALS)
     except ValueError:
         return {'is_valid': False}
 
-    if nadezhnost >= 1 or nadezhnost < 0:
+    if nadezhnost >= 1 or nadezhnost < 0 or len(numbers) < 2:
         return {'is_valid': False}
 
     alpha = 1 - nadezhnost
@@ -62,11 +61,15 @@ def mathstatisticsEx1(request):
     unique_numbers.sort()
     NUMBER_OF_UNIQUE_VALUES = len(unique_numbers)
 
-    if not NUMBER_OF_INTERVALS or NUMBER_OF_INTERVALS <= 0 or NUMBER_OF_INTERVALS > 100:
+    if not NUMBER_OF_INTERVALS or int(NUMBER_OF_INTERVALS) <= 0 or int(NUMBER_OF_INTERVALS) > 100:
         if NUMBER_OF_UNIQUE_VALUES > 10:
             NUMBER_OF_INTERVALS = 10
         else:
             NUMBER_OF_INTERVALS = NUMBER_OF_UNIQUE_VALUES - 1
+
+    NUMBER_OF_INTERVALS = int(NUMBER_OF_INTERVALS)
+    if NUMBER_OF_INTERVALS == 0:
+        NUMBER_OF_INTERVALS = 1
 
     max = unique_numbers[NUMBER_OF_UNIQUE_VALUES - 1]
     min = unique_numbers[0]
@@ -103,6 +106,9 @@ def mathstatisticsEx1(request):
     ravn_b = ( NUMBER_OF_VALUES * max - min ) /(NUMBER_OF_VALUES-1)
     ravn_levo_a = min - (max - min) * (1 - alpha ** (1 / NUMBER_OF_VALUES))
     ravn_pravo_b = max + (max - min) * (1 - alpha ** (1 / NUMBER_OF_VALUES))
+
+    if ravn_a == ravn_b:
+        return {'is_valid': False}
 
     if (ravn_a - ravn_levo_a) > (min - ravn_a):
         ravn_apm = ravn_a - ravn_levo_a

@@ -91,8 +91,9 @@
                 <input type="radio" id="exp" name="type">
                 <label for="exp">Показательное распределение</label>
             </div>
-
-            <input type="submit" class="btn btn-success" value="Перейти к дальнейшим вычислениям">
+            <div class="form-gourp">
+                <input type="submit" class="btn btn-success" value="Перейти к дальнейшим вычислениям">
+            </div>
         </form>
     </div>
     <div class="hidden norm dist">
@@ -126,7 +127,7 @@
             Статистика Пирсона:
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
             где \( n_i^T = n\cdot p_i \)<br>
-            Обозначим \(z_{i} = \frac{x_{i} - a}{\sigma}, \ z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)
+            Обозначим <span style="font-size: 20px;">\(z_{i} = \frac{x_{i} - a}{\sigma}, \ z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)</span>
         </p>
         <table class="tftable" id="norm-table" border="1">
             <tr>
@@ -250,8 +251,8 @@
 
     </div>
 
-    <button id="save-to-pdf" class="btn btn-success" style="margin: 10px 12px;">Сохранить в pdf</button>
-
+    <div class="col-xs-9"></div>
+    <button id="save-to-pdf" class="btn btn-info col-xs-3">Сохранить в pdf</button>
     <script>
         document.querySelector('#save-to-pdf').addEventListener('click', function () {
             document.querySelector('.task-description').classList.add('ignore-to-pdf');
@@ -512,13 +513,25 @@
         <div class="form-group">
         <textarea class="form-control"
                   placeholder="Введите генеральную совокупность, состоящую из случайных величин: "
-                  name="numbers" required="" maxlength="1000" rows="4"></textarea>
+                  name="numbers" required="" maxlength="5000" rows="4"></textarea>
         </div>
-        <label for="1-alpha">Введите надежность: </label>
-        <input type="text" id="1-alpha" name="1-alpha">
-        <label for="1-alpha">Введите число разбиений (необязательно): </label>
-        <input type="number" id="razb" name="razb">
-        <button class="btn btn-success" type="submit">Получить решение!</button>
+
+        <div class="form-group">
+            <label for="razb" style="font-weight: 100;">Введите число разбиений (необязательно): </label>
+            <input type="number" id="razb" name="razb">
+        </div>
+
+
+        <div class="form-group">
+            <label for="1-alpha">Введите надежность: </label>
+            <input type="text" id="1-alpha" name="1-alpha" required>
+        </div>
+
+        <div class="form-group">
+
+            <button class="btn btn-success" type="submit">Получить решение!</button>
+        </div>
+
     </form>
 
 {% endif %}
