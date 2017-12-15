@@ -13,81 +13,96 @@ from sympy.parsing.sympy_parser import parse_expr
 import re
 import json
 
+
+def pirson_answer(w, wkr, nadezhnost):
+    if w < wkr:
+        return "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью \(" + str(
+            nadezhnost) + "\)."
+    else:
+        return "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью \(" + str(
+            nadezhnost) + "\)."
+
+
+def rnd(number):
+    return round(number, 2)
+
+
 @task_decorate
 def mathstatisticsEx1(request):
     numbers_input = request.GET.get('numbers')
     nadezhnost = request.GET.get('1-alpha')
+    NUMBER_OF_INTERVALS = request.GET.get('razb')
 
     if not numbers_input or not nadezhnost:
         return {'is_valid': False}
+
     nadezhnost = re.sub(',', '.', str(nadezhnost))
+
     try:
         numbers = [float(v) for v in filter(None, re.split("[, ]+", numbers_input))]
         nadezhnost = float(nadezhnost)
+        NUMBER_OF_INTERVALS = int(NUMBER_OF_INTERVALS)
     except ValueError:
+        return {'is_valid': False}
+
+    if nadezhnost >= 1 or nadezhnost < 0:
         return {'is_valid': False}
 
     alpha = 1 - nadezhnost
 
-    # data for the first graph
+    # data for the numbers-chart
     index = [i for i in range(1, len(numbers) + 1)]
-    # data for the second graph
+    # data for the numbers-sort-chart
     numbers_sort = numbers.copy()
     numbers_sort.sort()
     NUMBER_OF_VALUES = len(numbers_sort)
-    # data for the third graph (EFR)
+    # data for the efr-chart
     unique_numbers = set(numbers_sort)
     unique_numbers = list(unique_numbers)
     unique_numbers.sort()
     NUMBER_OF_UNIQUE_VALUES = len(unique_numbers)
-    counts = [numbers_sort.count(unique_number) for unique_number in unique_numbers]
 
-    max = unique_numbers[NUMBER_OF_UNIQUE_VALUES-1]
+    if not NUMBER_OF_INTERVALS or NUMBER_OF_INTERVALS <= 0 or NUMBER_OF_INTERVALS > 100:
+        if NUMBER_OF_UNIQUE_VALUES > 10:
+            NUMBER_OF_INTERVALS = 10
+        else:
+            NUMBER_OF_INTERVALS = NUMBER_OF_UNIQUE_VALUES - 1
+
+    max = unique_numbers[NUMBER_OF_UNIQUE_VALUES - 1]
     min = unique_numbers[0]
-
-    efr_value = 0
-    efr = [0.0, 0.0]
-    for count in counts:
-        efr_value += count / NUMBER_OF_VALUES
-        efr.append(round(efr_value, 2))
-    efr.append(1.0)
-
-    index_efr = [min - 0.5]
-    index_efr.extend(unique_numbers)
-    index_efr.append(max + 0.5)
-    index_efr.append(max + 1.0)
-
-    # data for the fourth graph (gistogramma)
-    if NUMBER_OF_UNIQUE_VALUES > 10:
-        NUMBER_OF_INTERVALS = 10
-    else:
-        NUMBER_OF_INTERVALS = NUMBER_OF_UNIQUE_VALUES
 
     step = (max - min) / NUMBER_OF_INTERVALS
     if step == 0:
         step = 1
-    grid_gist = [round(min + i*step, 2) for i in range(NUMBER_OF_INTERVALS + 1)]
+    grid = [rnd(min + i * step) for i in range(NUMBER_OF_INTERVALS + 1)]
 
-    gist = []
-    gist_value = bisect(numbers_sort, grid_gist[1])
-    gist.append(round(gist_value / NUMBER_OF_VALUES / step, 2))
-    gist_sum = gist_value
+    efr = [0]
+    for point_on_grid in grid:
+        efr.append(rnd(bisect_left(numbers_sort, point_on_grid) / NUMBER_OF_VALUES))
+    efr.extend([1, 1])
 
-    gist_values = [gist_value]
-    for i in range(2, len(grid_gist)):
-        gist_value = (bisect(numbers_sort, grid_gist[i]) - gist_sum)
-        gist.append(round(gist_value / NUMBER_OF_VALUES / step, 2))
-        gist_values.append(gist_value)
-        gist_sum += gist_value
+    index_efr = [min - 0.5]
+    index_efr.extend(grid)
+    index_efr.append(max + 0.5)
+    index_efr.append(max + 1.0)
 
-    index_polygon = [round((grid_gist[i]+grid_gist[i+1])/2, 2) for i in range(len(grid_gist)-1)]
+    # data for the polygon-chart
+    count_on_interval = bisect(numbers_sort, grid[1])
+    count_on_intervals = [count_on_interval]
+    epr = [rnd(count_on_interval / NUMBER_OF_VALUES / step)]
+    for i in range(1, len(grid) - 1):
+        count_on_interval = bisect(numbers_sort, grid[i + 1]) - bisect(numbers_sort, grid[i])
+        count_on_intervals.append(count_on_interval)
+        epr.append(rnd(count_on_interval / NUMBER_OF_VALUES / step))
 
-    # Ravnomernoe raspredelenie
+    index_polygon = [rnd((grid[i] + grid[i + 1]) / 2) for i in range(len(grid) - 1)]
+
+    # Eval-distribution
     L_RAVN = 2
     ravn_a = ( NUMBER_OF_VALUES * min - max ) /(NUMBER_OF_VALUES-1)
     ravn_b = ( NUMBER_OF_VALUES * max - min ) /(NUMBER_OF_VALUES-1)
-    ravn_levo_a = min - (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
-    ravn_pravo_b = max + (max - min)*(1-alpha**(1/NUMBER_OF_VALUES))
+    ravn_levo_a = min - (max - min) * (1 - alpha ** (1 / NUMBER_OF_VALUES))
+    ravn_pravo_b = max + (max - min) * (1 - alpha ** (1 / NUMBER_OF_VALUES))
 
     if (ravn_a - ravn_levo_a) > (min - ravn_a):
         ravn_apm = ravn_a - ravn_levo_a
@@ -99,25 +114,21 @@ def mathstatisticsEx1(request):
     else:
         ravn_bpm = ravn_pravo_b - ravn_b
 
-    ravn_p = [(grid_gist[i + 1] - grid_gist[i]) / (ravn_b - ravn_a) for i in range(NUMBER_OF_INTERVALS)]
+    ravn_p = [(grid[i + 1] - grid[i]) / (ravn_b - ravn_a) for i in range(NUMBER_OF_INTERVALS)]
 
     ravn_w = 0
     for i in range(NUMBER_OF_INTERVALS):
-        ravn_w += (gist_values[i])**2/NUMBER_OF_VALUES/ravn_p[i]
+        ravn_w += (count_on_intervals[i]) ** 2 / NUMBER_OF_VALUES / ravn_p[i]
     ravn_w -= NUMBER_OF_VALUES
+    ravn_w = abs(ravn_w)
     ravn_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS-1-L_RAVN)
-    if ravn_w < ravn_wkr:
-        ravn_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью \(" + str(
-            nadezhnost) + "\)."
-    else:
-        ravn_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью \(" + str(
-            nadezhnost) + "\)."
+    ravn_answer = pirson_answer(ravn_w, ravn_wkr, nadezhnost)
 
-    # Pokazatelnoe raspredelenie
+    # Exp-distribution
     L_POKAZ = 1
     pokaz_x = 0
     for i in range(NUMBER_OF_INTERVALS):
-        pokaz_x += gist_values[i] * index_polygon[i]
+        pokaz_x += count_on_intervals[i] * index_polygon[i]
     pokaz_x = pokaz_x / NUMBER_OF_VALUES
     pokaz_lambda = 1 / pokaz_x
 
@@ -129,31 +140,27 @@ def mathstatisticsEx1(request):
     else:
         pokaz_lambdapm = pokaz_pravo_lambda - pokaz_lambda
 
-    pokaz_p = [math.exp(-pokaz_lambda * grid_gist[i]) - math.exp(-pokaz_lambda * grid_gist[i + 1]) for i in
+    pokaz_p = [math.exp(-pokaz_lambda * grid[i]) - math.exp(-pokaz_lambda * grid[i + 1]) for i in
                range(NUMBER_OF_INTERVALS)]
 
     pokaz_w = 0
     for i in range(NUMBER_OF_INTERVALS):
-        pokaz_w += (gist_values[i]) ** 2 / NUMBER_OF_VALUES / pokaz_p[i]
+        pokaz_w += (count_on_intervals[i]) ** 2 / NUMBER_OF_VALUES / pokaz_p[i]
     pokaz_w -= NUMBER_OF_VALUES
+    pokaz_w = abs(pokaz_w)
     pokaz_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS - 1 - L_POKAZ)
-    if pokaz_w < pokaz_wkr:
-        pokaz_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью \(" + str(
-            nadezhnost) + "\)."
-    else:
-        pokaz_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью \(" + str(
-            nadezhnost) + "\)."
+    pokaz_answer = pirson_answer(pokaz_w, pokaz_wkr, nadezhnost)
 
-    # Normalnoe raspredelenie
+    # Norm-distribution
     L_NORM = 2
     norm_a = 0
     for i in range(NUMBER_OF_INTERVALS):
-        norm_a += gist_values[i] * index_polygon[i]
+        norm_a += count_on_intervals[i] * index_polygon[i]
     norm_a = norm_a / NUMBER_OF_VALUES
 
     norm_sigmakv = 0
     for i in range(NUMBER_OF_INTERVALS):
-        norm_sigmakv += ((index_polygon[i] - norm_a) ** 2) * gist_values[i]
+        norm_sigmakv += ((index_polygon[i] - norm_a) ** 2) * count_on_intervals[i]
     norm_sigmakv = norm_sigmakv / (NUMBER_OF_VALUES - 1)
     norm_sigma = math.sqrt(norm_sigmakv)
 
@@ -176,7 +183,7 @@ def mathstatisticsEx1(request):
     else:
         norm_sigmapm = norm_pravo_sigma - norm_sigma
 
-    norm_zi = [(grid_gist[i] - norm_a) / math.sqrt(norm_sigmakv) for i in range(1, NUMBER_OF_INTERVALS)]
+    norm_zi = [(grid[i] - norm_a) / math.sqrt(norm_sigmakv) for i in range(1, NUMBER_OF_INTERVALS)]
     norm_Fzi = [norm.cdf(zi) - 0.5 for zi in norm_zi]
     norm_Fzi.append(0.5)
     norm_Fzi.reverse()
@@ -187,39 +194,34 @@ def mathstatisticsEx1(request):
 
     norm_w = 0
     for i in range(NUMBER_OF_INTERVALS):
-        norm_w += (gist_values[i]) ** 2 / NUMBER_OF_VALUES / norm_p[i]
+        norm_w += (count_on_intervals[i]) ** 2 / NUMBER_OF_VALUES / norm_p[i]
     norm_w -= NUMBER_OF_VALUES
+    norm_w = abs(norm_w)
     norm_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS - 1 - L_NORM)
-    if norm_w < norm_wkr:
-        norm_answer = "Статистика Пирсона меньше критического значения, гипотеза принимается с надежностью \(" + str(
-            nadezhnost) + "\)."
-    else:
-        norm_answer = "Статистика Пирсона больше критического значения, гипотеза отклоняется с надежностью \(" + str(
-            nadezhnost) + "\)."
-
-    myvalue = {'make': 1, 'top': 2}
+    norm_answer = pirson_answer(norm_w, norm_wkr, nadezhnost)
 
     return {'numbers': numbers, 'index': index, 'numbers_sort': numbers_sort, 'efr': efr, 'index_efr': index_efr,
-            'gist': gist, 'index_polygon': index_polygon, 'grid_gist': grid_gist, 'unique_numbers': unique_numbers,
-            'counts': counts, 'gist_values': gist_values, 'step': round(step, 2), 'number_of_values': NUMBER_OF_VALUES,
-            'number_of_intervals': NUMBER_OF_INTERVALS, 'min': min, 'max': max, 'nadezhnost': nadezhnost,
+            'epr': epr, 'index_polygon': index_polygon, 'grid': grid, 'unique_numbers': unique_numbers,
+            'count_on_intervals': count_on_intervals, 'step': rnd(step), 'numberOfValues': NUMBER_OF_VALUES,
+            'numberOfIntervals': NUMBER_OF_INTERVALS, 'min': min, 'max': max, 'nadezhnost': nadezhnost,
             'l_ravn': L_RAVN, 'l_pokaz': L_POKAZ, 'l_norm': L_NORM,
 
-            'ravn_a': round(ravn_a, 2), 'ravn_b': round(ravn_b, 2), 'ravn_levo_a': round(ravn_levo_a, 2), 'ravn_pravo_b': round(ravn_pravo_b, 2),
-            'ravn_p': ravn_p, 'ravn_w': round(ravn_w, 2), 'ravn_wkr': round(ravn_wkr, 2), 'ravn_answer': ravn_answer,
-            'ravn_apm': round(ravn_apm, 2), 'ravn_bpm': round(ravn_bpm, 2),
+            'ravn_a': rnd(ravn_a), 'ravn_b': rnd(ravn_b), 'ravn_levo_a': rnd(ravn_levo_a),
+            'ravn_pravo_b': rnd(ravn_pravo_b),
+            'ravn_p': ravn_p, 'ravn_w': rnd(ravn_w), 'ravn_wkr': rnd(ravn_wkr), 'ravn_answer': ravn_answer,
+            'ravn_apm': rnd(ravn_apm), 'ravn_bpm': rnd(ravn_bpm),
 
-            'pokaz_x': round(pokaz_x, 2), 'pokaz_lambda': round(pokaz_lambda, 2), 'pokaz_p': pokaz_p,
-            'pokaz_w': round(pokaz_w), 'pokaz_wkr': round(pokaz_wkr, 2),
-            'pokaz_answer': pokaz_answer, 'pokaz_levo_lambda': round(pokaz_levo_lambda, 2),
-            'pokaz_pravo_lambda': round(pokaz_pravo_lambda, 2), 'pokaz_lambdapm': round(pokaz_lambdapm, 2),
+            'pokaz_x': rnd(pokaz_x), 'pokaz_lambda': rnd(pokaz_lambda), 'pokaz_p': pokaz_p,
+            'pokaz_w': rnd(pokaz_w), 'pokaz_wkr': rnd(pokaz_wkr),
+            'pokaz_answer': pokaz_answer, 'pokaz_levo_lambda': rnd(pokaz_levo_lambda),
+            'pokaz_pravo_lambda': rnd(pokaz_pravo_lambda), 'pokaz_lambdapm': rnd(pokaz_lambdapm),
 
-            'norm_a': round(norm_a, 2), 'norm_sigmakv': round(norm_sigmakv, 2), 'norm_levo_a': round(norm_levo_a, 2),
-            'norm_pravo_a': round(norm_pravo_a, 2), 'norm_levo_sigmakv': round(norm_levo_sigmakv, 2),
-            'norm_pravo_sigmakv': round(norm_pravo_sigmakv, 2),
-            'norm_zi': norm_zi, 'norm_Fzi': norm_Fzi, 'norm_p': norm_p, 'norm_w': round(norm_w, 2),
-            'norm_wkr': round(norm_wkr, 2), 'norm_answer': norm_answer, 'norm_sigma': round(norm_sigma, 2),
-            'norm_levo_sigma': round(norm_levo_sigma, 2), 'norm_pravo_sigma': round(norm_pravo_sigma, 2),
-            'norm_sigmapm': round(norm_sigmapm, 2), 'norm_apm': round(norm_apm, 2),
+            'norm_a': rnd(norm_a), 'norm_sigmakv': rnd(norm_sigmakv), 'norm_levo_a': rnd(norm_levo_a),
+            'norm_pravo_a': rnd(norm_pravo_a), 'norm_levo_sigmakv': rnd(norm_levo_sigmakv),
+            'norm_pravo_sigmakv': rnd(norm_pravo_sigmakv),
+            'norm_zi': norm_zi, 'norm_Fzi': norm_Fzi, 'norm_p': norm_p, 'norm_w': rnd(norm_w),
+            'norm_wkr': rnd(norm_wkr), 'norm_answer': norm_answer, 'norm_sigma': rnd(norm_sigma),
+            'norm_levo_sigma': rnd(norm_levo_sigma), 'norm_pravo_sigma': rnd(norm_pravo_sigma),
+            'norm_sigmapm': rnd(norm_sigmapm), 'norm_apm': rnd(norm_apm),
 
-            'is_valid': True, 'myjson': json.JSONDecoder(myvalue)}
+            'is_valid': True}

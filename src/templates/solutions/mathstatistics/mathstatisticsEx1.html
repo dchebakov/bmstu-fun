@@ -47,7 +47,7 @@
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
 
-    <p class="big-formuls-ftnz"> Количество чисел: \(n = {{ solve.number_of_values }}\) <br>
+    <p class="big-formuls-ftnz"> Количество чисел: \(n = {{ solve.numberOfValues }}\) <br>
         Шаг: \(h = {{ solve.step }}\) <br></p>
 
     <h4>Ваша генеральная совокупность:</h4>
@@ -74,6 +74,7 @@
     <canvas id="numbers-sort-chart"></canvas>
     <canvas id="efr-chart"></canvas>
     <canvas id="polygon-chart"></canvas>
+
     <div id="select-visible-type-of-dist"><p style="font-size: 16px">На основании графиков предположите тип
         распределения: </p>
         <form class="form-horizontal" style="padding-left: 25px" name="dist">
@@ -124,7 +125,8 @@
             \frac{\alpha - a}{\sigma} \right ) $$
             Статистика Пирсона:
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
-            где \( n_i^T = n\cdot p_i, z_{i} = \frac{x_{i} - a}{\sigma}, z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)
+            где \( n_i^T = n\cdot p_i \)<br>
+            Обозначим \(z_{i} = \frac{x_{i} - a}{\sigma}, \ z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)
         </p>
         <table class="tftable" id="norm-table" border="1">
             <tr>
@@ -145,9 +147,9 @@
         </table>
         <p class="big-formuls-ftnz">
             Следовательно:
-            $$ W \approx {{ solve.norm_w }} $$
+            $$ | W | \approx {{ solve.norm_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
-            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_norm }} ) =
+            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.numberOfIntervals }} - 1 - {{ solve.l_norm }} ) =
             {{ solve.norm_wkr }} ,$$
             где \(k - \) количество интервалов разбиения, \(l - \) количество параметров распределения.
             {{ solve.norm_answer }}
@@ -192,9 +194,9 @@
         </table>
         <p class="big-formuls-ftnz">
             Следовательно:
-            $$ W \approx {{ solve.ravn_w }} $$
+            $$ | W | \approx {{ solve.ravn_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
-            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_ravn }} ) =
+            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.numberOfIntervals }} - 1 - {{ solve.l_ravn }} ) =
             {{ solve.ravn_wkr }} ,$$
             где \(k - \) количество интервалов разбиения, \(l - \) количество параметров распределения.
             {{ solve.ravn_answer }}
@@ -238,9 +240,9 @@
         </table>
         <p class="big-formuls-ftnz">
             Следовательно:
-            $$ W \approx {{ solve.pokaz_w }} $$
+            $$ | W | \approx {{ solve.pokaz_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
-            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.number_of_intervals }} - 1 - {{ solve.l_pokaz }} ) =
+            \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.numberOfIntervals }} - 1 - {{ solve.l_pokaz }} ) =
             {{ solve.pokaz_wkr }} ,$$
             где \(k - \) количество интервалов разбиения, \(l - \) количество параметров распределения.
             {{ solve.pokaz_answer }}
@@ -309,11 +311,11 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let zi = {{ solve.grid_gist }},
-                gistValues = {{ solve.gist_values }},
+            let zi = {{ solve.grid }},
+                countOnIntervals = {{ solve.count_on_intervals }},
                 indexPolygon = {{ solve.index_polygon }},
                 step = '{{ solve.step }}'.replace(',', '.'),
-                numberOfValues = {{ solve.number_of_values }},
+                numberOfValues = {{ solve.numberOfValues }},
                 ravnPi = {{ solve.ravn_p }},
                 pokazPi = {{ solve.pokaz_p }},
                 pokazLambda = '{{ solve.pokaz_lambda }}'.replace(',', '.'),
@@ -325,16 +327,13 @@
 
 
             function undefinedChecksAndFixed(elem) {
-                return (elem.precision) ? elem.value.toFixed(elem.precision) : elem.toFixed(2);
+                return (elem.precision !== undefined) ? (elem.value).toFixed(elem.precision) : elem.toFixed(2);
             }
 
             function appendTableRow(tableId, elements) {
                 let tr = document.createElement('tr');
-                let td = document.createElement('td');
-                td.innerHTML = String(elements[0]);
-                tr.appendChild(td);
 
-                for (let i = 1; i < elements.length; i++) {
+                for (let i = 0; i < elements.length; i++) {
                     let td = document.createElement('td');
 
                     td.innerHTML = String(undefinedChecksAndFixed(elements[i]));
@@ -347,46 +346,46 @@
 
             for (let i = 0; i < zi.length - 1; i++) {
                 appendTableRow('main', [
-                        i + 1,
+                    {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
-                        gistValues[i], gistValues[i] / step, gistValues[i] / step / numberOfValues,
+                    countOnIntervals[i], countOnIntervals[i] / step, countOnIntervals[i] / step / numberOfValues,
                         indexPolygon[i]
                     ]
                 );
 
                 appendTableRow('even-table', [
-                        i + 1,
+                    {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
                         indexPolygon[i],
-                        gistValues[i],
+                    countOnIntervals[i],
                         ravnPi[i], numberOfValues * ravnPi[i],
-                        (gistValues[i]) * (gistValues[i]) / numberOfValues / ravnPi[i]
+                    (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / ravnPi[i]
                     ]
                 );
 
                 appendTableRow('exp-table', [
-                        i + 1,
+                    {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
                         indexPolygon[i],
-                        gistValues[i],
-                        indexPolygon[i] * gistValues[i],
+                    countOnIntervals[i],
+                    indexPolygon[i] * countOnIntervals[i],
                         Math.exp(-pokazLambda * zi[i]), Math.exp(-pokazLambda * zi[i + 1]),
                         pokazPi[i], numberOfValues * pokazPi[i],
-                        (gistValues[i]) * (gistValues[i]) / numberOfValues / pokazPi[i]
+                    (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / pokazPi[i]
                     ]
                 );
 
                 appendTableRow('norm-table', [
-                        i + 1,
+                    {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
                         indexPolygon[i],
-                        gistValues[i],
-                        indexPolygon[i] * gistValues[i],
+                    countOnIntervals[i],
+                    indexPolygon[i] * countOnIntervals[i],
                         normZi[i], normZi[i + 1],
                         {value: normFzi[i], precision: 4}, {value: normFzi[i + 1], precision: 4},
                         {value: normPi[i], precision: 4},
                         numberOfValues * normPi[i],
-                        (gistValues[i]) * (gistValues[i]) / numberOfValues / normPi[i]
+                    (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / normPi[i]
                     ]
                 );
             }
@@ -399,7 +398,6 @@
                 appendTableRow('numbers', numbers.slice(i, i + 10));
                 appendTableRow('numbers-sort', numbers_sort.slice(i, i + 10));
             }
-
 
         });
     </script>
@@ -447,18 +445,17 @@
             [
                 {
                     type: 'line',
-                    data: {{ solve.gist }}
+                    data: {{ solve.epr }}
                 },
                 {
                     type: 'bar',
-                    data: {{ solve.gist }}
+                    data: {{ solve.epr }}
                 },
             ],
-            'Гистограмма и полигон', 60
+            'Гистограмма и полигон', 1.2
         );
 
-
-        function createChart(canvasId, type, labels, datasets, title, barThickness) {
+        function createChart(canvasId, type, labels, datasets, title, barPercentage) {
 
             let chartDataset = [];
             for (let i = 0; i < datasets.length; i++) {
@@ -497,7 +494,7 @@
                     scales: {
                         xAxes: [{
                             display: true,
-                            barThickness: barThickness,
+                            barPercentage: barPercentage,
                         }],
                         yAxes: [{
                             display: true,
@@ -519,6 +516,8 @@
         </div>
         <label for="1-alpha">Введите надежность: </label>
         <input type="text" id="1-alpha" name="1-alpha">
+        <label for="1-alpha">Введите число разбиений (необязательно): </label>
+        <input type="number" id="razb" name="razb">
         <button class="btn btn-success" type="submit">Получить решение!</button>
     </form>
 
