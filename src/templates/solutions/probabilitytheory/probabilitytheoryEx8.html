@@ -1,19 +1,32 @@
 {% if solve.is_valid %}
-   
-    <p><font size=3>\( P_1 = \large \frac{ {{ solve.k1 }} }{100} \) \(= {{ solve.P1 }} \) - вероятность того, что наугад вытянутое из первой партии изделие доброкачественное.<br>
-    \( P_2 = \large \frac{ {{ solve.k2 }} }{100} \) \(= {{ solve.P2 }} \) - вероятность того, что наугад вытянутое из второй партии изделие доброкачественное.<br>
-    а) Сначала найдем вероятность того, что оба изделия качественные: \( P = P_1 \cdot P_2 = {{ solve.P1 }} \cdot {{ solve.P2 }} = {{ solve.P }}. \)<br>
-    Тогда событие, когда хотя бы одно изделие бракованное - ему противоположное.<br> 
-    Тогда сумма вероятностей этих двух событий равна единице, значит \( P_a = 1 - P = 1 - {{ solve.P }} = {{ solve.Pa }}. \)<br>
-    б) Вероятность того, что оба изделия бракованные: \( P_б = (1 - P_1) \cdot (1 - P_2) = (1 - {{ solve.P1 }}) \cdot (1 - {{ solve.P2 }}) = {{ solve.Pb }}. \)<br>
-    в) Вероятность того, что одно качественное, а другое бракованное: \( P_в = P_1 \cdot (1 - P_2) + P_2 \cdot (1 - P_1) = {{ solve.P1 }} \cdot (1 - {{ solve.P2 }}) + {{ solve.P2 }} \cdot (1 - {{ solve.P1 }}) = {{ solve.Pc }}. \)</font></p>        
+
+    <p class="big-formuls-ftnz">\( P_1 = \large \frac{ {{ solve.k1 }} }{100} \) \(= {{ solve.P1 }} \) - вероятность
+        того, что наугад вытянутое из первой партии изделие доброкачественное.<br>
+        \( P_2 = \large \frac{ {{ solve.k2 }} }{100} \) \(= {{ solve.P2 }} \) - вероятность того, что наугад вытянутое
+        из второй партии изделие доброкачественное.<br>
+        а) Сначала найдем вероятность того, что оба изделия качественные: \( P = P_1 \cdot P_2 = {{ solve.P1 }}
+        \cdot {{ solve.P2 }} = {{ solve.P }}. \)<br>
+        Тогда событие, когда хотя бы одно изделие бракованное - ему противоположное.<br>
+        Тогда сумма вероятностей этих двух событий равна единице, значит \( P_a = 1 - P = 1 - {{ solve.P }}
+        = {{ solve.Pa }}. \)<br>
+        б) Вероятность того, что оба изделия бракованные: \( P_б = (1 - P_1) \cdot (1 - P_2) = (1 - {{ solve.P1 }})
+        \cdot (1 - {{ solve.P2 }}) = {{ solve.Pb }}. \)<br>
+        в) Вероятность того, что одно качественное, а другое бракованное: \( P_в = P_1 \cdot (1 - P_2) + P_2 \cdot (1 -
+        P_1) = {{ solve.P1 }} \cdot (1 - {{ solve.P2 }}) + {{ solve.P2 }} \cdot (1 - {{ solve.P1 }}) = {{ solve.Pc }}.
+        \)</p>
 {% else %}
-            <form action="{{ task.get_absolute_url }}" method="get">
-                <label for="k1">Введите \(k_1\)</label>
-                <input type="number" id="k1" name="k1"><br>
-                <label for="k2">Введите \(k_2\)</label>
-                <input type="number" id="k2" name="k2"><br>
-                <button class="btn btn-success" type="submit">Получить решение!</button>
-            </form>
+    <form action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <label for="k1" class="big-formuls-ftnz">Введите \(k_1\)</label>
+            <input type="number" id="k1" name="k1" required>
+        </div>
+        <div class="form-group">
+            <label for="k2" class="big-formuls-ftnz">Введите \(k_2\)</label>
+            <input type="number" id="k2" name="k2" required>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success" type="submit">Получить решение!</button>
+        </div>
+    </form>
 {% endif %}
        

@@ -513,7 +513,7 @@
         <div class="form-group">
         <textarea class="form-control"
                   placeholder="Введите генеральную совокупность, состоящую из случайных величин: "
-                  name="numbers" required="" maxlength="5000" rows="4"></textarea>
+                  name="numbers" required maxlength="5000" rows="4"></textarea>
         </div>
 
         <div class="form-group">
@@ -521,17 +521,14 @@
             <input type="number" id="razb" name="razb">
         </div>
 
-
         <div class="form-group">
             <label for="1-alpha">Введите надежность: </label>
             <input type="text" id="1-alpha" name="1-alpha" required>
         </div>
 
         <div class="form-group">
-
             <button class="btn btn-success" type="submit">Получить решение!</button>
         </div>
-
     </form>
 
 {% endif %}
