@@ -47,14 +47,14 @@
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
 
-    <p class="big-formuls-ftnz"> Количество чисел: \(n = {{ solve.numberOfValues }}\) <br>
+    <p class="big-formuls-ftnz">Объем выборки:  \(n = {{ solve.numberOfValues }}\) <br>
         Шаг: \(h = {{ solve.step }}\) <br></p>
 
-    <h4>Ваша генеральная совокупность:</h4>
+    <h4>Ваша выборка:</h4>
     <table class="tftable" id="numbers" border="1">
     </table>
 
-    <h4>После сортировки:</h4>
+    <h4>Вариационный ряд:</h4>
     <table class="tftable" id="numbers-sort" border="1">
     </table><br>
 
@@ -75,8 +75,8 @@
     <canvas id="efr-chart"></canvas>
     <canvas id="polygon-chart"></canvas>
 
-    <div id="select-visible-type-of-dist"><p style="font-size: 16px">На основании графиков предположите тип
-        распределения: </p>
+    <div id="select-visible-type-of-dist"><p style="font-size: 16px">На основании анализа графиков ЭФР и гистограммы формулируется гипотеза
+    о законе распределения:</p>
         <form class="form-horizontal" style="padding-left: 25px" name="dist">
             <div class="form-group">
                 <input type="radio" id="norm" name="type" checked>
@@ -101,12 +101,12 @@
         <h3>Нормальное распределение:</h3>
         <p class="big-formuls-ftnz">
             $$ f(x) = \frac{1}{\sigma \sqrt{2\pi}}e^{ -\frac{(x-a)^2}{2 \sigma^2} } $$
-            Используем ММП метод:
+            Оценка параметров \( a \) и \( \sigma \) методом максимального правдоподобия:
             $$ a \approx \bar x = \frac{1}{n} \sum_{i=1}^k n_i x_i^{\ast} \approx {{ solve.norm_a }} $$
             $$ \sigma^2 \approx \tilde s^2 = \frac{1}{n - 1} \sum_{i=1}^k (x_i^{\ast} - \bar x)^2 n_i
             \approx {{ solve.norm_sigmakv }} $$
             $$ \sigma \approx {{ solve.norm_sigma }} $$
-            Построим доверительный интервал:
+            Построим доверительные интервалы:
             $$ \bar x - \frac{s}{\sqrt{n}}t_{1-\frac{\alpha}{2}}(n-1) &#60; a &#60; \bar x +
             \frac{s}{\sqrt{n}}t_{1-\frac{\alpha}{2}}(n-1) $$
             $$ \frac{n-1}{ \chi_{1 - \frac{\alpha}{2}}^2 (n-1) } s^2 \lt \sigma^2 \lt \frac{n-1}{
@@ -126,7 +126,7 @@
             \frac{\alpha - a}{\sigma} \right ) $$
             Статистика Пирсона:
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
-            где \( n_i^T = n\cdot p_i \)<br>
+            где \( n_i^T = n\cdot p_i \). \( p_i \) и \( n_i^T \) вычисляются в предположении, что гипотеза верна.<br>
             Обозначим <span style="font-size: 20px;">\(z_{i} = \frac{x_{i} - a}{\sigma}, \ z_{i+1} = \frac{x_{i+1} - a}{\sigma} \)</span>
         </p>
         <table class="tftable" id="norm-table" border="1">
@@ -147,7 +147,7 @@
             </tr>
         </table>
         <p class="big-formuls-ftnz">
-            Следовательно:
+            Следовательно наблюдаемое значение статистики Пирсона равно:
             $$ | W | \approx {{ solve.norm_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
             \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.numberOfIntervals }} - 1 - {{ solve.l_norm }} ) =
@@ -163,10 +163,10 @@
         <p class="big-formuls-ftnz">
             $$ f(x) = \left\{\begin{matrix} 0, & x &#60;a \\ \frac{1}{b-a}, & a\leq x\leq b \\ 0, &
             x>b\end{matrix}\right. $$
-            Используем ММП метод:
+            Оценка параметров \( a \) и \(b \) методом максимального правдоподобия:
             $$ a\approx \frac{n}{n-1}\cdot x_{(1)} - \frac{1}{n-1}\cdot x_{n} \approx {{ solve.ravn_a }} $$
             $$ b\approx \frac{n}{n-1}\cdot x_{(n)} - \frac{1}{n-1}\cdot x_{1} \approx {{ solve.ravn_b }} $$
-            Построим доверительный интервал:
+            Построим доверительные интервалы:
             $$ x_{(1)} - l\cdot (1-\alpha^\frac{1}{n}) &#60; a &#60; x_{(1)} ,$$
             $$ x_{(n)} &#60; b &#60; x_{(n)} + l\cdot (1-\alpha^\frac{1}{n}) ,$$
             где \( \alpha \ - \) уровень значимости, \( (1 - \alpha) \ - \) надежность, \( l = x_{(n)} - x_{(1)} \)
@@ -179,7 +179,7 @@
             $$ P(\alpha &#60; \xi &#60; \beta) = \frac{\beta - \alpha}{b - a} $$
             Статистика Пирсона:
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
-            где \( n_i^T = n\cdot p_i \)
+            где \( n_i^T = n\cdot p_i \). \( p_i \) и \( n_i^T \) вычисляются в предположении, что гипотеза верна.
         </p>
         <table class="tftable" id="even-table" border="1">
             <tr>
@@ -194,7 +194,7 @@
             </tr>
         </table>
         <p class="big-formuls-ftnz">
-            Следовательно:
+            Следовательно наблюдаемое значение статистики Пирсона равно:
             $$ | W | \approx {{ solve.ravn_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
             \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.numberOfIntervals }} - 1 - {{ solve.l_ravn }} ) =
@@ -207,7 +207,7 @@
         <h3>Показательное распределение:</h3>
         <p class="big-formuls-ftnz">
             $$ f(x) = \left\{\begin{matrix} \lambda\cdot e^{-\lambda x}, & x \ge 0 \\ 0, & x\lt 0 \end{matrix}\right. $$
-            Используем ММП метод:
+            Оценка параметра \( \lambda \) методом максимального правдоподобия:
             $$ \bar x = \frac{1}{n} \sum_{i=1}^k n_i x_i^{\ast} \approx {{ solve.pokaz_x }} $$
             $$ \hat \lambda = \frac{1}{\bar x} \approx {{ solve.pokaz_lambda }}$$
             Построим доверительный интервал:
@@ -222,7 +222,7 @@
             $$ P(\alpha &#60; \xi &#60; \beta) = e^{-\lambda \alpha} - e^{-\lambda \beta} $$
             Статистика Пирсона:
             $$ W = \sum \frac{(n_i - n_i^T)^2}{n_i^T} = \sum \frac{n_i^2}{n_i^T} - n ,$$
-            где \( n_i^T = n\cdot p_i \)
+            где \( n_i^T = n\cdot p_i \). \( p_i \) и \( n_i^T \) вычисляются в предположении, что гипотеза верна.
         </p>
         <table class="tftable" id="exp-table" border="1">
             <tr>
@@ -240,7 +240,7 @@
             </tr>
         </table>
         <p class="big-formuls-ftnz">
-            Следовательно:
+            Следовательно наблюдаемое значение статистики Пирсона равно:
             $$ | W | \approx {{ solve.pokaz_w }} $$
             Найдем $$ W_{кр} = \chi_{1-\alpha}^2(k - 1 - l) =
             \chi_{ {{ solve.nadezhnost }} }^2( {{ solve.numberOfIntervals }} - 1 - {{ solve.l_pokaz }} ) =
@@ -414,7 +414,7 @@
                     data: {{ solve.numbers }},
                 },
             ],
-            'Первичная статистическая обработка'
+            'Выборочная диаграмма'
         );
 
         createChart(
@@ -425,7 +425,7 @@
                     data: {{ solve.numbers_sort }},
                 },
             ],
-            'Вариационный график'
+            'Вариационная диаграмма'
         );
 
         createChart(
@@ -434,7 +434,7 @@
                 {
                     type: 'line',
                     data: {{ solve.efr }},
-                    steppedLine: true,
+                    steppedLine: false,
                 },
             ],
             'Эмпирическая функция распределения (ЭФР)'
