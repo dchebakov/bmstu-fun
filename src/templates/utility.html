@@ -89,14 +89,14 @@
                 )
         });
 
-        document.forms['dist-input'].querySelector('select').addEventListener('click', function (e) {
-            let freedomGroup = document.querySelector('#freedom-group');
-
-            if (this.value !== 'norm') {
+        document.querySelector('select').addEventListener('click', function (e) {
+            let freedomGroup = document.querySelector('#freedom-group'),
+                selector = document.querySelector('select');
+            if (selector.value !== 'norm') {
                 freedomGroup.classList.remove('hide');
             }
 
-            if (this.value === 'norm') {
+            if (selector.value === 'norm') {
                 freedomGroup.classList.add('hide');
             }
         });
