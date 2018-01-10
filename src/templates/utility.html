@@ -24,6 +24,7 @@
                         <option value="norm">Нормальное</option>
                         <option value="exp">Экспотенциальное</option>
                         <option value="st">Стьюдента</option>
+                        <option value="chi2">Хи-квадрат</option>
                     </select>
                 </div>
             </div>
@@ -46,7 +47,8 @@
             </div>
             <button class="btn btn-success">Вычислить!</button>
         </form>
-        <div id="value-div" class="hide" style="margin: 14px auto; text-align: center"><span id="value-area"></span>
+        <div id="value-div" class="hide" style="margin: 14px auto; text-align: center">
+            <span class="big-formuls-ftnz" id="value-area"></span>
         </div>
     </div>
 
@@ -74,15 +76,25 @@
             })
                 .then(response => response.text())
                 .then(function (res) {
+                        let type = document.querySelector('#dist-name').value,
+                            freedom = document.querySelector("#freedom").value,
+                            level = document.querySelector("#level").value;
+
                         if (divValueArea.classList.contains('hide')) {
                             divValueArea.classList.toggle('hide');
                         }
 
                         if (res === 'err' || res === 'nan') {
                             valueArea.innerHTML = 'Невозможно вычислить значение.';
-                        }
-                        else {
-                            valueArea.innerHTML = '\\(\\lambda = \\) ' + res;
+                        } else {
+                            if (type === 'norm' || type === 'exp') {
+                                valueArea.innerHTML = `\\(\\lambda_{${level}} = ${res}\\) `;
+                            } else if (type === 'st') {
+                                valueArea.innerHTML = `\\(t_{${level}}(${freedom}) = ${res}\\) `;
+                            } else if (type === 'chi2') {
+                                valueArea.innerHTML = `\\(\\chi^{2}_{${level}}(${freedom}) = ${res}\\) `;
+                            }
+
                             MathJax.Hub.Queue(['Typeset', MathJax.Hub, valueArea]);
                         }
                     }

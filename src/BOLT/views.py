@@ -353,6 +353,8 @@ def aboutus(request):
             res = str(ss.t.ppf(level, freedom))
         elif dist_type == 'exp':
             res = str(ss.expon.ppf(level, freedom))
+        elif dist_type == 'chi2':
+            res = str(ss.chi2.ppf(level, freedom))
 
         return HttpResponse(res, content_type='application/json')
 
