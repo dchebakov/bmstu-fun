@@ -1,12 +1,111 @@
 {% extends 'index.html' %}
 {% load tags %}
 {% block main %}
+
     <div class="post">
-       <h3>Полезности для студентов</h3><hr>
-       <p>Ресурс, который умеет решать все: <a href="http://www.wolframalpha.com/">WolframAlpha</a><br>Построение красивых графиков: <a href="https://www.desmos.com/calculator">Desmos</a><br>
-       Подробное решение многих задач: <a href="https://math24.biz">math24</a><br>
-       Если вашей задачи нет у нас, возможно, она есть тут: <a href="http://baumanki.net">baumanki.net</a></p>
+        <h4>Полезности для студентов</h4>
+        <hr>
+        <p>Ресурс, который умеет решать все: <a href="http://www.wolframalpha.com/">WolframAlpha</a><br>Построение
+            красивых графиков: <a href="https://www.desmos.com/calculator">Desmos</a><br>
+            Подробное решение многих задач: <a href="https://math24.biz">math24</a><br>
+            Если вашей задачи нет у нас, возможно, она есть тут: <a href="http://baumanki.net">baumanki.net</a></p>
     </div>
+
+    <div class="post">
+        <h4>Вычисление квантилей</h4>
+        <hr>
+        <form action="" name="dist-input" class="form-horizontal" style="padding-top: 15px">
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="dist-name" class="control-label">Выберите тип распределения: </label>
+                </div>
+                <div class="col-sm-6">
+                    <select name="" id="dist-name" class="form-control">
+                        <option value="norm">Нормальное</option>
+                        <option value="exp">Экспотенциальное</option>
+                        <option value="st">Стьюдента</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="level" class="control-label">Введите уровень:</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="level" required value="0.75">
+                </div>
+            </div>
+
+            <div class="form-group hide" id="freedom-group">
+                <div class="col-sm-5">
+                    <label for="freedom" class="control-label">Введите число степеней свободы \(n\): </label>
+                </div>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" id="freedom" required value="6">
+                </div>
+            </div>
+            <button class="btn btn-success">Вычислить!</button>
+        </form>
+        <div id="value-div" class="hide" style="margin: 14px auto; text-align: center"><span id="value-area"></span>
+        </div>
+    </div>
+
+    <script>
+        document.forms['dist-input'].addEventListener('submit', function (e) {
+            let csrfToket = getCookie('csrftoken');
+
+            let divValueArea = document.querySelector('#value-div'),
+                valueArea = document.querySelector('#value-area');
+
+            e.preventDefault();
+            fetch('/aboutus/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': csrfToket,
+                },
+                body: JSON.stringify({
+                    type: document.querySelector('#dist-name').value,
+                    freedom: document.querySelector("#freedom").value,
+                    level: document.querySelector("#level").value
+                }),
+                credentials: 'include'
+            })
+                .then(response => response.text())
+                .then(function (res) {
+                        if (divValueArea.classList.contains('hide')) {
+                            divValueArea.classList.toggle('hide');
+                        }
+
+                        if (res === 'err' || res === 'nan') {
+                            valueArea.innerHTML = 'Невозможно вычислить значение.';
+                        }
+                        else {
+                            valueArea.innerHTML = '\\(\\lambda = \\) ' + res;
+                            MathJax.Hub.Queue(['Typeset', MathJax.Hub, valueArea]);
+                        }
+                    }
+                )
+        });
+
+        document.forms['dist-input'].querySelector('select').addEventListener('click', function (e) {
+            let freedomGroup = document.querySelector('#freedom-group');
+
+            if (this.value !== 'norm') {
+                freedomGroup.classList.remove('hide');
+            }
+
+            if (this.value === 'norm') {
+                freedomGroup.classList.add('hide');
+            }
+        });
+    </script>
+
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+
 {% endblock %}
 
 {% block loginblock %}

@@ -11,7 +11,7 @@
         <div class="form-group {% if form.errors %}has-error{% endif %}">
             {% for item in form %}
                 <input type="{{ item.field.widget.input_type }}" class="form-control login"
-                       placeholder="{{ item.label }}" name="{{ item.name }}" id="login"
+                       placeholder="{{ item.label }}" name="{{ item.name }}"
                        value="{% if item.value != None %}{{ item.value }}{% endif %}" size="8">
                 {% if item.errors %}
                     {% for error in item.errors %}<span class="help-block">{{ error }}</span>{% endfor %}

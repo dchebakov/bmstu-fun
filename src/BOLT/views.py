@@ -14,6 +14,7 @@ import json
 import os
 import re
 import shutil
+import scipy.stats as ss
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
 from .forms import RegistrationForm, SettingsForm, CommentForm, NewTaskForm, SectionForm, NewTaskModelForm
 
@@ -262,6 +263,7 @@ def newtask(request):
                                             'sections': Section.objects.all(),
                                             'last_comments': Comment.objects.all().order_by('-date_created')[:5]})
 
+
 @login_required(login_url=main)
 def listofsentsolutions(request):
     if request.user.is_superuser:
@@ -304,14 +306,13 @@ def checknewsolution(request, id):
         with open(os.path.join(st.BASE_DIR, 'templates', 'solutions',
                                str(formset.cleaned_data['section']),
                                str(formset.cleaned_data['section']) + 'Ex' +
-                                       str(formset.cleaned_data['exercise_number']) + r'.html'), 'w') as template_file:
+                               str(formset.cleaned_data['exercise_number']) + r'.html'), 'w') as template_file:
             template_file.write(template)
 
         with open(os.path.join(st.BASE_DIR, 'BOLT', 'tasks',
                                str(formset.cleaned_data['section']) + r'.py'), 'a') as function_file:
             function_file.write('\n\n' + r'@task_decorate' +
                                 '\n' + function)
-
 
         os.remove(os.path.join(st.MEDIA_ROOT, *re.split(r'/', str(newtask_function))))
         os.remove(os.path.join(st.MEDIA_ROOT, *re.split(r'/', str(newtask_template))))
@@ -326,19 +327,34 @@ def checknewsolution(request, id):
         return redirect(listofsentsolutions)
 
     return render(request, 'checknewsolution.html', {'formset': formset,
-                                              'user': request.user,
-                                              'profile': get_profile(request),
-                                              'sections': Section.objects.all(),
-                                              'last_comments': Comment.objects.all().order_by(
-                                                  '-date_created')[:5],
-                                              'newtask': newtask,
-                                              })
-
-
+                                                     'user': request.user,
+                                                     'profile': get_profile(request),
+                                                     'sections': Section.objects.all(),
+                                                     'last_comments': Comment.objects.all().order_by(
+                                                         '-date_created')[:5],
+                                                     'newtask': newtask,
+                                                     })
 
 
 def aboutus(request):
-    return render(request, 'aboutus.html', get_default_data(request))
+    if request.method == 'GET':
+        return render(request, 'aboutus.html', get_default_data(request))
+    else:
+        content = json.loads(request.body.decode('utf-8'))
+        dist_type = content['type']
+        freedom = float(content['freedom'])
+        level = float(content['level'])
+
+        res = 'err'
+
+        if dist_type == 'norm':
+            res = str(ss.norm.ppf(level))
+        elif dist_type == 'st':
+            res = str(ss.t.ppf(level, freedom))
+        elif dist_type == 'exp':
+            res = str(ss.expon.ppf(level, freedom))
+
+        return HttpResponse(res, content_type='application/json')
 
 
 def utility(request):
