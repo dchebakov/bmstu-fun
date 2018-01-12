@@ -341,20 +341,26 @@ def aboutus(request):
         return render(request, 'aboutus.html', get_default_data(request))
     else:
         content = json.loads(request.body.decode('utf-8'))
-        dist_type = content['type']
-        freedom = float(content['freedom'])
-        level = float(content['level'])
+        case = content['case']
+        if case == 'quantile':
+            dist_type = content['type']
+            freedom = float(content['freedom'])
+            level = float(content['level'])
 
-        res = 'err'
+            res = 'err'
 
-        if dist_type == 'norm':
-            res = str(ss.norm.ppf(level))
-        elif dist_type == 'st':
-            res = str(ss.t.ppf(level, freedom))
-        elif dist_type == 'exp':
-            res = str(ss.expon.ppf(level, freedom))
-        elif dist_type == 'chi2':
-            res = str(ss.chi2.ppf(level, freedom))
+            if dist_type == 'norm':
+                res = str(ss.norm.ppf(level))
+            elif dist_type == 'st':
+                res = str(ss.t.ppf(level, freedom))
+            elif dist_type == 'exp':
+                res = str(ss.expon.ppf(level, freedom))
+            elif dist_type == 'chi2':
+                res = str(ss.chi2.ppf(level, freedom))
+
+        elif case == 'laplace':
+            pass
+
 
         return HttpResponse(res, content_type='application/json')
 

@@ -70,7 +70,8 @@
                 body: JSON.stringify({
                     type: document.querySelector('#dist-name').value,
                     freedom: document.querySelector("#freedom").value,
-                    level: document.querySelector("#level").value
+                    level: document.querySelector("#level").value,
+                    case: 'quantile'
                 }),
                 credentials: 'include'
             })
@@ -113,6 +114,103 @@
             }
         });
     </script>
+
+
+    <div class="post">
+        <h4>Значения функции Лапласа</h4>
+        <hr>
+        <form action="" name="laplace-input" class="form-horizontal" style="padding-top: 15px">
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="laplace-name" class="control-label">Выберите тип: </label>
+                </div>
+                <div class="col-sm-6">
+                    <select name="" id="laplace-name" class="form-control">
+                        <option value="laplace-diff">Дифференциальная</option>
+                        <option value="laplace-int-0">Интегральная от 0</option>
+                        <option value="laplace-int-inf">Интегральная от \(-\infty\)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="level" class="control-label">Введите значение аргумента:</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="level" required value="0.25">
+                </div>
+            </div>
+
+            <button class="btn btn-success">Вычислить!</button>
+        </form>
+        <div id="value-div" class="hide" style="margin: 14px auto; text-align: center">
+            <span class="big-formuls-ftnz" id="value-area"></span>
+        </div>
+    </div>
+
+    <script>
+        document.forms['dist-input'].addEventListener('submit', function (e) {
+            let csrfToket = getCookie('csrftoken');
+
+            let divValueArea = document.querySelector('#value-div'),
+                valueArea = document.querySelector('#value-area');
+
+            e.preventDefault();
+            fetch('/aboutus/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': csrfToket,
+                },
+                body: JSON.stringify({
+                    type: document.querySelector('#dist-name').value,
+                    freedom: document.querySelector("#freedom").value,
+                    level: document.querySelector("#level").value,
+                    case: 'quantile'
+                }),
+                credentials: 'include'
+            })
+                .then(response => response.text())
+                .then(function (res) {
+                        let type = document.querySelector('#dist-name').value,
+                            freedom = document.querySelector("#freedom").value,
+                            level = document.querySelector("#level").value;
+
+                        if (divValueArea.classList.contains('hide')) {
+                            divValueArea.classList.toggle('hide');
+                        }
+
+                        if (res === 'err' || res === 'nan') {
+                            valueArea.innerHTML = 'Невозможно вычислить значение.';
+                        } else {
+                            if (type === 'norm' || type === 'exp') {
+                                valueArea.innerHTML = `\\(\\lambda_{${level}} = ${res}\\) `;
+                            } else if (type === 'st') {
+                                valueArea.innerHTML = `\\(t_{${level}}(${freedom}) = ${res}\\) `;
+                            } else if (type === 'chi2') {
+                                valueArea.innerHTML = `\\(\\chi^{2}_{${level}}(${freedom}) = ${res}\\) `;
+                            }
+
+                            MathJax.Hub.Queue(['Typeset', MathJax.Hub, valueArea]);
+                        }
+                    }
+                )
+        });
+
+        document.querySelector('#dist-name').addEventListener('change', function (e) {
+            let freedomGroup = document.querySelector('#freedom-group'),
+                selector = document.querySelector('select');
+            if (selector.value !== 'norm') {
+                freedomGroup.classList.remove('hide');
+            }
+
+            if (selector.value === 'norm') {
+                freedomGroup.classList.add('hide');
+            }
+        });
+    </script>
+
 
     <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
