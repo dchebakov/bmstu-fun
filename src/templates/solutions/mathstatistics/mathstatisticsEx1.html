@@ -47,7 +47,7 @@
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
 
-    <p class="big-formuls-ftnz">Объем выборки:  \(n = {{ solve.numberOfValues }}\) <br>
+    <p class="big-formuls-ftnz">Объем выборки: \(n = {{ solve.numberOfValues }}\) <br>
         Шаг: \(h = {{ solve.step }}\) <br></p>
 
     <h4>Ваша выборка:</h4>
@@ -75,8 +75,9 @@
     <canvas id="efr-chart"></canvas>
     <canvas id="polygon-chart"></canvas>
 
-    <div id="select-visible-type-of-dist"><p style="font-size: 16px">На основании анализа графиков ЭФР и гистограммы формулируется гипотеза
-    о законе распределения:</p>
+    <div id="select-visible-type-of-dist"><p style="font-size: 16px">На основании анализа графиков ЭФР и гистограммы
+        формулируется гипотеза
+        о законе распределения:</p>
         <form class="form-horizontal" style="padding-left: 25px" name="dist">
             <div class="form-group">
                 <input type="radio" id="norm" name="type" checked>
@@ -347,46 +348,46 @@
 
             for (let i = 0; i < zi.length - 1; i++) {
                 appendTableRow('main', [
-                    {value: (i + 1), precision: 0},
+                        {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
-                    countOnIntervals[i], countOnIntervals[i] / step, countOnIntervals[i] / step / numberOfValues,
+                        countOnIntervals[i], countOnIntervals[i] / step, countOnIntervals[i] / step / numberOfValues,
                         indexPolygon[i]
                     ]
                 );
 
                 appendTableRow('even-table', [
-                    {value: (i + 1), precision: 0},
+                        {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
                         indexPolygon[i],
-                    countOnIntervals[i],
+                        countOnIntervals[i],
                         ravnPi[i], numberOfValues * ravnPi[i],
-                    (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / ravnPi[i]
+                        (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / ravnPi[i]
                     ]
                 );
 
                 appendTableRow('exp-table', [
-                    {value: (i + 1), precision: 0},
+                        {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
                         indexPolygon[i],
-                    countOnIntervals[i],
-                    indexPolygon[i] * countOnIntervals[i],
+                        countOnIntervals[i],
+                        indexPolygon[i] * countOnIntervals[i],
                         Math.exp(-pokazLambda * zi[i]), Math.exp(-pokazLambda * zi[i + 1]),
                         pokazPi[i], numberOfValues * pokazPi[i],
-                    (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / pokazPi[i]
+                        (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / pokazPi[i]
                     ]
                 );
 
                 appendTableRow('norm-table', [
-                    {value: (i + 1), precision: 0},
+                        {value: (i + 1), precision: 0},
                         zi[i], zi[i + 1],
                         indexPolygon[i],
-                    countOnIntervals[i],
-                    indexPolygon[i] * countOnIntervals[i],
+                        countOnIntervals[i],
+                        indexPolygon[i] * countOnIntervals[i],
                         normZi[i], normZi[i + 1],
                         {value: normFzi[i], precision: 4}, {value: normFzi[i + 1], precision: 4},
                         {value: normPi[i], precision: 4},
                         numberOfValues * normPi[i],
-                    (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / normPi[i]
+                        (countOnIntervals[i]) * (countOnIntervals[i]) / numberOfValues / normPi[i]
                     ]
                 );
             }
@@ -512,7 +513,7 @@
     <form action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
         <textarea class="form-control"
-                  placeholder="Введите генеральную совокупность, состоящую из случайных величин: "
+                  placeholder="Введите выборку "
                   name="numbers" required maxlength="5000" rows="4"></textarea>
         </div>
 

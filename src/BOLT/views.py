@@ -344,19 +344,22 @@ def aboutus(request):
         case = content['case']
         if case == 'quantile':
             dist_type = content['type']
-            freedom = float(content['freedom'])
+            freedom1 = float(content['freedom1'])
+            freedom2 = float(content['freedom2'])
             level = float(content['level'])
 
             res = 'err'
 
             if dist_type == 'norm':
-                res = str(ss.norm.ppf(level))
-            elif dist_type == 'st':
-                res = str(ss.t.ppf(level, freedom))
+                res = ss.norm.ppf(level)
+            elif dist_type == 't':
+                res = ss.t.ppf(level, freedom1)
             elif dist_type == 'exp':
-                res = str(ss.expon.ppf(level, freedom))
+                res = ss.expon.ppf(level, freedom1)
             elif dist_type == 'chi2':
-                res = str(ss.chi2.ppf(level, freedom))
+                res = ss.chi2.ppf(level, freedom1)
+            elif dist_type == 'f':
+                res = ss.f.ppf(level, freedom1, freedom2)
 
         elif case == 'laplace':
             pass

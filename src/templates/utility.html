@@ -22,9 +22,10 @@
                 <div class="col-sm-6">
                     <select name="" id="dist-name" class="form-control">
                         <option value="norm">Нормальное</option>
-                        <option value="exp">Экспотенциальное</option>
-                        <option value="st">Стьюдента</option>
+                        <option value="exp">Экспоненциальное</option>
+                        <option value="t">Стьюдента</option>
                         <option value="chi2">Хи-квадрат</option>
+                        <option value="f">Фишера</option>
                     </select>
                 </div>
             </div>
@@ -37,14 +38,25 @@
                 </div>
             </div>
 
-            <div class="form-group hide" id="freedom-group">
+            <div class="form-group hide" id="freedom-group-1">
                 <div class="col-sm-5">
-                    <label for="freedom" class="control-label">Введите число степеней свободы \(n\): </label>
+                    <label for="freedom" class="control-label"><span id="freedom-input-1">Введите число степеней свободы \(n\): </span></label>
                 </div>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" id="freedom" required value="6">
+                    <input class="form-control" type="text" id="freedom-1" required value="5">
                 </div>
             </div>
+
+            <div class="form-group hide" id="freedom-group-2">
+                <div class="col-sm-5">
+                    <label for="freedom"
+                           class="control-label"><span>Введите число степеней свободы \(k_2\): </span></label>
+                </div>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" id="freedom-2" required value="6">
+                </div>
+            </div>
+
             <button class="btn btn-success">Вычислить!</button>
         </form>
         <div id="value-div" class="hide" style="margin: 14px auto; text-align: center">
@@ -54,7 +66,7 @@
 
     <script>
         document.forms['dist-input'].addEventListener('submit', function (e) {
-            let csrfToket = getCookie('csrftoken');
+            let csrfToken = getCookie('csrftoken');
 
             let divValueArea = document.querySelector('#value-div'),
                 valueArea = document.querySelector('#value-area');
@@ -65,11 +77,12 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-CSRFToken': csrfToket,
+                    'X-CSRFToken': csrfToken,
                 },
                 body: JSON.stringify({
                     type: document.querySelector('#dist-name').value,
-                    freedom: document.querySelector("#freedom").value,
+                    freedom1: document.querySelector("#freedom-1").value,
+                    freedom2: document.querySelector("#freedom-2").value,
                     level: document.querySelector("#level").value,
                     case: 'quantile'
                 }),
@@ -77,40 +90,66 @@
             })
                 .then(response => response.text())
                 .then(function (res) {
-                        let type = document.querySelector('#dist-name').value,
-                            freedom = document.querySelector("#freedom").value,
-                            level = document.querySelector("#level").value;
+                    let type = document.querySelector('#dist-name').value,
+                        freedom1 = document.querySelector("#freedom-1").value,
+                        freedom2 = document.querySelector("#freedom-2").value,
+                        level = document.querySelector("#level").value;
 
-                        if (divValueArea.classList.contains('hide')) {
-                            divValueArea.classList.toggle('hide');
-                        }
-
-                        if (res === 'err' || res === 'nan') {
-                            valueArea.innerHTML = 'Невозможно вычислить значение.';
-                        } else {
-                            if (type === 'norm' || type === 'exp') {
-                                valueArea.innerHTML = `\\(\\lambda_{${level}} = ${res}\\) `;
-                            } else if (type === 'st') {
-                                valueArea.innerHTML = `\\(t_{${level}}(${freedom}) = ${res}\\) `;
-                            } else if (type === 'chi2') {
-                                valueArea.innerHTML = `\\(\\chi^{2}_{${level}}(${freedom}) = ${res}\\) `;
-                            }
-
-                            MathJax.Hub.Queue(['Typeset', MathJax.Hub, valueArea]);
-                        }
+                    if (divValueArea.classList.contains('hide')) {
+                        divValueArea.classList.toggle('hide');
                     }
-                )
+
+                    if (res === 'err' || res === 'nan') {
+                        valueArea.innerHTML = 'Невозможно вычислить значение.';
+                    } else {
+                        switch (type) {
+                            case 'norm':
+                                valueArea.innerHTML = `\\(\\lambda_{${level}} = ${res}\\) `;
+                                break;
+                            case 'exp':
+                                valueArea.innerHTML = `\\(\\lambda_{${level}}(${freedom1}) = ${res}\\) `;
+                                break;
+                            case 't':
+                                valueArea.innerHTML = `\\(t_{${level}}(${freedom1}) = ${res}\\) `;
+                                break;
+                            case 'chi2':
+                                valueArea.innerHTML = `\\(\\chi^{2}_{${level}}(${freedom1}) = ${res}\\) `;
+                                break;
+                            case 'f':
+                                valueArea.innerHTML = `\\(F_{${level}}(${freedom1},${freedom2}) = ${res}\\) `;
+                                break;
+                        }
+                        MathJax.Hub.Queue(['Typeset', MathJax.Hub, valueArea]);
+                    }
+                });
         });
 
+
         document.querySelector('#dist-name').addEventListener('change', function (e) {
-            let freedomGroup = document.querySelector('#freedom-group'),
+            let freedomGroup1 = document.querySelector('#freedom-group-1'),
+                freedomGroup2 = document.querySelector('#freedom-group-2'),
+                freedomInput1 = document.querySelector('#freedom-input-1'),
                 selector = document.querySelector('select');
+
             if (selector.value !== 'norm') {
-                freedomGroup.classList.remove('hide');
+                freedomGroup1.classList.remove('hide');
             }
 
             if (selector.value === 'norm') {
-                freedomGroup.classList.add('hide');
+                freedomGroup1.classList.add('hide');
+                freedomGroup2.classList.add('hide');
+            }
+
+            if (selector.value !== 'f') {
+                freedomInput1.innerHTML = 'Введите число степеней свободы \\(n \\): ';
+                MathJax.Hub.Queue(['Typeset', MathJax.Hub, freedomInput1]);
+            }
+
+            if (selector.value === 'f') {
+                freedomGroup1.classList.remove('hide');
+                freedomGroup2.classList.remove('hide');
+                freedomInput1.innerHTML = 'Введите число степеней свободы \\(k_2\\): ';
+                MathJax.Hub.Queue(['Typeset', MathJax.Hub, freedomInput1]);
             }
         });
     </script>
@@ -134,10 +173,10 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-5">
-                    <label for="level" class="control-label">Введите значение аргумента:</label>
+                    <label for="laplace-level" class="control-label">Введите значение аргумента:</label>
                 </div>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="level" required value="0.25">
+                    <input type="text" class="form-control" id="laplace-level" required value="0.25">
                 </div>
             </div>
 
@@ -149,7 +188,7 @@
     </div>
 
     <script>
-        document.forms['dist-input'].addEventListener('submit', function (e) {
+        document.forms['laplace-input'].addEventListener('submit', function (e) {
             let csrfToket = getCookie('csrftoken');
 
             let divValueArea = document.querySelector('#value-div'),
@@ -198,7 +237,7 @@
                 )
         });
 
-        document.querySelector('#dist-name').addEventListener('change', function (e) {
+        document.querySelector('#laplace-name').addEventListener('change', function (e) {
             let freedomGroup = document.querySelector('#freedom-group'),
                 selector = document.querySelector('select');
             if (selector.value !== 'norm') {
