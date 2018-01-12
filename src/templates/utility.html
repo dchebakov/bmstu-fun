@@ -158,6 +158,15 @@
     <div class="post">
         <h4>Значения функции Лапласа</h4>
         <hr>
+        <p>
+            Интегральная функция Лапласа:
+            <span class="big-formuls-ftnz">$$\Phi(x) = \frac{1}{\sqrt{2 \pi}}\int_0^x e^{-\frac{t^2}{2}} dt$$</span>
+            Дополнительная интегральная функция Лапласа:
+            <span class="big-formuls-ftnz">$$\bar{\Phi}(x) = \frac{1}{\sqrt{2 \pi}}\int_x^{\infty} e^{-\frac{t^2}{2}} dt$$</span>
+            Дифференциальная функция Лапласа:
+            <span class="big-formuls-ftnz">$$\phi(x) = \frac{1}{\sqrt{2 \pi}} e^{-\frac{x^2}{2}}$$</span>
+
+        </p>
         <form action="" name="laplace-input" class="form-horizontal" style="padding-top: 15px">
             <div class="form-group">
                 <div class="col-sm-5">
@@ -165,25 +174,25 @@
                 </div>
                 <div class="col-sm-6">
                     <select name="" id="laplace-name" class="form-control">
+                        <option value="laplace-int-0">Интегральная</option>
+                        <option value="laplace-int-inf">Дополнительная интегральная</option>
                         <option value="laplace-diff">Дифференциальная</option>
-                        <option value="laplace-int-0">Интегральная от 0</option>
-                        <option value="laplace-int-inf">Интегральная от \(-\infty\)</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-5">
-                    <label for="laplace-level" class="control-label">Введите значение аргумента:</label>
+                    <label for="laplace-arg" class="control-label">Введите значение аргумента:</label>
                 </div>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="laplace-level" required value="0.25">
+                    <input type="text" class="form-control" id="laplace-arg" required value="0.25">
                 </div>
             </div>
 
             <button class="btn btn-success">Вычислить!</button>
         </form>
-        <div id="value-div" class="hide" style="margin: 14px auto; text-align: center">
-            <span class="big-formuls-ftnz" id="value-area"></span>
+        <div id="laplace-value-div" class="hide" style="margin: 14px auto; text-align: center">
+            <span class="big-formuls-ftnz" id="laplace-value-area"></span>
         </div>
     </div>
 
@@ -191,8 +200,8 @@
         document.forms['laplace-input'].addEventListener('submit', function (e) {
             let csrfToket = getCookie('csrftoken');
 
-            let divValueArea = document.querySelector('#value-div'),
-                valueArea = document.querySelector('#value-area');
+            let divValueArea = document.querySelector('#laplace-value-div'),
+                valueArea = document.querySelector('#laplace-value-area');
 
             e.preventDefault();
             fetch('/aboutus/', {
@@ -203,18 +212,16 @@
                     'X-CSRFToken': csrfToket,
                 },
                 body: JSON.stringify({
-                    type: document.querySelector('#dist-name').value,
-                    freedom: document.querySelector("#freedom").value,
-                    level: document.querySelector("#level").value,
-                    case: 'quantile'
+                    type: document.querySelector('#laplace-name').value,
+                    argument: document.querySelector("#laplace-arg").value,
+                    case: 'laplace'
                 }),
                 credentials: 'include'
             })
                 .then(response => response.text())
                 .then(function (res) {
-                        let type = document.querySelector('#dist-name').value,
-                            freedom = document.querySelector("#freedom").value,
-                            level = document.querySelector("#level").value;
+                    let type = document.querySelector('#laplace-name').value,
+                        argument = document.querySelector("#laplace-arg").value
 
                         if (divValueArea.classList.contains('hide')) {
                             divValueArea.classList.toggle('hide');
@@ -223,30 +230,18 @@
                         if (res === 'err' || res === 'nan') {
                             valueArea.innerHTML = 'Невозможно вычислить значение.';
                         } else {
-                            if (type === 'norm' || type === 'exp') {
-                                valueArea.innerHTML = `\\(\\lambda_{${level}} = ${res}\\) `;
-                            } else if (type === 'st') {
-                                valueArea.innerHTML = `\\(t_{${level}}(${freedom}) = ${res}\\) `;
-                            } else if (type === 'chi2') {
-                                valueArea.innerHTML = `\\(\\chi^{2}_{${level}}(${freedom}) = ${res}\\) `;
+                            if (type === 'laplace-int-0' || type === 'exp') {
+                                valueArea.innerHTML = `\\(\\Phi_{${argument}} = ${res}\\) `;
+                            } else if (type === 'laplace-int-inf') {
+                                valueArea.innerHTML = `\\(\\bar{\\Phi}(${argument}) = ${res}\\) `;
+                            } else if (type === 'laplace-diff') {
+                                valueArea.innerHTML = `\\(\\phi(${argument}) = ${res}\\) `;
                             }
 
                             MathJax.Hub.Queue(['Typeset', MathJax.Hub, valueArea]);
                         }
                     }
                 )
-        });
-
-        document.querySelector('#laplace-name').addEventListener('change', function (e) {
-            let freedomGroup = document.querySelector('#freedom-group'),
-                selector = document.querySelector('select');
-            if (selector.value !== 'norm') {
-                freedomGroup.classList.remove('hide');
-            }
-
-            if (selector.value === 'norm') {
-                freedomGroup.classList.add('hide');
-            }
         });
     </script>
 

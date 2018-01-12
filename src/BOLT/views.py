@@ -13,6 +13,7 @@ from django.conf import settings as st
 import json
 import os
 import re
+import math
 import shutil
 import scipy.stats as ss
 from .models import UserProfile, News, Section, Task, Comment, Thanks, NewTask
@@ -306,7 +307,7 @@ def checknewsolution(request, id):
         with open(os.path.join(st.BASE_DIR, 'templates', 'solutions',
                                str(formset.cleaned_data['section']),
                                str(formset.cleaned_data['section']) + 'Ex' +
-                               str(formset.cleaned_data['exercise_number']) + r'.html'), 'w') as template_file:
+                                       str(formset.cleaned_data['exercise_number']) + r'.html'), 'w') as template_file:
             template_file.write(template)
 
         with open(os.path.join(st.BASE_DIR, 'BOLT', 'tasks',
@@ -342,13 +343,12 @@ def aboutus(request):
     else:
         content = json.loads(request.body.decode('utf-8'))
         case = content['case']
+        res = 'err'
         if case == 'quantile':
             dist_type = content['type']
             freedom1 = float(content['freedom1'])
             freedom2 = float(content['freedom2'])
             level = float(content['level'])
-
-            res = 'err'
 
             if dist_type == 'norm':
                 res = ss.norm.ppf(level)
@@ -362,8 +362,15 @@ def aboutus(request):
                 res = ss.f.ppf(level, freedom1, freedom2)
 
         elif case == 'laplace':
-            pass
+            laplace_type = content['type']
+            argument = float(content['argument'])
 
+            if laplace_type == 'laplace-int-0':
+                res = ss.norm.cdf(argument) - 0.5
+            elif laplace_type == 'laplace-int-inf':
+                res = 1 - ss.norm.cdf(argument)
+            elif laplace_type == 'laplace-diff':
+                res = math.exp(- argument ** 2 / 2) / math.sqrt(2 * math.pi)
 
         return HttpResponse(res, content_type='application/json')
 
