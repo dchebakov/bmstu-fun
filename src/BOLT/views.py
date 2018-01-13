@@ -369,6 +369,8 @@ def aboutus(request):
                 res = ss.norm.cdf(argument) - 0.5
             elif laplace_type == 'laplace-int-inf':
                 res = 1 - ss.norm.cdf(argument)
+            elif laplace_type == 'laplace-int-from-inf':
+                res = ss.norm.cdf(argument)
             elif laplace_type == 'laplace-diff':
                 res = math.exp(- argument ** 2 / 2) / math.sqrt(2 * math.pi)
 
