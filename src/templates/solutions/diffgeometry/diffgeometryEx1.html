@@ -1,5 +1,4 @@
 {% if solve.is_valid %}
-
     <p class="big-formuls-ftnz">Коммутатор векторных полей вычисляется по формуле:
         $$\left [ X, Y \right ] = \phi ^1 \cdot \frac{\partial }{\partial x} + \phi ^2 \cdot \frac{\partial }{\partial
         y},$$
@@ -23,17 +22,71 @@
         \partial_{y}$$</p>
 
 {% else %}
-    <form action="{{ task.get_absolute_url }}" method="get">
-        <label for="X" class="big-formuls-ftnz">\(X = ~\)</label><input type="text" id="xi1" name="xi1" required>
-        <label for="xi1" class="big-formuls-ftnz">\(\partial _{x}~ + ~\)</label><input type="text" id="xi2" name="xi2"
-                                                                                       required>
-        <label for="xi2" class="big-formuls-ftnz">\(\partial _{y}\)</label><br>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
 
-        <label for="Y" class="big-formuls-ftnz">\(Y = ~\)</label><input type="text" id="eta1" name="eta1" required>
-        <label for="eta1" class="big-formuls-ftnz">\(\partial _{x}~ + ~\)</label><input type="text" id="eta2"
-                                                                                        name="eta2" required>
-        <label for="eta2" class="big-formuls-ftnz">\(\partial _{y}\)</label><br>
+    <form action="{{ task.get_absolute_url }}" method="get" class="form-horizontal" name="com-form">
+        <div class="form-group">
+            <div class="col-sm-5 remove-right-padding col-xs-10">
+                <div class="col-sm-2 col-xs-2">
+                    <label for="xi1" class="big-formuls-ftnz bootstrap-input-padding">\(X = ~\)</label>
+                </div>
+                <div class="col-sm-10 col-xs-10 remove-right-padding">
+                    <div class="math-control" id="xi1" name="xi1" required>x</div>
+                </div>
+            </div>
+            <div class="col-sm-1 no-padding col-xs-2">
+                <div class="big-formuls-ftnz bootstrap-input-padding">\(\partial_{x} ~ + ~\)</div>
+            </div>
+            <div class="col-sm-4 col-sm-offset-0 no-padding col-xs-8 col-xs-offset-2">
+                <div class="col-sm-11 no-padding col-xs-11 col-xs-offset-1">
+                    <div class="math-control" id="xi2" name="xi2" required>y</div>
+                </div>
+            </div>
+            <div class="col-sm-1 no-padding col-xs-2">
+                <div class="big-formuls-ftnz bootstrap-input-padding">\(\partial_{y}\)</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5 remove-right-padding col-xs-10">
+                <div class="col-sm-2 col-xs-2">
+                    <label for="eta1" class="big-formuls-ftnz bootstrap-input-padding">\(Y = ~\)</label>
+                </div>
+                <div class="col-sm-10 col-xs-10 remove-right-padding">
+                    <div class="math-control" id="eta1" name="eta1" required>x^2</div>
+                </div>
+            </div>
+            <div class="col-sm-1 no-padding col-xs-2">
+                <div class="big-formuls-ftnz bootstrap-input-padding">\(\partial_{x} ~ + ~\)</div>
+            </div>
+            <div class="col-sm-4 col-sm-offset-0 no-padding col-xs-8 col-xs-offset-2">
+                <div class="col-sm-11 no-padding col-xs-11 col-xs-offset-1">
+                    <div class="math-control" id="eta2" name="eta2" required>y^2</div>
+                </div>
+            </div>
+            <div class="col-sm-1 no-padding col-xs-2">
+                <div class="big-formuls-ftnz bootstrap-input-padding">\(\partial_{y}\)</div>
+            </div>
+        </div>
 
         <button class="btn btn-success" type="submit">Получить решение!</button>
     </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="{% static 'js/mathquill.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let MQ = MathQuill.getInterface(2);
+
+            let xi1 = MQ.MathField(document.querySelector('#xi1')),
+                xi2 = MQ.MathField(document.querySelector('#xi2')),
+                eta1 = MQ.MathField(document.querySelector('#eta1')),
+                eta2 = MQ.MathField(document.querySelector('#eta2'));
+
+            document.forms['com-form'].addEventListener('submit', function (e) {
+                e.preventDefault();
+                window.location = this.action + `?xi1=${xi1.text()}&xi2=${xi1.text()}&eta1=${eta1.text()}&eta2=${eta2.text()}`;
+            })
+        });
+    </script>
 {% endif %}

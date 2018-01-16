@@ -182,3 +182,35 @@ td {
 .big-formuls-ftnz {
     font-size: 18px;
 }
+
+.remove-right-padding {
+    padding-right: 0 !important;
+}
+
+.remove-left-padding {
+    padding-left: 0 !important;
+}
+
+.no-padding {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+.bootstrap-input-padding {
+    padding: 6px 0;
+}
+
+.math-control {
+    width: 100%;
+    display: block;
+    min-height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: black;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
