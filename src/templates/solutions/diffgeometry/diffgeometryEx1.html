@@ -72,11 +72,9 @@
         <button class="btn btn-success" type="submit">Получить решение!</button>
     </form>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="{% static 'js/mathquill.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let MQ = MathQuill.getInterface(2);
+            let MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
 
             let xi1 = MQ.MathField(document.querySelector('#xi1')),
                 xi2 = MQ.MathField(document.querySelector('#xi2')),
@@ -85,7 +83,7 @@
 
             document.forms['com-form'].addEventListener('submit', function (e) {
                 e.preventDefault();
-                window.location = this.action + `?xi1=${xi1.text()}&xi2=${xi1.text()}&eta1=${eta1.text()}&eta2=${eta2.text()}`;
+                window.location = this.action + `?xi1=${xi1.text()}&xi2=${xi2.text()}&eta1=${eta1.text()}&eta2=${eta2.text()}`;
             })
         });
     </script>
