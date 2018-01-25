@@ -17,3 +17,32 @@ def check_args(*args):
         if not arg:
             return False
     return True
+
+
+@task_decorate
+def functionalanalysisEx1(request):
+    rows = int(request.GET.get('rows'))
+    columns = int(request.GET.get('columns'))
+    values = request.GET.get('values').split(' ')
+
+
+    if not check_args(rows, columns, values) \
+            or float(rows) <= 1 \
+            or float(columns) <= 1 \
+            or len(values) != rows * columns:
+        return {'is_valid': False}
+
+    matrix = []
+    for _ in range(rows):
+        row = []
+        for _ in range(columns):
+            row.append(float(values.pop(0)))
+        matrix.append(row)
+
+    print(rows)
+    print(columns)
+    print(matrix)
+
+    solve = {'rows': rows, 'columns': columns, 'matrix': matrix, 'is_valid': True}
+
+    return solve

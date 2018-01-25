@@ -1,0 +1,194 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+<style>
+    .matrix-td {
+        min-width: 40px;
+        min-height: 30px;
+        text-align: center;
+        padding: 6px;
+        border: 1px solid rgb(85, 85, 85);
+        border-radius: 5px;
+        display: inline-block;
+        margin: 2px 3px;
+    }
+
+    .brackets {
+        border: 2px solid rgb(85, 85, 85);
+        border-radius: 25px;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        padding: 8px;
+        display: inline-block;
+    }
+
+    .big-fntz {
+        line-height: 30px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .remove-padding {
+        padding: 2px 10px !important;
+    }
+</style>
+
+
+{% if solve.is_valid %}
+
+    <p>Решение!</p>
+
+{% else %}
+
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" name="norm">
+        <div class="form-group">
+            <div class="col-xs-2 big-fntz">
+                <span>Введите матрицу: </span>
+            </div>
+            <div class="col-xs-10">
+                <div class="brackets">
+                    <div class="matrix">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-2 big-fntz">
+                <span>Строки: </span>
+            </div>
+            <div class="col-xs-10">
+                <button class="btn btn-primary big-fntz remove-padding" id="add-row" type="button">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-danger big-fntz remove-padding" id="remove-row" type="button">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-2 big-fntz">
+                <span>Столбцы: </span>
+            </div>
+
+            <div class="col-xs-10">
+                <button class="btn btn-primary big-fntz remove-padding" id="add-column" type="button">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-danger big-fntz remove-padding" id="remove-column" type="button">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-danger" id="reset-button" type="reset">Очистить матрицу</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-success" type="submit">Вычислить нормы</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+
+        let columns = 3, rows = 3;
+        let matrix = [];
+
+        document.querySelector('#add-row').addEventListener('click', function (ev) {
+            let row = document.createElement('div');
+            row.className = 'matrix-row';
+
+            matrix.push([]);
+            for (let i = 0; i < columns; i++) {
+                let cell = document.createElement('div');
+                cell.className = 'matrix-td';
+                row.appendChild(cell);
+                matrix[rows].push(MQ.MathField(cell));
+            }
+
+            document.querySelectorAll('.matrix')[0].appendChild(row);
+
+            rows++;
+        });
+
+        document.querySelector('#remove-row').addEventListener('click', function (ev) {
+            if (rows === 1) return;
+
+            let lastMatrixRow = document.querySelectorAll('.matrix-row')[rows - 1];
+            lastMatrixRow.parentElement.removeChild(lastMatrixRow);
+            matrix.pop();
+            rows--;
+        });
+
+        document.querySelector('#add-column').addEventListener('click', function (ev) {
+            document.querySelectorAll('.matrix-row').forEach(function (el, index) {
+                let cell = document.createElement('div');
+                cell.className = 'matrix-td';
+                el.appendChild(cell);
+                matrix[index].push(MQ.MathField(cell));
+            });
+            columns++;
+        });
+
+        document.querySelector('#remove-column').addEventListener('click', function (ev) {
+            if (columns === 1) return;
+
+            document.querySelectorAll('.matrix-row').forEach(function (el, index) {
+                matrix[index].pop();
+                el.removeChild(el.querySelectorAll('.matrix-td')[columns - 1]);
+            });
+
+            columns--;
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
+
+            for (let i = 0; i < rows; i++) {
+                matrix.push([]);
+                let row = document.createElement('div');
+                row.className = 'matrix-row';
+                for (let j = 0; j < columns; j++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'matrix-td';
+                    row.appendChild(cell);
+                    let mathCell = MQ.MathField(cell);
+                    matrix[i].push(mathCell);
+                }
+
+                document.querySelectorAll('.matrix')[0].appendChild(row);
+            }
+
+        });
+
+        document.querySelector('#reset-button').addEventListener('click', function (ev) {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    matrix[i][j].latex('');
+                }
+            }
+        });
+
+        document.forms['norm'].addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            let locationString = '';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    locationString += matrix[i][j].text() + ' ';
+                }
+            }
+
+            console.log(encodeURI(locationString));
+            window.location = this.action +  '?rows=' + rows + '&columns=' + columns + '&values=' + locationString;
+        });
+
+    </script>
+
+{% endif %}
