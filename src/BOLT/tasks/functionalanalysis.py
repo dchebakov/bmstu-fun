@@ -38,10 +38,6 @@ def functionalanalysisEx1(request):
             row.append(float(values.pop(0)))
         matrix.append(row)
 
-    print(rows)
-    print(columns)
-    print(matrix)
-
     solve = {'rows': rows, 'columns': columns, 'matrix': matrix, 'is_valid': True}
 
     return solve
