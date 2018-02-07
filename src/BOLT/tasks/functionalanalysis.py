@@ -21,14 +21,20 @@ def check_args(*args):
 
 @task_decorate
 def functionalanalysisEx1(request):
-    rows = int(request.GET.get('rows'))
-    columns = int(request.GET.get('columns'))
-    values = request.GET.get('values').split(' ')
+    rows = request.GET.get('rows')
+    columns = request.GET.get('columns')
+    values = request.GET.get('values')
 
     if not check_args(rows, columns, values) \
             or float(rows) <= 1 \
-            or float(columns) <= 1 \
-            or len(values) != rows * columns:
+            or float(columns) <= 1:
+        return {'is_valid': False}
+
+    rows = int(rows)
+    columns = int(columns)
+    values = values.split(' ')
+
+    if len(values) != rows * columns:
         return {'is_valid': False}
 
     matrix = []
