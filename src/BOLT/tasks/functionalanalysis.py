@@ -25,7 +25,6 @@ def functionalanalysisEx1(request):
     columns = int(request.GET.get('columns'))
     values = request.GET.get('values').split(' ')
 
-
     if not check_args(rows, columns, values) \
             or float(rows) <= 1 \
             or float(columns) <= 1 \

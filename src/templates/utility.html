@@ -248,6 +248,174 @@
     </script>
 
 
+    <div class="post">
+        <h4>Генерация случайной выборки</h4>
+        <hr>
+        <form action="" name="dist-input-for-sample" class="form-horizontal" style="padding-top: 15px">
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="dist-name-for-sample" class="control-label">Выберите тип распределения: </label>
+                </div>
+                <div class="col-sm-6">
+                    <select name="" id="dist-name-for-sample" class="form-control">
+                        <option value="norm">Нормальное</option>
+                        <option value="exp">Экспоненциальное</option>
+                        <option value="uniform">Равномерное</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="volume" class="control-label">Введите объём выборки:</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="volume" required value="10">
+                </div>
+            </div>
+
+            <div id="norm-group-sample">
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        <label for="m-for-norm" class="control-label">
+                            <span>Введите математическое ожидание <span class="big-formuls-ftnz">\(a\)</span>: </span>
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="m-for-norm" required value="0.0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        <label for="d-for-norm" class="control-label">
+                            <span>Введите дисперсию <span class="big-formuls-ftnz"> \( \sigma \) </span>: </span>
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="d-for-norm" required value="1.0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="hide" id="exp-group-sample">
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        <label for="lambda-for-exp" class="control-label">
+                            <span>Введите интенсивность <span class="big-formuls-ftnz">\( \lambda \)</span>: </span>
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="lambda-for-exp" required value="2.0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="hide" id="uniform-group-sample">
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        <label for="a-for-uniform" class="control-label">
+                            <span>Введите левый отрезок <span class="big-formuls-ftnz">\(a \)</span>: </span>
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="a-for-uniform" required value="1.5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        <label for="b-for-uniform" class="control-label">
+                            <span>Введите правый отрезок <span class="big-formuls-ftnz"> \( b \) </span>: </span>
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="b-for-uniform" required value="6.3">
+                    </div>
+                </div>
+            </div>
+
+
+            <button class="btn btn-success">Вычислить!</button>
+        </form>
+        <div id="result-for-sample" class="hide" style="margin: 14px auto; text-align: center">
+            <span class="big-formuls-ftnz" id="value-area-for-sample"></span>
+        </div>
+    </div>
+
+    <script>
+        document.forms['dist-input-for-sample'].addEventListener('submit', function (e) {
+
+            let csrfToken = getCookie('csrftoken');
+
+            let divValueArea = document.querySelector('#result-for-sample'),
+                valueArea = document.querySelector('#value-area-for-sample');
+
+            e.preventDefault();
+            fetch('/aboutus/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({
+                    type: document.querySelector('#dist-name-for-sample').value,
+                    m_for_norm: document.querySelector("#m-for-norm").value,
+                    d_for_norm: document.querySelector("#d-for-norm").value,
+                    lambda_for_exp: document.querySelector('#lambda-for-exp').value,
+                    a_for_uniform: document.querySelector('#a-for-uniform').value,
+                    b_for_uniform: document.querySelector('#b-for-uniform').value,
+                    volume: document.querySelector("#volume").value,
+                    case: 'sample'
+                }),
+                credentials: 'include'
+            })
+                .then(response => response.text())
+                .then(function (res) {
+
+                    if (divValueArea.classList.contains('hide')) {
+                        divValueArea.classList.toggle('hide');
+                    }
+
+                    if (res === 'err' || res === 'nan') {
+                        valueArea.innerHTML = 'Невозможно вычислить значение.';
+                    } else {
+                        valueArea.innerHTML = 'Ваша выборка: ' + res;
+                    }
+                });
+        });
+
+
+        document.querySelector('#dist-name-for-sample').addEventListener('change', function (e) {
+            let normGroupSample = document.querySelector('#norm-group-sample'),
+                expGroupSample = document.querySelector('#exp-group-sample'),
+                uniformGroupSample = document.querySelector('#uniform-group-sample'),
+                selector = this;
+
+            switch (selector.value) {
+                case 'norm':
+                    normGroupSample.classList.remove('hide');
+                    expGroupSample.classList.add('hide');
+                    uniformGroupSample.classList.add('hide');
+                    break;
+                case 'exp':
+                    normGroupSample.classList.add('hide');
+                    expGroupSample.classList.remove('hide');
+                    uniformGroupSample.classList.add('hide');
+                    break;
+                case 'uniform':
+                    normGroupSample.classList.add('hide');
+                    expGroupSample.classList.add('hide');
+                    uniformGroupSample.classList.remove('hide');
+                    break;
+            }
+        });
+
+    </script>
+
+
+
+
     <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
     </script>

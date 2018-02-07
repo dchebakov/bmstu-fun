@@ -307,7 +307,7 @@ def checknewsolution(request, id):
         with open(os.path.join(st.BASE_DIR, 'templates', 'solutions',
                                str(formset.cleaned_data['section']),
                                str(formset.cleaned_data['section']) + 'Ex' +
-                                       str(formset.cleaned_data['exercise_number']) + r'.html'), 'w') as template_file:
+                               str(formset.cleaned_data['exercise_number']) + r'.html'), 'w') as template_file:
             template_file.write(template)
 
         with open(os.path.join(st.BASE_DIR, 'BOLT', 'tasks',
@@ -373,6 +373,25 @@ def aboutus(request):
                 res = ss.norm.cdf(argument)
             elif laplace_type == 'laplace-diff':
                 res = math.exp(- argument ** 2 / 2) / math.sqrt(2 * math.pi)
+
+        elif case == 'sample':
+            sample_type = content['type']
+            m_for_norm = float(content['m_for_norm'])
+            d_for_norm = float(content['d_for_norm'])
+            lambda_for_exp = float(content['lambda_for_exp'])
+            a_for_uniform = float(content['a_for_uniform'])
+            b_for_uniform = float(content['b_for_uniform'])
+            sample_volume = int(content['volume'])
+
+            if sample_type == 'norm':
+                res = ss.norm.rvs(loc=m_for_norm, scale=d_for_norm, size=sample_volume)
+            elif sample_type == 'exp':
+                res = ss.expon.rvs(scale=1 / lambda_for_exp, size=sample_volume)
+            elif sample_type == 'uniform':
+                res = ss.uniform.rvs(loc=a_for_uniform, scale=b_for_uniform, size=sample_volume)
+
+            if res != 'err':
+                res = ', '.join(str(round(e, 2)) for e in res)
 
         return HttpResponse(res, content_type='application/json')
 
