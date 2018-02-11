@@ -388,7 +388,7 @@ def aboutus(request):
             elif sample_type == 'exp':
                 res = ss.expon.rvs(scale=1 / lambda_for_exp, size=sample_volume)
             elif sample_type == 'uniform':
-                res = ss.uniform.rvs(loc=a_for_uniform, scale=b_for_uniform, size=sample_volume)
+                res = ss.uniform.rvs(loc=a_for_uniform, scale=(b_for_uniform - a_for_uniform), size=sample_volume)
 
             if res != 'err':
                 res = ', '.join(str(round(e, 2)) for e in res)
