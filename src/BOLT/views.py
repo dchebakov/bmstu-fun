@@ -400,9 +400,12 @@ def utility(request):
     return render(request, 'utility.html', get_default_data(request))
 
 
-def test(request, id):
-    instance = get_object_or_404(NewTask, id=id)
-    form = NewTaskModelForm(request.POST or None, instance=instance)
-    if form.is_valid():
-        return redirect(test, id=25)
-    return render(request, 'test/test.html', {'formset': form})
+def test(request):
+    try:
+        a = request.GET.get('a')
+        b = request.GET.get('b')
+        c = request.GET.get('c')
+    except KeyError:
+        a = b = c = ''
+
+    return render(request, 'test/test.html', {'a': a, 'b': b, 'c': c})

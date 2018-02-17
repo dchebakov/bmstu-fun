@@ -10,6 +10,7 @@ from sympy import *
 from sympy.parsing.sympy_parser import parse_expr
 import re
 
+
 def exchange_3(sum, count, monets):
     if sum < 0:
         return count
@@ -18,6 +19,7 @@ def exchange_3(sum, count, monets):
     count += exchange_2(sum, 0, monets[1::])
     sum -= monets[0]
     return exchange_3(sum, count, monets)
+
 
 def exchange_2(sum, count, monets):
     if sum < 0:
@@ -28,12 +30,14 @@ def exchange_2(sum, count, monets):
         count += 1
     return exchange_2(sum - monets[0], count, monets)
 
+
 def check_args(*args):
     '''Общая проверка'''
     for arg in args:
         if not arg:
             return False
     return True
+
 
 def isint(s):
     '''Проверка на int'''
@@ -43,9 +47,9 @@ def isint(s):
     except ValueError:
         return False
 
+
 @task_decorate
 def technoparkEx1(request):
-
     sum = request.GET.get('sum')
     monets_input = request.GET.get('monets')
 
@@ -73,3 +77,5 @@ def technoparkEx1(request):
         return {'is_valid': False}
     solve = {'answer': answer, 'sum': sum, 'monets': monets, 'is_valid': True}
     return solve
+
+

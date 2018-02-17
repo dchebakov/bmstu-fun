@@ -22,6 +22,6 @@ urlpatterns = [
     # url(r'^deletetask/(?P<id>\d+)$', deletetask, name='deletetask'),
     url(r'^aboutus/',aboutus,name='aboutus'),
     url(r'^utility/',utility,name='utility'),
-    # url(r'^test/(?P<id>\d+)/$', test, name='test')
+    url(r'^test/', test, name='test')
     # url(r'^rate/$',rate,name='rate')
 ]

@@ -34,6 +34,7 @@ def functionalanalysisEx1(request):
     columns = int(columns)
     values = values.split(' ')
 
+
     if len(values) != rows * columns:
         return {'is_valid': False}
 
@@ -44,6 +45,10 @@ def functionalanalysisEx1(request):
             row.append(float(values.pop(0)))
         matrix.append(row)
 
-    solve = {'rows': rows, 'columns': columns, 'matrix': matrix, 'is_valid': True}
+    matrix2latex = lambda lst: r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
+        r' \\ '.join([(str.join(' & ', (str(el) for el in row))) for row in lst]))
+
+    solve = {'rows': rows, 'columns': columns, 'matrix': matrix2latex(matrix), 'is_valid': True}
+    print('matrix: {}'.format(matrix))
 
     return solve

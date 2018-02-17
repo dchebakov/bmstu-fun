@@ -37,22 +37,9 @@
 
 {% if solve.is_valid %}
 
-    <p class="big-formuls-ftnz">Исходная матрица: \(A = \begin{pmatrix}
-        <script>
-            let columns = '{{ solve.columns }}'.replace(',', '.'),
-                rows = '{{ solve.rows }}'.replace(',', '.'),
-                matrix = {{ solve.matrix }};
-                for (let i = 0; i < rows; i++){
-                    for (let j = 0; j < columns; j++){
-                      document.write(matrix[i][j]);
-                      document.write("&amp;");
-                    }
-                    document.write("&#092;&#092;");
-                }
-        </script>
-\end{pmatrix}\)</p>
+    <p class="big-formuls-ftnz">Исходная матрица: \(A =  {{ solve.matrix }} \)</p>
     <p class="big-formuls-ftnz">Чебышевская норма:<br>
-    \( \left \| A \right \| = max\{max\{\}:max\{|x^1|, |x^2|\}=1\} = \)</p>
+        \( \left \| A \right \| = max\{max\{\}:max\{|x^1|, |x^2|\}=1\} = \)</p>
 
 {% else %}
 
@@ -201,7 +188,7 @@
             }
 
             console.log(encodeURI(locationString));
-            window.location = this.action +  '?rows=' + rows + '&columns=' + columns + '&values=' + locationString;
+            window.location = this.action + '?rows=' + rows + '&columns=' + columns + '&values=' + locationString;
         });
 
     </script>
