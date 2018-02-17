@@ -1,0 +1,34 @@
+{% if solve.is_valid %}
+    <p class="big-formuls-ftnz">В рюкзак входят предметы под номерами: {{ solve.answer }}</p>
+    <p class="big-formuls-ftnz">Вес рюкзака: {{ solve.max }}</p>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-md-4">
+                <label class="control-label" for="W">Введите максимальную массу \( W \):</label>
+            </div>
+            <div class="col-md-8">
+                <input class="form-control" type="text" id="W" value="13" name="W" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <label class="control-label" for="w">Введите массы предметов \( w_i \):</label>
+            </div>
+            <div class="col-md-8">
+                <input class="form-control" type="text" id="w" value="3 4 5 8 9" name="w" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <label class="control-label" for="p">Введите стоимости предметов \( p_i \):</label>
+            </div>
+            <div class="col-md-8">
+                <input class="form-control" type="text" id="p" value="1 6 4 7 6" name="p" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success" type="submit">Получить решение!</button>
+        </div>
+    </form>
+{% endif %}

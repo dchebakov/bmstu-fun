@@ -11,26 +11,6 @@ from sympy.parsing.sympy_parser import parse_expr
 import re
 
 
-def exchange_3(sum, count, monets):
-    if sum < 0:
-        return count
-    elif sum == 0:
-        return count + 1
-    count += exchange_2(sum, 0, monets[1::])
-    sum -= monets[0]
-    return exchange_3(sum, count, monets)
-
-
-def exchange_2(sum, count, monets):
-    if sum < 0:
-        return count
-    elif sum == 0:
-        return count + 1
-    if sum % monets[1] == 0:
-        count += 1
-    return exchange_2(sum - monets[0], count, monets)
-
-
 def check_args(*args):
     '''Общая проверка'''
     for arg in args:
@@ -50,6 +30,24 @@ def isint(s):
 
 @task_decorate
 def technoparkEx1(request):
+    def exchange_3(sum, count, monets):
+        if sum < 0:
+            return count
+        elif sum == 0:
+            return count + 1
+        count += exchange_2(sum, 0, monets[1::])
+        sum -= monets[0]
+        return exchange_3(sum, count, monets)
+
+    def exchange_2(sum, count, monets):
+        if sum < 0:
+            return count
+        elif sum == 0:
+            return count + 1
+        if sum % monets[1] == 0:
+            count += 1
+        return exchange_2(sum - monets[0], count, monets)
+
     sum = request.GET.get('sum')
     monets_input = request.GET.get('monets')
 
@@ -79,3 +77,47 @@ def technoparkEx1(request):
     return solve
 
 
+@task_decorate
+def technoparkEx2(request):
+    w = request.GET.get('w')
+    p = request.GET.get('p')
+    W = int(request.GET.get('W'))
+
+    if not check_args(w, p, W):
+        return {'is_valid': False}
+
+    w = [0] + [int(el) for el in w.split(' ')]
+    p = [0] + [int(el) for el in p.split(' ')]
+
+    N = len(w) - 1
+    if N != (len(p) - 1):
+        return {'is_valid': False}
+
+    A = [[0 for _ in range(W + 1)] for j in range(N + 1)]
+
+    for k in range(1, N + 1):
+        for s in range(1, W + 1):
+            if s >= w[k]:
+                A[k][s] = max(A[k - 1][s], A[k - 1][int(s - w[k])] + p[k])
+            else:
+                A[k][s] = A[k - 1][s]
+
+    ans = []
+    print('A: {}'.format(A))
+
+    def findAns(k, s):
+        if A[k][s] == 0:
+            return
+        if A[k - 1][s] == A[k][s]:
+            findAns(k - 1, s)
+        else:
+            findAns(k - 1, s - w[k])
+            ans.append(k)
+
+    findAns(N, W)
+
+    max_weight = 0
+    for i in ans:
+        max_weight += w[i]
+
+    return {'answer': str.join(', ', [str(x) for x in ans]), 'max': max_weight, 'is_valid': True}
