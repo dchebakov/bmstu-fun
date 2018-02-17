@@ -37,14 +37,29 @@
 
 {% if solve.is_valid %}
 
-    <p>Решение!</p>
+    <p class="big-formuls-ftnz">Исходная матрица: \(A = \begin{pmatrix}
+        <script>
+            let columns = '{{ solve.columns }}'.replace(',', '.'),
+                rows = '{{ solve.rows }}'.replace(',', '.'),
+                matrix = {{ solve.matrix }};
+                for (let i = 0; i < rows; i++){
+                    for (let j = 0; j < columns; j++){
+                      document.write(matrix[i][j]);
+                      document.write("&amp;");
+                    }
+                    document.write("&#092;&#092;");
+                }
+        </script>
+\end{pmatrix}\)</p>
+    <p class="big-formuls-ftnz">Чебышевская норма:<br>
+    \( \left \| A \right \| = max\{max\{\}:max\{|x^1|, |x^2|\}=1\} = \)</p>
 
 {% else %}
 
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" name="norm">
         <div class="form-group">
             <div class="col-xs-2 big-fntz">
-                <span>Введите матрицу: </span>
+                <span>Введите матрицу \( A \): </span>
             </div>
             <div class="col-xs-10">
                 <div class="brackets">
@@ -90,7 +105,7 @@
 
         <div class="form-group">
             <div class="col-xs-12">
-                <button class="btn btn-success" type="submit">Вычислить нормы</button>
+                <button class="btn btn-success" type="submit">Получить решение!</button>
             </div>
         </div>
     </form>
