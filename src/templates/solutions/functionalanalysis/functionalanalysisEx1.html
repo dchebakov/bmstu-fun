@@ -39,7 +39,8 @@
 
     <p class="big-formuls-ftnz">Исходная матрица: \(A =  {{ solve.matrix }} \)</p>
     <p class="big-formuls-ftnz">Чебышевская норма:<br>
-        \( \left \| A \right \| = max\{max\{\}:max\{|x^1|, |x^2|\}=1\} = \)</p>
+        \( \left \| A \right \| = max\{ {{ solve.cheb }} \} = {{ solve.cheb_norm }},\\
+        при \ условии, что \  max\{ |x^i| \} = 1, i=\overline{1, n}.  \)</p>
 
 {% else %}
 

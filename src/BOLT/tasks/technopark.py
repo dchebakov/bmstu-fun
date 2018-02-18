@@ -73,7 +73,7 @@ def technoparkEx1(request):
         answer = exchange_3(sum, 0, monets)
     else:
         return {'is_valid': False}
-    solve = {'answer': answer, 'sum': sum, 'monets': monets, 'is_valid': True}
+    solve = {'answer': answer, 'sum': sum, 'monets': str.join(', ', [str(x) for x in monets]), 'is_valid': True}
     return solve
 
 
@@ -81,10 +81,12 @@ def technoparkEx1(request):
 def technoparkEx2(request):
     w = request.GET.get('w')
     p = request.GET.get('p')
-    W = int(request.GET.get('W'))
+    W = request.GET.get('W')
 
     if not check_args(w, p, W):
         return {'is_valid': False}
+
+    W = int(W)
 
     w = [0] + [int(el) for el in w.split(' ')]
     p = [0] + [int(el) for el in p.split(' ')]
@@ -103,7 +105,6 @@ def technoparkEx2(request):
                 A[k][s] = A[k - 1][s]
 
     ans = []
-    print('A: {}'.format(A))
 
     def findAns(k, s):
         if A[k][s] == 0:

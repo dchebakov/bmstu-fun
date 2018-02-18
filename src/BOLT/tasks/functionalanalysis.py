@@ -21,6 +21,8 @@ def check_args(*args):
 
 @task_decorate
 def functionalanalysisEx1(request):
+    ROUNDING_NUMBER = 2
+
     rows = request.GET.get('rows')
     columns = request.GET.get('columns')
     values = request.GET.get('values')
@@ -34,7 +36,6 @@ def functionalanalysisEx1(request):
     columns = int(columns)
     values = values.split(' ')
 
-
     if len(values) != rows * columns:
         return {'is_valid': False}
 
@@ -45,10 +46,17 @@ def functionalanalysisEx1(request):
             row.append(float(values.pop(0)))
         matrix.append(row)
 
-    matrix2latex = lambda lst: r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
-        r' \\ '.join([(str.join(' & ', (str(el) for el in row))) for row in lst]))
+    cheb_norm = round(max(sum(row) for row in matrix), ROUNDING_NUMBER)
 
-    solve = {'rows': rows, 'columns': columns, 'matrix': matrix2latex(matrix), 'is_valid': True}
-    print('matrix: {}'.format(matrix))
+    def matrix2latex(lst):
+        return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
+            r' \\ '.join([(str.join(' & ', (str(round(el, ROUNDING_NUMBER)) for el in row))) for row in lst]))
 
-    return solve
+    def chebnorm2latex(lst):
+        return r'\left | {} \right |'.format(
+            r'\right | , \left |'.join(
+                [(str.join(' + ', (str(round(el, ROUNDING_NUMBER)) + 'x^' + str(row.index(el) + 1) for el in row))) for
+                 row in lst]))
+
+    return {'rows': rows, 'columns': columns, 'matrix': matrix2latex(matrix), 'cheb': chebnorm2latex(matrix),
+            'cheb_norm': cheb_norm, 'is_valid': True}
