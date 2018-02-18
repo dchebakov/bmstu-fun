@@ -1,30 +1,35 @@
 {% if solve.is_valid %}
+    <p class="big-formuls-ftnz">Вы ввели:</p><hr>
+    <p class="big-formuls-ftnz">Стоимости предметов: {{ solve.p }}</p>
+    <p class="big-formuls-ftnz">Массы предметов: {{ solve.w }}</p>
+    <p class="big-formuls-ftnz">Максимальная масса: {{ solve.W }}</p>
+    <p class="big-formuls-ftnz">Оптимальное решение:</p><hr>
     <p class="big-formuls-ftnz">В рюкзак входят предметы под номерами: {{ solve.answer }}</p>
-    <p class="big-formuls-ftnz">Вес рюкзака: {{ solve.max }}</p>
+    <p class="big-formuls-ftnz">Общая масса рюкзака: {{ solve.max }}</p>
 {% else %}
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
             <div class="col-md-4">
-                <label class="control-label" for="W">Введите максимальную массу \( W \):</label>
+                <label class="control-label" for="W">Введите максимальную массу:</label>
             </div>
             <div class="col-md-8">
-                <input class="form-control" type="text" id="W" value="13" name="W" required>
+                <input class="form-control" type="text" id="W" name="W" required>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-4">
-                <label class="control-label" for="w">Введите массы предметов \( w_i \):</label>
+                <label class="control-label" for="w">Введите массы предметов:</label>
             </div>
             <div class="col-md-8">
-                <input class="form-control" type="text" id="w" value="3 4 5 8 9" name="w" required>
+                <input class="form-control" type="text" id="w" name="w" required>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-4">
-                <label class="control-label" for="p">Введите стоимости предметов \( p_i \):</label>
+                <label class="control-label" for="p">Введите стоимости предметов:</label>
             </div>
             <div class="col-md-8">
-                <input class="form-control" type="text" id="p" value="1 6 4 7 6" name="p" required>
+                <input class="form-control" type="text" id="p" name="p" required>
             </div>
         </div>
         <div class="form-group">

@@ -88,8 +88,11 @@ def technoparkEx2(request):
 
     W = int(W)
 
-    w = [0] + [int(el) for el in w.split(' ')]
-    p = [0] + [int(el) for el in p.split(' ')]
+    try:
+        w = [0] + [int(v) for v in filter(None, re.split("[, ]+", w))]
+        p = [0] + [int(v) for v in filter(None, re.split("[, ]+", p))]
+    except ValueError:
+        return {'is_valid': False}
 
     N = len(w) - 1
     if N != (len(p) - 1):
@@ -121,4 +124,6 @@ def technoparkEx2(request):
     for i in ans:
         max_weight += w[i]
 
-    return {'answer': str.join(', ', [str(x) for x in ans]), 'max': max_weight, 'is_valid': True}
+    return {'answer': str.join(', ', [str(x) for x in ans]), 'max': max_weight,
+            'w': str.join(', ', [str(x) for x in w if x != 0]), 'p': str.join(', ', [str(x) for x in p if x != 0]),
+            'W': W, 'is_valid': True}

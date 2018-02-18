@@ -37,17 +37,26 @@
 
 {% if solve.is_valid %}
 
-    <p class="big-formuls-ftnz">Исходная матрица: \(A =  {{ solve.matrix }} \)</p>
-    <p class="big-formuls-ftnz">Чебышевская норма:<br>
-        \( \left \| A \right \| = max\{ {{ solve.cheb }} \} = {{ solve.cheb_norm }},\\
-        при \ условии, что \  max\{ |x^i| \} = 1, i=\overline{1, n}.  \)</p>
+    <p class="big-formuls-ftnz">Исходная матрица: \(A = {{ solve.matrix }} \)</p>
+    <p class="big-formuls-ftnz">Чебышевская норма:</p><hr>
+    <p class="big-formuls-ftnz">\( \left \| A \right \| = max\{ {{ solve.cheb }} \} = {{ solve.cheb_norm }}, \)</p>
+    <p class="big-formuls-ftnz">при условии, что \(max\{ |x^i| \} = 1, i=\overline{1, n},\) где n - число элементов
+        строки матрицы.</p>
+    <p class="big-formuls-ftnz">Евклидова норма:</p><hr>
+    <p class="big-formuls-ftnz">\( \left \| A \right \| = \sqrt{\rho_{spr}(A^T \cdot A)}, \ \rho_{spr}(B) = max\{|\lambda|: \lambda \in Spr(B)\}\)</p>
+    <p class="big-formuls-ftnz">\( \lambda - \)собственные значения матрицы \( B = A^T \cdot A\)</p>
+    <p class="big-formuls-ftnz">\( A^T =  {{ solve.matrix_transp }}\)</p>
+    <p class="big-formuls-ftnz">\( B = A^T \cdot A = {{ solve.B }}, \ Spr(B) = {{ solve.eig }},\)</p>
+    <p class="big-formuls-ftnz">\(\rho_{spr}(B) = max\{|\lambda|: \lambda \in Spr(B)\} = {{ solve.max_eig }}\)</p>
+    <p class="big-formuls-ftnz">\( || A || = \sqrt{\rho_{spr}(B)} = \sqrt{ {{ solve.max_eig }} } = {{ solve.eucl_norm }}.\)</p>
+
 
 {% else %}
 
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" name="norm">
         <div class="form-group">
             <div class="col-xs-2 big-fntz">
-                <span>Введите матрицу \( A \): </span>
+                <span>Введите матрицу: </span>
             </div>
             <div class="col-xs-10">
                 <div class="brackets">

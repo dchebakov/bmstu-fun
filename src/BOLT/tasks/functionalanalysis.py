@@ -7,6 +7,7 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 from sympy import *
+import numpy as np
 from sympy.parsing.sympy_parser import parse_expr
 import re
 
@@ -46,6 +47,17 @@ def functionalanalysisEx1(request):
             row.append(float(values.pop(0)))
         matrix.append(row)
 
+    matrix_transp = list(zip(*matrix))
+
+    matrix_np = np.matrix(matrix)
+    matrix_transp_np = np.matrix(matrix_transp)
+
+    B = matrix_transp_np * matrix_np
+    eig, v = np.linalg.eig(B)
+    max_eig = max(abs(x) for x in eig)
+    B = B.tolist()
+
+    eucl_norm = sqrt(max_eig)
     cheb_norm = round(max(sum(row) for row in matrix), ROUNDING_NUMBER)
 
     def matrix2latex(lst):
@@ -55,8 +67,11 @@ def functionalanalysisEx1(request):
     def chebnorm2latex(lst):
         return r'\left | {} \right |'.format(
             r'\right | , \left |'.join(
-                [(str.join(' + ', (str(round(el, ROUNDING_NUMBER)) + 'x^' + str(row.index(el) + 1) for el in row))) for
+                [(str.join(' + ', (str(round(el, ROUNDING_NUMBER)) + 'x^' + str(i + 1) for i, el in enumerate(row))))
+                 for
                  row in lst]))
 
     return {'rows': rows, 'columns': columns, 'matrix': matrix2latex(matrix), 'cheb': chebnorm2latex(matrix),
-            'cheb_norm': cheb_norm, 'is_valid': True}
+            'cheb_norm': round(cheb_norm, ROUNDING_NUMBER), 'matrix_transp': matrix2latex(matrix_transp), 'B': matrix2latex(B),
+            'eig': str.join(', ', [str(round(x, ROUNDING_NUMBER)) for x in eig]),
+            'max_eig': round(max_eig, ROUNDING_NUMBER), 'eucl_norm': round(eucl_norm, ROUNDING_NUMBER), 'is_valid': True}
