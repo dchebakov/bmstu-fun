@@ -7,6 +7,7 @@ register = template.Library()
 def typename(object):
     return object.__class__.__name__
 
+
 @register.filter('shortern')
 def shorten(str):
     if len(str) < 20:

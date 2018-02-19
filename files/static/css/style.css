@@ -159,7 +159,7 @@ td {
 }
 
 @media print {
-     .ignore-to-pdf {
+    .ignore-to-pdf {
         display: none;
     }
 
@@ -213,4 +213,14 @@ td {
     border: 1px solid #ccc;
     border-radius: 4px;
     text-align: center;
+}
+
+.solution-block {
+    font-size: 16px;
+}
+
+.solution-block > :first-of-type {
+    font-size: 18px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 1%;
 }

@@ -1,11 +1,17 @@
 {% if solve.is_valid %}
-    <p class="big-formuls-ftnz">Вы ввели:</p><hr>
-    <p class="big-formuls-ftnz">Стоимости предметов: {{ solve.p }}</p>
-    <p class="big-formuls-ftnz">Массы предметов: {{ solve.w }}</p>
-    <p class="big-formuls-ftnz">Максимальная масса: {{ solve.W }}</p>
-    <p class="big-formuls-ftnz">Оптимальное решение:</p><hr>
-    <p class="big-formuls-ftnz">В рюкзак входят предметы под номерами: {{ solve.answer }}</p>
-    <p class="big-formuls-ftnz">Общая масса рюкзака: {{ solve.max }}</p>
+    <div class="solution-block">
+        <p class="">Вы ввели:</p>
+        <p class="">Стоимости предметов: {{ solve.p }}</p>
+        <p class="">Массы предметов: {{ solve.w }}</p>
+        <p class="">Максимальная масса: {{ solve.W }}</p>
+    </div>
+    <div class="solution-block">
+        <p class="">Оптимальное решение:</p>
+        <p class="">В рюкзак входят предметы под номерами: {{ solve.answer }}</p>
+        <p class="">Общая масса рюкзака: {{ solve.max_weight }}</p>
+        <p class="">Общая стоимость: {{ solve.max_cost }}</p>
+    </div>
+
 {% else %}
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
@@ -33,7 +39,9 @@
             </div>
         </div>
         <div class="form-group">
-            <button class="btn btn-success" type="submit">Получить решение!</button>
+            <div class="col-xs-12">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
         </div>
     </form>
 {% endif %}

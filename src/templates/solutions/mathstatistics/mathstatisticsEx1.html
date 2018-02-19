@@ -510,25 +510,38 @@
 
 {% else %}
 
-    <form action="{{ task.get_absolute_url }}" method="get">
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
+            <div class="col-xs-9 col-xs-offset-3">
         <textarea class="form-control"
                   placeholder="Введите выборку "
                   name="numbers" required maxlength="5000" rows="4"></textarea>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="razb" style="font-weight: 100;">Введите число разбиений (необязательно): </label>
-            <input type="number" id="razb" name="razb">
+            <div class="col-xs-3">
+                <label class="control-label" for="razb" style="font-weight: 100;">Введите число разбиений
+                    (необязательно): </label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="razb" name="razb">
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="1-alpha">Введите надежность: </label>
-            <input type="text" id="1-alpha" name="1-alpha" required>
+            <div class="col-xs-3">
+                <label class="control-label" for="1-alpha">Введите надежность: </label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="1-alpha" name="1-alpha" required>
+            </div>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-success" type="submit">Получить решение!</button>
+            <div class="col-xs-12">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
         </div>
     </form>
 

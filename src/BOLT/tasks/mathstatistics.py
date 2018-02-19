@@ -102,8 +102,8 @@ def mathstatisticsEx1(request):
 
     # Eval-distribution
     L_RAVN = 2
-    ravn_a = ( NUMBER_OF_VALUES * min - max ) /(NUMBER_OF_VALUES-1)
-    ravn_b = ( NUMBER_OF_VALUES * max - min ) /(NUMBER_OF_VALUES-1)
+    ravn_a = (NUMBER_OF_VALUES * min - max) / (NUMBER_OF_VALUES - 1)
+    ravn_b = (NUMBER_OF_VALUES * max - min) / (NUMBER_OF_VALUES - 1)
     ravn_levo_a = min - (max - min) * (1 - alpha ** (1 / NUMBER_OF_VALUES))
     ravn_pravo_b = max + (max - min) * (1 - alpha ** (1 / NUMBER_OF_VALUES))
 
@@ -127,7 +127,7 @@ def mathstatisticsEx1(request):
         ravn_w += (count_on_intervals[i]) ** 2 / NUMBER_OF_VALUES / ravn_p[i]
     ravn_w -= NUMBER_OF_VALUES
     ravn_w = abs(ravn_w)
-    ravn_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS-1-L_RAVN)
+    ravn_wkr = chi2.ppf(nadezhnost, NUMBER_OF_INTERVALS - 1 - L_RAVN)
     ravn_answer = pirson_answer(ravn_w, ravn_wkr, nadezhnost)
 
     # Exp-distribution

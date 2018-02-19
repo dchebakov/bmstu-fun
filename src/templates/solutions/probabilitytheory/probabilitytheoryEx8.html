@@ -15,18 +15,30 @@
         P_1) = {{ solve.P1 }} \cdot (1 - {{ solve.P2 }}) + {{ solve.P2 }} \cdot (1 - {{ solve.P1 }}) = {{ solve.Pc }}.
         \)</p>
 {% else %}
-    <form action="{{ task.get_absolute_url }}" method="get">
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
-            <label for="k1" class="big-formuls-ftnz">Введите \(k_1\)</label>
-            <input type="number" id="k1" name="k1" required>
+            <div class="col-xs-3">
+                <label for="k1" class="big-formuls-ftnz control-label">Введите \(k_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="k1" name="k1" required>
+            </div>
         </div>
         <div class="form-group">
-            <label for="k2" class="big-formuls-ftnz">Введите \(k_2\)</label>
-            <input type="number" id="k2" name="k2" required>
+            <div class="col-xs-3">
+                <label for="k2" class="control-label big-formuls-ftnz">Введите \(k_2\)</label>
+            </div>
+
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="k2" name="k2" required>
+            </div>
         </div>
         <div class="form-group">
-            <button class="btn btn-success" type="submit">Получить решение!</button>
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
         </div>
     </form>
+
 {% endif %}
        

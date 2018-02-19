@@ -44,7 +44,11 @@ def functionalanalysisEx1(request):
     for _ in range(rows):
         row = []
         for _ in range(columns):
-            row.append(float(values.pop(0)))
+            try:
+                row.append(float(values.pop(0)))
+            except ValueError:
+                return {'is_valid': False}
+
         matrix.append(row)
 
     matrix_transp = list(zip(*matrix))
@@ -72,6 +76,8 @@ def functionalanalysisEx1(request):
                  row in lst]))
 
     return {'rows': rows, 'columns': columns, 'matrix': matrix2latex(matrix), 'cheb': chebnorm2latex(matrix),
-            'cheb_norm': round(cheb_norm, ROUNDING_NUMBER), 'matrix_transp': matrix2latex(matrix_transp), 'B': matrix2latex(B),
+            'cheb_norm': round(cheb_norm, ROUNDING_NUMBER), 'matrix_transp': matrix2latex(matrix_transp),
+            'B': matrix2latex(B),
             'eig': str.join(', ', [str(round(x, ROUNDING_NUMBER)) for x in eig]),
-            'max_eig': round(max_eig, ROUNDING_NUMBER), 'eucl_norm': round(eucl_norm, ROUNDING_NUMBER), 'is_valid': True}
+            'max_eig': round(max_eig, ROUNDING_NUMBER), 'eucl_norm': round(eucl_norm, ROUNDING_NUMBER),
+            'is_valid': True}

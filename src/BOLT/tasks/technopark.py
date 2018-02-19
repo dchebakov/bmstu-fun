@@ -120,10 +120,14 @@ def technoparkEx2(request):
 
     findAns(N, W)
 
-    max_weight = 0
+    max_weight = max_cost = 0
     for i in ans:
         max_weight += w[i]
+        max_cost += p[i]
 
-    return {'answer': str.join(', ', [str(x) for x in ans]), 'max': max_weight,
+    print('max_w: {}'.format(max_weight))
+    print('max_c: {}'.format(max_cost))
+
+    return {'answer': str.join(', ', [str(x) for x in ans]), 'max_weight': max_weight, 'max_cost': max_cost,
             'w': str.join(', ', [str(x) for x in w if x != 0]), 'p': str.join(', ', [str(x) for x in p if x != 0]),
             'W': W, 'is_valid': True}

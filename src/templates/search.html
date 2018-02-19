@@ -2,13 +2,13 @@
 {% load tags %}
 {% block main %}
     {% if tasks %}
-    {% autoescape off %}
-        {% for task in tasks %}
-            <div class="post">
-                <a href="{{ task.get_absolute_url }}">{{ task.title }}</a>
-            </div>
-        {% endfor %}
-    {% endautoescape %}
+        {% autoescape off %}
+            {% for task in tasks %}
+                <div class="post">
+                    <a href="{{ task.get_absolute_url }}">{{ task.title }}</a>
+                </div>
+            {% endfor %}
+        {% endautoescape %}
     {% else %}
         <div class="post">
             <p>Не нашли, что искали? Добавьте задачу, и мы её обязательно решим!</p>
