@@ -125,9 +125,6 @@ def technoparkEx2(request):
         max_weight += w[i]
         max_cost += p[i]
 
-    print('max_w: {}'.format(max_weight))
-    print('max_c: {}'.format(max_cost))
-
     return {'answer': str.join(', ', [str(x) for x in ans]), 'max_weight': max_weight, 'max_cost': max_cost,
             'w': str.join(', ', [str(x) for x in w if x != 0]), 'p': str.join(', ', [str(x) for x in p if x != 0]),
             'W': W, 'is_valid': True}

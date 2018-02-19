@@ -1,0 +1,129 @@
+{% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+
+<style>
+    .matrix-td {
+        min-width: 40px;
+        min-height: 30px;
+        text-align: center;
+        padding: 6px;
+        border: 1px solid rgb(85, 85, 85);
+        border-radius: 5px;
+        display: inline-block;
+        margin: 2px 3px;
+    }
+
+    .brackets {
+        border: 2px solid rgb(85, 85, 85);
+        border-radius: 25px;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        padding: 8px;
+        display: inline-block;
+    }
+
+    .big-fntz {
+        line-height: 30px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .remove-padding {
+        padding: 2px 10px !important;
+    }
+</style>
+
+{% if solve.is_valid %}
+    <p class="big-formuls-ftnz">X</p>
+
+{% else %}
+
+   <form action="{{ task.get_absolute_url }}" name="Christoffel-input" class="form-horizontal" style="padding-top: 15px">
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="Christoffel-name" class="control-label">Символы Кристоффеля:</label>
+                </div>
+                <div class="col-sm-6">
+                    <select name="Christoffel-name" id="Christoffel-name" class="form-control">
+                        <option value="1">Первого рода</option>
+                        <option value="2">Второго рода</option>
+                    </select>
+                </div>
+            </div>
+
+       <div class="form-group">
+            <div class="col-xs-2 big-formuls-fntz">
+                <span>Введите метрическую матрицу:</span>
+            </div>
+            <div class="col-xs-10">
+                <div class="brackets">
+                    <div class="matrix">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-danger" id="reset-button" type="reset">Очистить матрицу</button>
+            </div>
+        </div>
+
+        <button class="btn btn-success" type="submit">Получить решение!</button>
+    </form>
+
+    <script>
+        let columns = 2, rows = 2;
+        let matrix = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            let MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
+
+            for (let i = 0; i < rows; i++) {
+                matrix.push([]);
+                let row = document.createElement('div');
+                row.className = 'matrix-row';
+                for (let j = 0; j < columns; j++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'matrix-td';
+                    row.appendChild(cell);
+                    let mathCell = MQ.MathField(cell);
+                    matrix[i].push(mathCell);
+                }
+
+                document.querySelectorAll('.matrix')[0].appendChild(row);
+            }
+
+        });
+
+        document.querySelector('#reset-button').addEventListener('click', function (ev) {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    matrix[i][j].latex('');
+                }
+            }
+        });
+
+        document.forms['Christoffel-input'].addEventListener('submit', function (ev) {
+            ev.preventDefault();
+
+
+            let locationString = '';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    let val = matrix[i][j].text();
+                    if (!val.length) {
+                        return false;
+                    }
+
+                    locationString += val + ' ';
+                }
+            }
+            symbol_type = document.querySelector('#Christoffel-name');
+            window.location = this.action + '?values=' + locationString + '&Christoffel-name=' + symbol_type.value;
+        });
+
+
+    </script>
+{% endif %}
