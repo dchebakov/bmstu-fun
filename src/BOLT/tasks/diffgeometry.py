@@ -33,6 +33,7 @@ def diffgeometryEx1(request):
     xi22 = re.sub(r'\^', '**', str(xi2))
     eta11 = re.sub(r'\^', '**', str(eta1))
     eta22 = re.sub(r'\^', '**', str(eta2))
+
     x = [Symbol('x'), Symbol('y')]
 
     try:
@@ -47,6 +48,4 @@ def diffgeometryEx1(request):
             phi[i] += (xi[a] * diff(eta[i], x[a]) - eta[a] * diff(xi[i], x[a]))
         phi[i] = latex(phi[i])
 
-    solve = {'phi1': phi[0], 'phi2': phi[1], 'xi1': xi1, 'xi2': xi2, 'eta1': eta1, 'eta2': eta2, 'is_valid': True}
-
-    return solve
+    return {'phi1': phi[0], 'phi2': phi[1], 'xi1': xi1, 'xi2': xi2, 'eta1': eta1, 'eta2': eta2, 'is_valid': True}

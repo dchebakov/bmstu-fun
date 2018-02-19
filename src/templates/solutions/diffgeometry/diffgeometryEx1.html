@@ -82,9 +82,13 @@
                 eta2 = MQ.MathField(document.querySelector('#eta2'));
 
             document.forms['com-form'].addEventListener('submit', function (e) {
+                let xi1Uri = encodeURIComponent(xi1.text()),
+                    xi2Uri = encodeURIComponent(xi2.text()),
+                    eta1Uri = encodeURIComponent(eta1.text()),
+                    eta2Uri = encodeURIComponent(eta2.text());
                 e.preventDefault();
-                window.location = this.action + `?xi1=${xi1.text()}&xi2=${xi2.text()}&eta1=${eta1.text()}&eta2=${eta2.text()}`;
-            })
+                window.location = this.action + `?xi1=${xi1Uri}&xi2=${xi2Uri}&eta1=${eta1Uri}&eta2=${eta2Uri}`;
+            });
         });
     </script>
 {% endif %}

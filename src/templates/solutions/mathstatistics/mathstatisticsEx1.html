@@ -512,17 +512,18 @@
 
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
-            <div class="col-xs-9 col-xs-offset-3">
-        <textarea class="form-control"
-                  placeholder="Введите выборку "
-                  name="numbers" required maxlength="5000" rows="4"></textarea>
+            <div class="col-xs-3">
+                <label class="control-label" for="sample">Введите выборку: </label>
+            </div>
+            <div class="col-xs-9">
+                    <textarea id="sample" class="form-control"
+                              name="numbers" required maxlength="5000" rows="4"></textarea>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-xs-3">
-                <label class="control-label" for="razb" style="font-weight: 100;">Введите число разбиений
-                    (необязательно): </label>
+                <label class="control-label" for="razb">Введите число разбиений (необязательно): </label>
             </div>
             <div class="col-xs-9">
                 <input class="form-control" type="number" id="razb" name="razb">
