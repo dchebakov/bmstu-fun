@@ -1,11 +1,16 @@
 {% if solve.is_valid %}
-    <p class="big-formuls-ftnz">За элементарное событие будем считать один из N вызовов.<br>
-        Вероятность M сбоев из N вызовов найдем по формуле Бернулли, которая при \(p \rightarrow 0\) и \(n\rightarrow
-        \infty\), переходит в формулу Пуассона: <br>
-        $$P = \frac{\lambda ^M}{M!} \cdot e^{-\lambda}~,$$ где \( \lambda = N \cdot P\) - среднее количество сбоев.<br>
-        \(P = \large \frac{ {{ solve.lam }} ^ { {{ solve.M }} } }{ {{ solve.M }}! } \cdot e^{- {{ solve.lam }} }\)
-        \(= {{ solve.Pa }}. \)<br>
-    </p>
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">За элементарное событие будем считать один из N вызовов.<br>
+            Вероятность M сбоев из N вызовов найдем по формуле Бернулли, которая при \(p \rightarrow 0\) и
+            \(n\rightarrow
+            \infty\), переходит в формулу Пуассона: <br>
+            $$P = \frac{\lambda ^M}{M!} \cdot e^{-\lambda}~,$$ где \( \lambda = N \cdot P\) - среднее количество
+            сбоев.<br>
+            \(P = \large \frac{ {{ solve.lam }} ^ { {{ solve.M }} } }{ {{ solve.M }}! } \cdot e^{- {{ solve.lam }} }\)
+            \(= {{ solve.Pa }}. \)<br>
+        </p>
+    </div>
 {% else %}
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
