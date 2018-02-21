@@ -2,7 +2,7 @@ from django.conf.urls import url
 from .views import (main, search, signup, logout,
                     settings, section, task, comment,
                     thanks, newtask, success, listofsentsolutions,
-                    checknewsolution, aboutus, utility, test)
+                    checknewsolution, about_us, utility)
 
 urlpatterns = [
     url(r'^$', main, name='main'),
@@ -20,8 +20,8 @@ urlpatterns = [
     url(r'^checknewsolution/(?P<id>\d+)$', checknewsolution, name='checknewsolution'),
     # url(r'^createnewtask/(?P<id>\d+)$', createnewtask, name='createnewtask'),
     # url(r'^deletetask/(?P<id>\d+)$', deletetask, name='deletetask'),
-    url(r'^aboutus/', aboutus, name='aboutus'),
+    url(r'^aboutus/', about_us, name='aboutus'),
     url(r'^utility/', utility, name='utility'),
-    url(r'^test/', test, name='test')
+    # url(r'^test/', test, name='test')
     # url(r'^rate/$',rate,name='rate')
 ]

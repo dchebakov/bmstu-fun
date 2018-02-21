@@ -40,7 +40,7 @@
 
             <div class="form-group hide" id="freedom-group-1">
                 <div class="col-sm-5">
-                    <label for="freedom" class="control-label"><span id="freedom-input-1">Введите число степеней свободы \(n\): </span></label>
+                    <label for="freedom-1" class="control-label"><span id="freedom-input-1">Введите число степеней свободы \(n\): </span></label>
                 </div>
                 <div class="col-sm-6">
                     <input class="form-control" type="text" id="freedom-1" required value="5">
@@ -49,7 +49,7 @@
 
             <div class="form-group hide" id="freedom-group-2">
                 <div class="col-sm-5">
-                    <label for="freedom"
+                    <label for="freedom-2"
                            class="control-label"><span>Введите число степеней свободы знаменателя \(k_2\): </span></label>
                 </div>
                 <div class="col-sm-6">
@@ -72,7 +72,7 @@
                 valueArea = document.querySelector('#value-area');
 
             e.preventDefault();
-            fetch('/aboutus/', {
+            fetch('/utility/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -203,7 +203,7 @@
                 valueArea = document.querySelector('#laplace-value-area');
 
             e.preventDefault();
-            fetch('/aboutus/', {
+            fetch('/utility/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -352,7 +352,7 @@
                 valueArea = document.querySelector('#value-area-for-sample');
 
             e.preventDefault();
-            fetch('/aboutus/', {
+            fetch('/utility/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

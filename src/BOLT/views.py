@@ -6,7 +6,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.conf import settings as st
@@ -254,9 +253,6 @@ def newtask(request):
             return redirect(success)
     else:
         form = NewTaskForm()
-        profile = None
-        if request.user.is_authenticated():
-            profile = UserProfile.objects.get(user=request.user)
 
     return render(request, 'newtask.html', {'user': request.user,
                                             'form': form,
@@ -337,9 +333,9 @@ def checknewsolution(request, id):
                                                      })
 
 
-def aboutus(request):
+def utility(request):
     if request.method == 'GET':
-        return render(request, 'aboutus.html', get_default_data(request))
+        return render(request, 'utility.html', get_default_data(request))
     else:
         content = json.loads(request.body.decode('utf-8'))
         case = content['case']
@@ -396,16 +392,5 @@ def aboutus(request):
         return HttpResponse(res, content_type='application/json')
 
 
-def utility(request):
-    return render(request, 'utility.html', get_default_data(request))
-
-
-def test(request):
-    try:
-        a = request.GET.get('a')
-        b = request.GET.get('b')
-        c = request.GET.get('c')
-    except KeyError:
-        a = b = c = ''
-
-    return render(request, 'test/test.html', {'a': a, 'b': b, 'c': c})
+def about_us(request):
+    return render(request, 'aboutus.html', get_default_data(request))
