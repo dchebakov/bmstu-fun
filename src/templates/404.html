@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+{% block main %}
+    <div class="post">
+        <a href="{{ task.get_absolute_url }}">{{ task.title }}</a>
+    </div>
+{% endblock %}
+
+{% block loginblock %}{% endblock %}
+{% block sections %}{% endblock %}
