@@ -1,7 +1,10 @@
 {% if solve.is_valid %}
-    <p class="big-formuls-ftnz">С помощью монет {{ solve.monets }} представить число {{ solve.sum }}
-        можно {{ solve.answer }}
-        способами.<br></p>
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">С помощью монет {{ solve.monets }} представить число {{ solve.sum }}
+            можно {{ solve.answer }}
+            способами.<br></p>
+    </div>
 {% else %}
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
