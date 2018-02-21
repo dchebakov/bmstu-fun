@@ -32,28 +32,31 @@
     .remove-padding {
         padding: 2px 10px !important;
     }
+
 </style>
 
 
 {% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Исходная матрица: \(A = {{ solve.matrix }} \)</p>
+        <p class="big-formuls-ftnz">Чебышевская норма:</p>
+        <hr>
+        <p class="big-formuls-ftnz">\( \left \| A \right \| = max\{ {{ solve.cheb }} \} = {{ solve.cheb_norm }}, \)</p>
+        <p class="big-formuls-ftnz">при условии, что \(max\{ |x^i| \} = 1, i=\overline{1, n},\) где n - число элементов
+            строки матрицы.</p>
+        <p class="big-formuls-ftnz">Евклидова норма:</p>
+        <hr>
+        <p class="big-formuls-ftnz">\( \left \| A \right \| = \sqrt{\rho_{spr}(A^T \cdot A)}, \ \rho_{spr}(B) =
+            max\{|\lambda|: \lambda \in Spr(B)\}\)</p>
+        <p class="big-formuls-ftnz">\( \lambda - \)собственные значения матрицы \( B = A^T \cdot A\)</p>
+        <p class="big-formuls-ftnz">\( A^T = {{ solve.matrix_transp }}\)</p>
+        <p class="big-formuls-ftnz">\( B = A^T \cdot A = {{ solve.B }}, \ Spr(B) = {{ solve.eig }},\)</p>
+        <p class="big-formuls-ftnz">\(\rho_{spr}(B) = max\{|\lambda|: \lambda \in Spr(B)\} = {{ solve.max_eig }}\)</p>
+        <p class="big-formuls-ftnz">\( || A || = \sqrt{\rho_{spr}(B)} = \sqrt{ {{ solve.max_eig }} }
+            = {{ solve.eucl_norm }}.\)</p>
 
-    <p class="big-formuls-ftnz">Исходная матрица: \(A = {{ solve.matrix }} \)</p>
-    <p class="big-formuls-ftnz">Чебышевская норма:</p>
-    <hr>
-    <p class="big-formuls-ftnz">\( \left \| A \right \| = max\{ {{ solve.cheb }} \} = {{ solve.cheb_norm }}, \)</p>
-    <p class="big-formuls-ftnz">при условии, что \(max\{ |x^i| \} = 1, i=\overline{1, n},\) где n - число элементов
-        строки матрицы.</p>
-    <p class="big-formuls-ftnz">Евклидова норма:</p>
-    <hr>
-    <p class="big-formuls-ftnz">\( \left \| A \right \| = \sqrt{\rho_{spr}(A^T \cdot A)}, \ \rho_{spr}(B) =
-        max\{|\lambda|: \lambda \in Spr(B)\}\)</p>
-    <p class="big-formuls-ftnz">\( \lambda - \)собственные значения матрицы \( B = A^T \cdot A\)</p>
-    <p class="big-formuls-ftnz">\( A^T = {{ solve.matrix_transp }}\)</p>
-    <p class="big-formuls-ftnz">\( B = A^T \cdot A = {{ solve.B }}, \ Spr(B) = {{ solve.eig }},\)</p>
-    <p class="big-formuls-ftnz">\(\rho_{spr}(B) = max\{|\lambda|: \lambda \in Spr(B)\} = {{ solve.max_eig }}\)</p>
-    <p class="big-formuls-ftnz">\( || A || = \sqrt{\rho_{spr}(B)} = \sqrt{ {{ solve.max_eig }} } = {{ solve.eucl_norm }}.\)</p>
-
-
+    </div>
 {% else %}
 
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" name="norm">
@@ -74,10 +77,10 @@
                 <span>Строки: </span>
             </div>
             <div class="col-xs-10">
-                <button class="btn btn-primary big-fntz remove-padding" id="add-row" type="button">
+                <button class="btn btn-info big-fntz remove-padding" id="add-row" type="button">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                <button class="btn btn-danger big-fntz remove-padding" id="remove-row" type="button">
+                <button class="btn btn-primary big-fntz remove-padding" id="remove-row" type="button">
                     <i class="fa fa-minus" aria-hidden="true"></i>
                 </button>
             </div>
@@ -88,10 +91,10 @@
             </div>
 
             <div class="col-xs-10">
-                <button class="btn btn-primary big-fntz remove-padding" id="add-column" type="button">
+                <button class="btn btn-info big-fntz remove-padding" id="add-column" type="button">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                <button class="btn btn-danger big-fntz remove-padding" id="remove-column" type="button">
+                <button class="btn btn-primary big-fntz remove-padding" id="remove-column" type="button">
                     <i class="fa fa-minus" aria-hidden="true"></i>
                 </button>
             </div>
@@ -99,7 +102,7 @@
 
         <div class="form-group">
             <div class="col-xs-12">
-                <button class="btn btn-danger" id="reset-button" type="reset">Очистить матрицу</button>
+                <button class="btn btn-primary" id="reset-button" type="reset">Очистить матрицу</button>
             </div>
         </div>
 
