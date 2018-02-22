@@ -6,7 +6,7 @@ from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
-from sympy import *
+from sympy import diff, latex, simplify, Symbol
 from sympy.parsing.sympy_parser import parse_expr
 from sympy.diffgeom.rn import R2
 from sympy.diffgeom import metric_to_Christoffel_1st, metric_to_Christoffel_2nd, TensorProduct
@@ -40,7 +40,7 @@ def diffgeometryEx1(request):
     try:
         xi = [parse_expr(xi11), parse_expr(xi22)]
         eta = [parse_expr(eta11), parse_expr(eta22)]
-    except:
+    except SyntaxError:
         return {'is_valid': False}
 
     phi = [0, 0]
@@ -53,52 +53,92 @@ def diffgeometryEx1(request):
 
     return solve
 
+
 @task_decorate
 def diffgeometryEx2(request):
-    symbol_type = request.GET.get('Christoffel-name')
+    typesym = request.GET.get('typesym')
+    metric_input = request.GET.get('metric')
 
-    rows = 2
-    columns = 2
-    values = request.GET.get('values')
-
-    if not check_args(values):
+    if not check_args(typesym, metric_input):
         return {'is_valid': False}
 
-    values = values.split(' ')
+    def get_unique(lst):
+        lst = set(lst)
+        lst = list(lst)
+        lst.sort()
 
-    matrix = []
-    for _ in range(rows):
-        row = []
-        for _ in range(columns):
-            try:
-                row.append(values.pop(0))
-            except ValueError:
-                return {'is_valid': False}
-
-        matrix.append(row)
+    def replace_in_metric(m, lst1, lst2):
+        for i in range(len(lst1)):
+            m = m.replace(lst1[i], lst2[i])
+        return m
 
     TP = TensorProduct
+    R = [R2.x, R2.y]
+    dR2 = [TP(R2.dx, R2.dx), TP(R2.dy, R2.dy)]
+    dR = (TP(R2.dx, R2.dy) + TP(R2.dy, R2.dx)) / 2
 
-    symbols = []
-    for row in matrix:
-        for el in row:
-            symbols.append(re.findall('[a-z]+', el))
+    metric = re.sub(r'\^', '**', str(metric_input))
+    metric = re.sub(r'd\*s\*\*2=', '', metric)
 
-    new_symbols = [item for sublist in symbols for item in sublist]
-    new_symbols_set = set(new_symbols)
-    unique_symbols = list(new_symbols_set)
+    # get vars from string-metric
+    variables = re.findall(r'd\*(\w+)', metric)
+    get_unique(variables)
+    # get differentials from string-metric and replace 'd*x' to 'dx'
+    zamena_diff = re.findall(r'd\*\w+', metric)
+    get_unique(zamena_diff)
 
-    for row in matrix:
-        for el in row:
-            re.sub(unique_symbols[0], 'R2.x', el)
-            re.sub(unique_symbols[1], 'R2.y', el)
+    zamena_diff_new = [el.replace('*', '') for el in zamena_diff]
 
-    if symbol_type == '1':
-        Christoffels = metric_to_Christoffel_1st(TP(R2.dx, R2.dx) + TP(R2.dx, R2.dy) + TP(R2.dy, R2.dx) + TP(R2.dy, R2.dy))
-    elif symbol_type == '2':
-        Christoffels = metric_to_Christoffel_2nd(TP(R2.dx, R2.dx) + 2*TP(R2.dx, R2.dy) + 2*TP(R2.dy, R2.dx) + TP(R2.dy, R2.dy))
+    metric = replace_in_metric(metric, zamena_diff, zamena_diff_new)
+    # get differentials at the 2 power
+    diffs2 = re.findall(r'd\w+\*\*2', metric)
+    get_unique(diffs2)
+    # get differentials 'dx*dy' and replace to 'dxdy'
+    diffs_diff = re.findall(r'd\w+\*d\w+', metric)
+    get_unique(diffs_diff)
 
-    solve = {'is_valid': True}
+    diffs_diff_new = [el.replace('*', '') for el in diffs_diff]
 
-    return solve
+    metric = replace_in_metric(metric, diffs_diff, diffs_diff_new)
+    # get sympy-eval from string-metric
+    try:
+        metric_sym = parse_expr(metric)
+    except SyntaxError:
+        return {'is_valid': False}
 
+    metric_input = latex(metric_sym)
+    # replace variables to 'R2.x' and "R2.y'
+    metric_sym = replace_in_metric(metric_sym, variables, R)
+    # replace differentials at the 2 power to 'TP(dx, dx)' and 'TP(dy, dy)'
+    metric_sym = replace_in_metric(metric_sym, diffs2, dR2)
+    # replace 'dxdy' to 'TP(dx, dy)'
+    for el in diffs_diff_new:
+        metric_sym = metric_sym.replace(el, dR)
+
+    if typesym == '1':
+        try:
+            Christoffel = simplify(metric_to_Christoffel_1st(metric_sym))
+        except ValueError:
+            return {'is_valid': False}
+        formula = r'\Gamma_{k,ij} = \frac{1}{2} \left (\frac{\partial g_{ik}}{\partial x^j} + ' \
+                  r'\frac{\partial g_{jk}}{\partial x^i} - \frac{\partial g_{ij}}{\partial x^k}  \right )'
+
+    elif typesym == '2':
+        try:
+            Christoffel = simplify(metric_to_Christoffel_2nd(metric_sym))
+        except ValueError:
+            return {'is_valid': False}
+        formula = r'\Gamma^i_{ \ kl} = \frac{1}{2} g^{im} \left (\frac{\partial g_{mk}}{\partial x^l} + ' \
+                  r'\frac{\partial g_{ml}}{\partial x^k} - \frac{\partial g_{kl}}{\partial x^m}  \right )'
+
+    else:
+        return {'is_valid': False}
+
+    Christoffel = list(Christoffel)
+    # replace 'R2.x,y' to variables
+    ind = [2,3,6,7]
+    answer = [('_{%d,%d%d}=' if typesym == '1' else '^%d_{ \ %d%d}=') % (int(i>3)+1, int(i in ind)+1, i%2+1) +
+              latex(el.subs([(R2.x, variables[0]), (R2.y, variables[1])], simultaneous=True))
+              for i,el in enumerate(Christoffel)]
+
+    return {'answer': answer, 'metric': metric_input, 'typesym': typesym, 'formula': formula, 'is_valid': True}
