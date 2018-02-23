@@ -40,13 +40,15 @@
     <div class="solution-block">
         <p>Решение: </p>
         <p class="big-formuls-ftnz">Исходная матрица: \(A = {{ solve.matrix }} \)</p>
+    </div>
+    <div class="solution-block">
         <p class="big-formuls-ftnz">Чебышевская норма:</p>
-        <hr>
         <p class="big-formuls-ftnz">\( \left \| A \right \| = max\{ {{ solve.cheb }} \} = {{ solve.cheb_norm }}, \)</p>
         <p class="big-formuls-ftnz">при условии, что \(max\{ |x^i| \} = 1, i=\overline{1, n},\) где n - число элементов
             строки матрицы.</p>
+    </div>
+    <div class="solution-block">
         <p class="big-formuls-ftnz">Евклидова норма:</p>
-        <hr>
         <p class="big-formuls-ftnz">\( \left \| A \right \| = \sqrt{\rho_{spr}(A^T \cdot A)}, \ \rho_{spr}(B) =
             max\{|\lambda|: \lambda \in Spr(B)\}\)</p>
         <p class="big-formuls-ftnz">\( \lambda - \)собственные значения матрицы \( B = A^T \cdot A\)</p>
@@ -55,7 +57,6 @@
         <p class="big-formuls-ftnz">\(\rho_{spr}(B) = max\{|\lambda|: \lambda \in Spr(B)\} = {{ solve.max_eig }}\)</p>
         <p class="big-formuls-ftnz">\( || A || = \sqrt{\rho_{spr}(B)} = \sqrt{ {{ solve.max_eig }} }
             = {{ solve.eucl_norm }}.\)</p>
-
     </div>
 {% else %}
 
