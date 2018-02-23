@@ -1,22 +1,50 @@
-<<<<<<< HEAD
 {% extends 'index.html' %}
 {% block main %}
-    <div class="post">
-        <a href="{{ task.get_absolute_url }}">{{ task.title }}</a>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Permanent+Marker');
+
+        .error-fonts {
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        .error-block {
+            min-height: calc(100vh - 135px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .element {
+            flex-grow: 0;
+        }
+
+        .error-number {
+            font-size: 216px;
+        }
+
+        .error-text {
+            font-size: 24px;
+        }
+
+        @media screen and (max-width: 700px) {
+            .error-number {
+                font-size: 108px;
+            }
+
+            .error-text {
+                font-size: 18px;
+            }
+
+            .error-block {
+                min-height: calc(100vh - 150px);
+            }
+        }
+    </style>
+    <div class="error-block">
+        <div class="element error-fonts error-number text-center">404</div>
+        <div class="element error-text text-center">The page you are looking for can't be found.</div>
     </div>
 {% endblock %}
-
 {% block loginblock %}{% endblock %}
 {% block sections %}{% endblock %}
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>404</title>
-</head>
-<body>
-it is 404 error page!
-</body>
-</html>
->>>>>>> origin/master

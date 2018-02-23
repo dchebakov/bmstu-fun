@@ -394,3 +394,7 @@ def utility(request):
 
 def about_us(request):
     return render(request, 'aboutus.html', get_default_data(request))
+
+
+def test(request):
+    return render(request, '404.html')

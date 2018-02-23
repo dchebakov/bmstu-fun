@@ -7,7 +7,8 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 from sympy import diff, latex, simplify, Symbol
-from sympy.parsing.sympy_parser import parse_expr, standard_transformations, function_exponentiation, implicit_application
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, function_exponentiation, \
+    implicit_application
 from sympy.diffgeom.rn import R2
 from sympy.diffgeom import metric_to_Christoffel_1st, metric_to_Christoffel_2nd, TensorProduct
 from itertools import product
@@ -142,6 +143,6 @@ def diffgeometryEx2(request):
     index = list(map(''.join, product('12', repeat=3)))
     answer = [('_{%s,%s%s}=' if typesym == '1' else '^%s_{ \ %s%s}=') % (index[i][0], index[i][1], index[i][2]) +
               latex(el.subs([(R[i], variables[i]) for i in range(len(variables))], simultaneous=True))
-              for i,el in enumerate(Christoffel)]
+              for i, el in enumerate(Christoffel)]
 
     return {'answer': answer, 'metric': metric_input, 'typesym': typesym, 'formula': formula, 'is_valid': True}
