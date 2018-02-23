@@ -6,7 +6,7 @@ from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
-from sympy import diff, latex, simplify, Symbol
+from sympy import diff, latex, simplify, Symbol, expand
 from sympy.parsing.sympy_parser import parse_expr, standard_transformations, function_exponentiation, \
     implicit_application
 from sympy.diffgeom.rn import R2
@@ -69,6 +69,7 @@ def diffgeometryEx2(request):
         lst = set(lst)
         lst = list(lst)
         lst.sort()
+        return lst
 
     def replace_in_metric(m, lst1, lst2):
         for i in range(len(lst1)):
@@ -85,23 +86,23 @@ def diffgeometryEx2(request):
 
     # get vars from string-metric
     variables = re.findall(r'd\*(\w+)', metric)
-    get_unique(variables)
+    variables = get_unique(variables)
     # get differentials from string-metric and replace 'd*x' to 'dx'
     zamena_diff = re.findall(r'd\*\w+', metric)
-    get_unique(zamena_diff)
+    zamena_diff = get_unique(zamena_diff)
 
     zamena_diff_new = [el.replace('*', '') for el in zamena_diff]
 
     metric = replace_in_metric(metric, zamena_diff, zamena_diff_new)
     # get differentials at the 2 power
     diffs2 = re.findall(r'd\w+\*\*2', metric)
-    get_unique(diffs2)
+    diffs2 = get_unique(diffs2)
     # get differentials 'dx*dy' and replace to 'dxdy'
     diffs_diff = re.findall(r'd\w+\*d\w+', metric)
-    get_unique(diffs_diff)
+    diffs_diff = get_unique(diffs_diff)
 
     diffs_diff_new = [el.replace('*', '') for el in diffs_diff]
-
+    print(diffs_diff, diffs_diff_new)
     metric = replace_in_metric(metric, diffs_diff, diffs_diff_new)
     # get sympy-eval from string-metric
     transformations = standard_transformations + (function_exponentiation, implicit_application,)
@@ -118,22 +119,21 @@ def diffgeometryEx2(request):
     # replace 'dxdy' to 'TP(dx, dy)'
     for el in diffs_diff_new:
         metric_sym = metric_sym.replace(el, dR)
+    metric_sym = expand(metric_sym)
+    #generate metric-matrix
+    metric_matrix = [latex(metric_sym.coeff(TP(a, b))) for a in [R2.dx, R2.dy] for b in [R2.dx, R2.dy]]
 
     if typesym == '1':
         try:
             Christoffel = simplify(metric_to_Christoffel_1st(metric_sym))
         except ValueError:
             return {'is_valid': False}
-        formula = r'\Gamma_{k,ij} = \frac{1}{2} \left (\frac{\partial g_{ik}}{\partial x^j} + ' \
-                  r'\frac{\partial g_{jk}}{\partial x^i} - \frac{\partial g_{ij}}{\partial x^k}  \right )'
 
     elif typesym == '2':
         try:
             Christoffel = simplify(metric_to_Christoffel_2nd(metric_sym))
         except ValueError:
             return {'is_valid': False}
-        formula = r'\Gamma^i_{ \ kl} = \frac{1}{2} g^{im} \left (\frac{\partial g_{mk}}{\partial x^l} + ' \
-                  r'\frac{\partial g_{ml}}{\partial x^k} - \frac{\partial g_{kl}}{\partial x^m}  \right )'
 
     else:
         return {'is_valid': False}
@@ -145,4 +145,4 @@ def diffgeometryEx2(request):
               latex(el.subs([(R[i], variables[i]) for i in range(len(variables))], simultaneous=True))
               for i, el in enumerate(Christoffel)]
 
-    return {'answer': answer, 'metric': metric_input, 'typesym': typesym, 'formula': formula, 'is_valid': True}
+    return {'answer': answer, 'metric': metric_input, 'typesym': typesym, 'metric_matrix': metric_matrix, 'is_valid': True}

@@ -40,7 +40,16 @@
         <p>Введенная метрика:</p>
         <p class="big-formuls-ftnz">$$ ds^2 = {{ solve.metric }} $$</p>
         <p>Символы Кристоффеля {{ solve.typesym }}-го рода вычисляются по формуле:</p>
-        <p class="big-formuls-ftnz">$$ {{ solve.formula }} $$</p>
+        {% if solve.typesym == '1' %}
+            <p class="big-formuls-ftnz">$$ \Gamma_{k,ij} = \frac{1}{2} \left (\frac{\partial g_{ik}}{\partial x^j} +
+                \frac{\partial g_{jk}}{\partial x^i} - \frac{\partial g_{ij}}{\partial x^k} \right ) $$</p>
+        {% else %}
+            <p class="big-formuls-ftnz">$$ \Gamma^i_{ \ kl} = \frac{1}{2} g^{im} \left (\frac{\partial g_{mk}}{\partial
+                x^l} + \frac{\partial g_{ml}}{\partial x^k} - \frac{\partial g_{kl}}{\partial x^m} \right ), $$</p>
+        {% endif %}
+        <p>где \(g_{ij} = \begin{pmatrix} {{ solve.metric_matrix.0 }} & {{ solve.metric_matrix.1 }} \\
+            {{ solve.metric_matrix.2 }} & {{ solve.metric_matrix.3 }}
+            \end{pmatrix} \) - метрическая матрица.</p>
         {% for ans in solve.answer %}
             <p class="big-formuls-ftnz">\(\Gamma{{ ans }}<br>\)</p>
         {% endfor %}
