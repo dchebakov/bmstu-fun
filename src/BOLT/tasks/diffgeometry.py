@@ -7,9 +7,10 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 from sympy import diff, latex, simplify, Symbol
-from sympy.parsing.sympy_parser import parse_expr
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, function_exponentiation, implicit_application
 from sympy.diffgeom.rn import R2
 from sympy.diffgeom import metric_to_Christoffel_1st, metric_to_Christoffel_2nd, TensorProduct
+from itertools import product
 import re
 
 
@@ -37,10 +38,11 @@ def diffgeometryEx1(request):
     eta22 = re.sub(r'\^', '**', str(eta2))
     x = [Symbol('x'), Symbol('y')]
 
+    transformations = standard_transformations + (function_exponentiation, implicit_application,)
     try:
-        xi = [parse_expr(xi11), parse_expr(xi22)]
-        eta = [parse_expr(eta11), parse_expr(eta22)]
-    except SyntaxError:
+        xi = [parse_expr(xi11, transformations=transformations), parse_expr(xi22, transformations=transformations)]
+        eta = [parse_expr(eta11, transformations=transformations), parse_expr(eta22, transformations=transformations)]
+    except:
         return {'is_valid': False}
 
     phi = [0, 0]
@@ -101,9 +103,10 @@ def diffgeometryEx2(request):
 
     metric = replace_in_metric(metric, diffs_diff, diffs_diff_new)
     # get sympy-eval from string-metric
+    transformations = standard_transformations + (function_exponentiation, implicit_application,)
     try:
-        metric_sym = parse_expr(metric)
-    except SyntaxError:
+        metric_sym = parse_expr(metric, transformations=transformations)
+    except:
         return {'is_valid': False}
 
     metric_input = latex(metric_sym)
@@ -136,9 +139,9 @@ def diffgeometryEx2(request):
 
     Christoffel = list(Christoffel)
     # replace 'R2.x,y' to variables
-    ind = [2,3,6,7]
-    answer = [('_{%d,%d%d}=' if typesym == '1' else '^%d_{ \ %d%d}=') % (int(i>3)+1, int(i in ind)+1, i%2+1) +
-              latex(el.subs([(R2.x, variables[0]), (R2.y, variables[1])], simultaneous=True))
+    index = list(map(''.join, product('12', repeat=3)))
+    answer = [('_{%s,%s%s}=' if typesym == '1' else '^%s_{ \ %s%s}=') % (index[i][0], index[i][1], index[i][2]) +
+              latex(el.subs([(R[i], variables[i]) for i in range(len(variables))], simultaneous=True))
               for i,el in enumerate(Christoffel)]
 
     return {'answer': answer, 'metric': metric_input, 'typesym': typesym, 'formula': formula, 'is_valid': True}

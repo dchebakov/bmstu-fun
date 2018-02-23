@@ -4,7 +4,6 @@ from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 
-from sympy import *
 import re
 
 

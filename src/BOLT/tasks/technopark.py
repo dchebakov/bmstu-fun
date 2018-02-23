@@ -6,8 +6,6 @@ from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
-from sympy import *
-from sympy.parsing.sympy_parser import parse_expr
 import re
 
 
