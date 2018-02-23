@@ -6,7 +6,6 @@ from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
-from sympy import *
 import numpy as np
 from sympy.parsing.sympy_parser import parse_expr
 import re
@@ -61,7 +60,7 @@ def functionalanalysisEx1(request):
     max_eig = max(abs(x) for x in eig)
     B = B.tolist()
 
-    eucl_norm = sqrt(max_eig)
+    eucl_norm = np.sqrt(max_eig)
     cheb_norm = round(max(sum(row) for row in matrix), ROUNDING_NUMBER)
 
     def matrix2latex(lst):
@@ -71,9 +70,8 @@ def functionalanalysisEx1(request):
     def chebnorm2latex(lst):
         return r'\left | {} \right |'.format(
             r'\right | , \left |'.join(
-                [(str.join(' + ', (str(round(el, ROUNDING_NUMBER)) + 'x^' + str(i + 1) for i, el in enumerate(row))))
-                 for
-                 row in lst]))
+                [(str.join(' + ', (str(round(el, ROUNDING_NUMBER)) + 'x^' + str(i + 1) for i,el in enumerate(row))))
+                 for row in lst]))
 
     return {'rows': rows, 'columns': columns, 'matrix': matrix2latex(matrix), 'cheb': chebnorm2latex(matrix),
             'cheb_norm': round(cheb_norm, ROUNDING_NUMBER), 'matrix_transp': matrix2latex(matrix_transp),

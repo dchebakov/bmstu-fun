@@ -1,5 +1,5 @@
 {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+<link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
 
 <style>
     .matrix-td {
@@ -35,38 +35,38 @@
 </style>
 
 {% if solve.is_valid %}
-    <p class="big-formuls-ftnz">X</p>
-
+    <div class="solution-block">
+        <p>Вычисление символов Кристоффеля</p>
+        <p>Введенная метрика:</p>
+        <p class="big-formuls-ftnz">$$ ds^2 = {{ solve.metric }} $$</p>
+        <p>Символы Кристоффеля {{ solve.typesym }}-го рода вычисляются по формуле:</p>
+        <p class="big-formuls-ftnz">$$ {{ solve.formula }} $$</p>
+        {% for ans in solve.answer %}
+            <p class="big-formuls-ftnz">\(\Gamma{{ ans }}<br>\)</p>
+        {% endfor %}
+    </div>
 {% else %}
 
-   <form action="{{ task.get_absolute_url }}" name="Christoffel-input" class="form-horizontal" style="padding-top: 15px">
-            <div class="form-group">
-                <div class="col-sm-5">
-                    <label for="Christoffel-name" class="control-label">Символы Кристоффеля:</label>
-                </div>
-                <div class="col-sm-6">
-                    <select name="Christoffel-name" id="Christoffel-name" class="form-control">
-                        <option value="1">Первого рода</option>
-                        <option value="2">Второго рода</option>
-                    </select>
-                </div>
+    <form action="{{ task.get_absolute_url }}" name="Christoffel-input" class="form-horizontal"
+          style="padding-top: 15px">
+        <div class="form-group">
+            <div class="col-sm-5">
+                <label for="Christoffel-name" class="control-label">Символы Кристоффеля:</label>
             </div>
-
-       <div class="form-group">
-            <div class="col-xs-2 big-formuls-fntz">
-                <span>Введите метрическую матрицу:</span>
-            </div>
-            <div class="col-xs-10">
-                <div class="brackets">
-                    <div class="matrix">
-                    </div>
-                </div>
+            <div class="col-sm-6">
+                <select name="Christoffel-name" id="Christoffel-name" class="form-control">
+                    <option value="1">Первого рода</option>
+                    <option value="2">Второго рода</option>
+                </select>
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-xs-12">
-                <button class="btn btn-danger" id="reset-button" type="reset">Очистить матрицу</button>
+            <div class="col-xs-5">
+                <label class="control-label" for="metric">Введите метрику:</label>
+            </div>
+            <div class="col-xs-6">
+                <div class="math-control" id="metric" name="metric" required>ds^2=</div>
             </div>
         </div>
 
@@ -74,56 +74,19 @@
     </form>
 
     <script>
-        let columns = 2, rows = 2;
-        let matrix = [];
-
         document.addEventListener('DOMContentLoaded', function () {
             let MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
 
-            for (let i = 0; i < rows; i++) {
-                matrix.push([]);
-                let row = document.createElement('div');
-                row.className = 'matrix-row';
-                for (let j = 0; j < columns; j++) {
-                    let cell = document.createElement('div');
-                    cell.className = 'matrix-td';
-                    row.appendChild(cell);
-                    let mathCell = MQ.MathField(cell);
-                    matrix[i].push(mathCell);
-                }
+            let metric = MQ.MathField(document.querySelector('#metric')),
+                typesym = document.querySelector('#Christoffel-name');
 
-                document.querySelectorAll('.matrix')[0].appendChild(row);
-            }
-
+            document.forms['Christoffel-input'].addEventListener('submit', function (e) {
+                let metricUri = encodeURIComponent(metric.text());
+                e.preventDefault();
+                window.location = this.action + `?metric=${metricUri}&typesym=${typesym.value}`;
+            });
         });
-
-        document.querySelector('#reset-button').addEventListener('click', function (ev) {
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < columns; j++) {
-                    matrix[i][j].latex('');
-                }
-            }
-        });
-
-        document.forms['Christoffel-input'].addEventListener('submit', function (ev) {
-            ev.preventDefault();
-
-
-            let locationString = '';
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < columns; j++) {
-                    let val = matrix[i][j].text();
-                    if (!val.length) {
-                        return false;
-                    }
-
-                    locationString += val + ' ';
-                }
-            }
-            symbol_type = document.querySelector('#Christoffel-name');
-            window.location = this.action + '?values=' + locationString + '&Christoffel-name=' + symbol_type.value;
-        });
-
-
     </script>
+
+
 {% endif %}
