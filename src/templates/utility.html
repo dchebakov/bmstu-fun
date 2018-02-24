@@ -415,7 +415,64 @@
     </script>
 
 
+    <div class="post">
+        <h4>Генератор цепи Маркова</h4>
+        <hr>
+        <form action="" name="markov-input" class="form-horizontal" style="padding-top: 15px">
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <label for="state" class="control-label">Введите количество состояний:</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" id="state" required value="2">
+                </div>
+            </div>
 
+            <button class="btn btn-success">Вычислить!</button>
+        </form>
+        <div id="value-div-for-markov" class="hide" style="margin: 14px auto; text-align: center">
+            <span class="big-formuls-ftnz" id="value-area-for-markov"></span>
+        </div>
+    </div>
+
+    <script>
+        document.forms['markov-input'].addEventListener('submit', function (e) {
+            let csrfToken = getCookie('csrftoken');
+
+            let divValueArea = document.querySelector('#value-div-for-markov'),
+                valueArea = document.querySelector('#value-area-for-markov');
+
+            e.preventDefault();
+            fetch('/utility/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({
+                    state: document.querySelector("#state").value,
+                    case: 'markov'
+                }),
+                credentials: 'include'
+            })
+                .then(response => response.text())
+                .then(function (res) {
+                    let state = document.querySelector("#state").value;
+
+                    if (divValueArea.classList.contains('hide')) {
+                        divValueArea.classList.toggle('hide');
+                    }
+
+                    if (res === 'err' || res === 'nan') {
+                        valueArea.innerHTML = 'Невозможно вычислить значение.';
+                    } else {
+                        valueArea.innerHTML = `$$\\vec{p_0} = ${res}$$`;
+                        MathJax.Hub.Queue(['Typeset', MathJax.Hub, valueArea]);
+                    }
+                });
+        });
+    </script>
 
     <script type="text/javascript" async
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">

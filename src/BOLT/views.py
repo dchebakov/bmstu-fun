@@ -389,6 +389,29 @@ def utility(request):
             if res != 'err':
                 res = ', '.join(str(round(e, 2)) for e in res)
 
+        elif case == 'markov':
+            state = int(content['state'])
+            if state < 1:
+                return HttpResponse('err', content_type='application/json')
+
+            vectors = [list(ss.uniform.rvs(loc=0, scale=1, size=state - 1)) for i in range(state + 1)]
+            matrix = []
+            for el in vectors:
+                el.extend([1, 0])
+                el.sort()
+                row = []
+                for i in range(state):
+                    row.append(el[i + 1] - el[i])
+                matrix.append(row)
+            res = r'\begin{{pmatrix}} {} \end{{pmatrix}}^T'.format(
+                ' & '.join([str(round(el, 2)) for el in matrix.pop(0)]))
+
+            def matrix2latex(lst):
+                return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
+                    r' \\ '.join([(str.join(' & ', (str(round(el, 2)) for el in row))) for row in lst]))
+
+            res += ' \\\\ A = ' + matrix2latex(matrix)
+
         return HttpResponse(res, content_type='application/json')
 
 
