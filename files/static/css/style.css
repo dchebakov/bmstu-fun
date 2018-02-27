@@ -87,10 +87,6 @@ hr {
     border-color: #4caf50;
 }
 
-/*.navbar-default .dropdown-menu {*/
-/*background-color: #ffffff;*/
-/*}*/
-
 .navbar-brand {
     padding: 2px;
 }
@@ -127,10 +123,6 @@ footer {
     background-color: #b0bec5;
 }
 
-header {
-    max-height: 50px;
-    overflow: hidden;
-}
 
 /*admin*/
 #header {

@@ -27,16 +27,16 @@ def stochasticprocesstheoryEx1(request):
     def stochastic_validity(lst):
         if type(lst[0]) == type(lst):
             for row in lst:
-                if sum(row) != 1:
+                if not (0.99 <= sum(row) <= 1.01):
                     return False
                 for el in row:
                     if el > 1 or el < 0:
                         return False
         else:
-            if sum(lst) != 1:
+            if not (0.99 <= sum(lst) <= 1.01):
                 return False
             for el in lst:
-                if el > 1 or el < 0:
+                if not (0 <= el <= 1):
                     return False
         return True
 
