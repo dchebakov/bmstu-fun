@@ -52,7 +52,7 @@ hr {
     background-color: #b0bec5;
 }
 
-.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+.navbar-collapse {
     background-color: #b0bec5;
 }
 
@@ -129,6 +129,7 @@ footer {
 
 header {
     max-height: 50px;
+    overflow: hidden;
 }
 
 /*admin*/
