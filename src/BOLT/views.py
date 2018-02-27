@@ -28,6 +28,7 @@ from BOLT.tasks.complexanalysis import *
 from BOLT.tasks.probabilitytheory import *
 from BOLT.tasks.mathstatistics import *
 from BOLT.tasks.technopark import *
+from BOLT.tasks.stochasticprocesstheory import *
 
 COUNT_POSTS_ON_PAGE = 4
 COUNT_TOP_TAGS = 5

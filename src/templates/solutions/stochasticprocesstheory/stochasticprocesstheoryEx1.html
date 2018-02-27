@@ -1,0 +1,261 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+<style>
+    .matrix-td {
+        min-width: 40px;
+        min-height: 30px;
+        text-align: center;
+        padding: 6px;
+        border: 1px solid rgb(85, 85, 85);
+        border-radius: 5px;
+        display: inline-block;
+        margin: 2px 3px;
+    }
+
+    .brackets {
+        border: 2px solid rgb(85, 85, 85);
+        border-radius: 25px;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        padding: 8px;
+        display: inline-block;
+    }
+
+    .big-fntz {
+        line-height: 30px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .remove-padding {
+        padding: 2px 10px !important;
+    }
+
+</style>
+
+
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Исходная матрица перехода: \(A = {{ solve.matrix }} \)</p>
+        <p class="big-formuls-ftnz">Вектор начальных вероятностей состояний цепи: \(\vec{p_0} = {{ solve.vector }}
+            \)</p>
+        <p class="big-formuls-ftnz">Матрица вероятностей на \({{ solve.step }}\) шаге: \(P({{ solve.step }}) = (A
+            ^{ {{ solve.step }} })^T \cdot \vec{p_0} = {{ solve.ans }} \)</p>
+
+    </div>
+{% else %}
+
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" name="norm">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label class="control-label" for="step">Введите номер шага \( k \):</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="step" name="step" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-8 big-fntz">
+                <p>Матрица перехода за 1 шаг: </p>
+            </div>
+            <div class="col-xs-4 big-fntz">
+                <p>Вектор начальных состояний: </p>
+            </div>
+
+            <div class="col-xs-1 big-fntz">
+                <p class="big-formuls-ftnz">$$ A = $$</p>
+            </div>
+            <div class="col-xs-8">
+                <div class="brackets">
+                    <div class="matrix">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-1 big-fntz">
+                <p class="big-formuls-ftnz">$$ \vec{p_0} = $$</p>
+            </div>
+            <div class="col-xs-2">
+                <div class="brackets">
+                    <div class="vector">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-1 big-fntz">
+                <span>Размер: </span>
+            </div>
+            <div class="col-xs-2">
+                <button class="btn btn-info big-fntz remove-padding" id="add-el" type="button">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-primary big-fntz remove-padding" id="remove-el" type="button">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="col-xs-8 big-fntz">
+                <p><font color="red">{{ solve.err }}</font></p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-primary" id="reset-button" type="reset">Очистить форму</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+
+        let columns = 3, rows = 3, elements = 3;
+        let matrix = [];
+        let vector = [];
+
+        document.querySelector('#add-el').addEventListener('click', function (ev) {
+            let row = document.createElement('div');
+            row.className = 'matrix-row';
+
+            matrix.push([]);
+            for (let i = 0; i < columns; i++) {
+                let cell = document.createElement('div');
+                cell.className = 'matrix-td';
+                row.appendChild(cell);
+                matrix[rows].push(MQ.MathField(cell));
+            }
+
+            document.querySelectorAll('.matrix')[0].appendChild(row);
+
+            rows++;
+
+            document.querySelectorAll('.matrix-row').forEach(function (el, index) {
+                let cell = document.createElement('div');
+                cell.className = 'matrix-td';
+                el.appendChild(cell);
+                matrix[index].push(MQ.MathField(cell));
+            });
+            columns++;
+
+            let row1 = document.createElement('div');
+            row1.className = 'vector-row';
+
+            let cell = document.createElement('div');
+            cell.className = 'matrix-td';
+            row1.appendChild(cell);
+            vector.push(MQ.MathField(cell));
+
+            document.querySelectorAll('.vector')[0].appendChild(row1);
+
+            elements++;
+        });
+
+        document.querySelector('#remove-el').addEventListener('click', function (ev) {
+            if (rows === 1) return;
+
+            let lastMatrixRow = document.querySelectorAll('.matrix-row')[rows - 1];
+            lastMatrixRow.parentElement.removeChild(lastMatrixRow);
+            matrix.pop();
+            rows--;
+
+            document.querySelectorAll('.matrix-row').forEach(function (el, index) {
+                matrix[index].pop();
+                el.removeChild(el.querySelectorAll('.matrix-td')[columns - 1]);
+            });
+
+            columns--;
+
+            let lastVectorRow = document.querySelectorAll('.vector-row')[elements - 1];
+            lastVectorRow.parentElement.removeChild(lastVectorRow);
+            vector.pop();
+            elements--;
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
+
+            for (let i = 0; i < rows; i++) {
+                matrix.push([]);
+                let row = document.createElement('div');
+                row.className = 'matrix-row';
+                for (let j = 0; j < columns; j++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'matrix-td';
+                    row.appendChild(cell);
+                    let mathCell = MQ.MathField(cell);
+                    matrix[i].push(mathCell);
+                }
+
+                document.querySelectorAll('.matrix')[0].appendChild(row);
+            }
+
+            for (let i = 0; i < elements; i++) {
+                //vector.push([]);
+                let row = document.createElement('div');
+                row.className = 'vector-row';
+                let cell = document.createElement('div');
+                cell.className = 'matrix-td';
+                row.appendChild(cell);
+                let mathCell = MQ.MathField(cell);
+                vector.push(mathCell);
+
+                document.querySelectorAll('.vector')[0].appendChild(row);
+            }
+
+        });
+
+        document.querySelector('#reset-button').addEventListener('click', function (ev) {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    matrix[i][j].latex('');
+                }
+            }
+
+            for (let i = 0; i < elements; i++) {
+                vector[i].latex('');
+            }
+        });
+
+        document.forms['norm'].addEventListener('submit', function (ev) {
+            ev.preventDefault();
+
+            let step = document.querySelector('#step');
+
+            let locationString = '';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    let val = matrix[i][j].text();
+                    if (!val.length) {
+                        return false;
+                    }
+
+                    locationString += val + ' ';
+                }
+            }
+
+            let locationString1 = '';
+            for (let i = 0; i < elements; i++) {
+                let val = vector[i].text();
+                if (!val.length) {
+                    return false;
+                }
+
+                locationString1 += val + ' ';
+            }
+
+            window.location = this.action + `?rows=${rows}&columns=${columns}&valuesm=${locationString}&valuesv=${locationString1}&step=${step.value}`;
+        });
+
+    </script>
+
+{% endif %}
