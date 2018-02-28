@@ -71,17 +71,17 @@
         </div>
 
         <div class="row">
-            <div class="form-group col-md-6 col-xs-12 col-sm-12">
+            <div class="form-group col-md-8 col-xs-12 col-sm-12">
                 <div class="row">
                     <div class="col-md-12 col-xs-12 text-center">
                         <p class="big-fntz">Матрица перехода за 1 шаг: </p>
                     </div>
                 </div>
                 <div class="matrix-block row">
-                    <div class="col-xs-4 big-fntz label-div">
+                    <div class="col-xs-3 big-fntz label-div">
                         <label for="matrix-A" class="label-control big-formuls-ftnz">$$ A = $$</label>
                     </div>
-                    <div class="col-xs-8">
+                    <div class="col-xs-9">
                         <div class="brackets">
                             <div class="matrix" id="matrix-A"></div>
                         </div>
@@ -89,17 +89,17 @@
                 </div>
             </div>
 
-            <div class="form-group col-md-6 col-xs-12 col-sm-12">
+            <div class="form-group col-md-4 col-xs-12 col-sm-12">
                 <div class="row">
                     <div class="col-md-12 col-xs-12 text-center">
                         <p class="big-fntz">Вектор начальных состояний: </p>
                     </div>
                 </div>
                 <div class="matrix-block row">
-                    <div class="col-xs-4 big-fntz label-div">
-                        <label id="vector-p" class="big-formuls-ftnz">$$ \vec{p_0} = $$</label>
+                    <div class="col-xs-3 big-fntz label-div">
+                        <label for="vector-p" class="label-control big-formuls-ftnz">$$ \vec{p_0} = $$</label>
                     </div>
-                    <div class="col-xs-8">
+                    <div class="col-xs-9">
                         <div class="brackets">
                             <div id="vector-p" class="vector"></div>
                         </div>
@@ -108,37 +108,45 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="row">
-                <div class="col-xs-4 col-md-2 big-fntz">
-                    <span>Размер: </span>
-                </div>
-                <div class="col-xs-4 col-md-2">
-                    <button class="btn btn-info big-fntz remove-padding" id="add-el" type="button">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-                    <button class="btn btn-primary big-fntz remove-padding" id="remove-el" type="button">
-                        <i class="fa fa-minus" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <div class="col-xs-8 big-fntz">
-                    <p><font color="red">{{ solve.err }}</font></p>
-                </div>
+        <div class="form-group col-md-7">
+            <div class="col-xs-4 col-md-4 big-fntz">
+                <span>Размер: </span>
+            </div>
+            <div class="col-xs-8 col-md-8">
+                <button class="btn btn-info big-fntz remove-padding" id="add-el" type="button">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-primary big-fntz remove-padding" id="remove-el" type="button">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group col-md-3">
+            <div class="col-xs-12">
+                <button class="btn btn-info" id="generate-button" type="button">Сгенерировать значения</button>
+            </div>
+        </div>
+
+        <div class="form-group col-md-2">
             <div class="col-xs-12">
                 <button class="btn btn-primary" id="reset-button" type="reset">Очистить форму</button>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-xs-12">
+        <div class="form-group col-md-12">
+            <div class="col-xs-12 col-md-4">
                 <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+            <div class="col-xs-12 col-md-8 big-fntz">
+                <p><font color="red">{{ solve.err }}</font></p>
             </div>
         </div>
     </form>
+
+    <div class="form-group">
+
+    </div>
 
     <script>
 
@@ -223,7 +231,6 @@
             }
 
             for (let i = 0; i < elements; i++) {
-                //vector.push([]);
                 let row = document.createElement('div');
                 row.className = 'vector-row';
                 let cell = document.createElement('div');
@@ -246,6 +253,37 @@
 
             for (let i = 0; i < elements; i++) {
                 vector[i].latex('');
+            }
+        });
+
+        document.querySelector('#generate-button').addEventListener('click', function (ev) {
+            let vectors = [];
+            for (let i = 0; i < rows + 1; i++) {
+                vectors.push([]);
+                for (let j = 0; j < rows - 1; j++) {
+                    vectors[i].push(Math.random());
+                }
+                vectors[i].push(0, 1);
+                vectors[i].sort(function (a, b) {
+                    return a - b;
+                })
+            }
+            let gen_vectors = [];
+            for (let i = 0; i < rows + 1; i++) {
+                gen_vectors.push([]);
+                for (let j = 0; j < rows; j++) {
+                    gen_vectors[i].push((vectors[i][j + 1] - vectors[i][j]).toFixed(2));
+                }
+            }
+
+            for (let i = 0; i < elements; i++) {
+                vector[i].latex(gen_vectors[0][i]);
+            }
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < columns; j++) {
+                    matrix[i][j].latex(gen_vectors[i + 1][j]);
+                }
             }
         });
 
