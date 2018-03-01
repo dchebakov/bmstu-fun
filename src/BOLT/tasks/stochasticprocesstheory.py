@@ -9,7 +9,6 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 import numpy as np
-from sympy.parsing.sympy_parser import parse_expr
 import re
 import json
 
@@ -40,38 +39,44 @@ def stochasticprocesstheoryEx1(request):
                     return False
         return True
 
+    def matrix2latex(lst):
+        if type(lst[0]) == type(lst):
+            return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
+                r' \\ '.join([(str.join(' & ', (str(round(el, ROUNDING_NUMBER)) for el in row))) for row in lst]))
+        else:
+            return r'\begin{{pmatrix}} {} \end{{pmatrix}}^T'.format(
+                ' & '.join([str(round(el, 2)) for el in lst]))
+
     ROUNDING_NUMBER = 2
+    MAX_STEP = 100
     ERR = 'Введенные данные не прошли проверку на стохастичность'
 
     step = request.GET.get('step')
     rows = request.GET.get('rows')
-    columns = request.GET.get('columns')
     values = request.GET.get('valuesm')
     valuesv = request.GET.get('valuesv')
 
-    if not check_args(rows, columns, values, valuesv, step) \
-            or float(rows) <= 1 \
-            or float(columns) <= 1 \
-            or float(step) < 0:
-        return {'is_valid': False}
+    if not check_args(rows, values, valuesv, step) \
+            or float(rows) < 1 \
+            or float(step) < 0 \
+            or float(step) > MAX_STEP:
+        ERR = 'Введите другое значение шага'
+        return {'err': ERR, 'is_valid': False}
 
     rows = int(rows)
-    columns = int(columns)
     try:
         step = int(step)
     except ValueError:
         return {'is_valid': False}
+
     values = values.split(' ')
     valuesv = valuesv.split(' ')
     values.remove('')
 
-    if len(values) != rows * columns:
-        return {'is_valid': False}
-
     matrix = []
     for _ in range(rows):
         row = []
-        for _ in range(columns):
+        for _ in range(rows):
             try:
                 row.append(float(values.pop(0)))
             except ValueError:
@@ -92,20 +97,17 @@ def stochasticprocesstheoryEx1(request):
         return {'err': ERR, 'is_valid': False}
 
     matrix_np = np.matrix(matrix)
-    matrix_np = np.linalg.matrix_power(matrix_np, step)
     matrix_np = matrix_np.transpose()
     vector_np = np.matrix(vector)
     vector_np = vector_np.transpose()
-    ans = matrix_np * vector_np
-    ans = ans.tolist()
 
-    def matrix2latex(lst):
-        if type(lst[0]) == type(lst):
-            return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
-                r' \\ '.join([(str.join(' & ', (str(round(el, ROUNDING_NUMBER)) for el in row))) for row in lst]))
-        else:
-            return r'\begin{{pmatrix}} {} \end{{pmatrix}}^T'.format(
-                ' & '.join([str(round(el, 2)) for el in lst]))
+    answers_in_steps = []
+    for i in range(step):
+        matrix_pow_np = np.linalg.matrix_power(matrix_np, i+1)
+        cur_answer = matrix_pow_np * vector_np
+        answers_in_steps.append(matrix2latex(cur_answer.tolist()))
 
-    return {'matrix': matrix2latex(matrix), 'vector': matrix2latex(vector), 'ans': matrix2latex(ans), 'step': step,
-            'is_valid': True}
+    final = np.linalg.matrix_power(matrix_np, MAX_STEP) * vector_np
+
+    return {'matrix': matrix2latex(matrix), 'vector': matrix2latex(vector), 'ans': answers_in_steps, 'step': step,
+            'final': matrix2latex(final.tolist()), 'is_valid': True}

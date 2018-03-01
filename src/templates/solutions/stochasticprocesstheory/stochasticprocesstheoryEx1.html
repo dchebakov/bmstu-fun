@@ -50,13 +50,21 @@
 
 {% if solve.is_valid %}
     <div class="solution-block">
-        <p>Решение: </p>
-        <p class="big-formuls-ftnz">Исходная матрица перехода: \(A = {{ solve.matrix }} \)</p>
-        <p class="big-formuls-ftnz">Вектор начальных вероятностей состояний цепи: \(\vec{p_0} = {{ solve.vector }}
-            \)</p>
-        <p class="big-formuls-ftnz">Матрица вероятностей на \({{ solve.step }}\) шаге: \(P({{ solve.step }}) = (A
-            ^{ {{ solve.step }} })^T \cdot \vec{p_0} = {{ solve.ans }} \)</p>
-
+        <p>Вычисление вероятностей состояний цепи вплоть до {{ solve.step }} шага</p>
+        <p>Исходная матрица перехода: </p>
+        <p class="big-formuls-ftnz">$$ A = {{ solve.matrix }} $$</p>
+        <p>Вектор начальных вероятностей состояний цепи: </p>
+        <p class="big-formuls-ftnz">$$ \vec{p_0} = {{ solve.vector }} $$</p>
+        <p>Используя формулу: </p>
+        <p class="big-formuls-ftnz">$$ P(n) = (A^n)^T \cdot \vec{p_0} $$</p>
+        <p>Вычислим матрицы вероятностей вплоть до \({{ solve.step }}\) шага: </p>
+        {% for ans in solve.ans %}
+            <p class="big-formuls-ftnz">
+                \(P({{ forloop.counter }}) = (A ^{ {{ forloop.counter }} })^T \cdot \vec{p_0} = {{ ans }}\)
+            <br></p>
+        {% endfor %}
+        <p>Финальные вероятности состояний цепи:</p>
+        <p class="big-formuls-ftnz">$$ P_{\infty} = {{ solve.final }} $$</p>
     </div>
 {% else %}
 
@@ -150,8 +158,7 @@
 
 
     <script>
-
-        let columns = 3, rows = 3, elements = 3;
+        let rows = 3;
         let matrix = [];
         let vector = [];
 
@@ -160,7 +167,7 @@
             row.className = 'matrix-row';
 
             matrix.push([]);
-            for (let i = 0; i < columns; i++) {
+            for (let i = 0; i < rows; i++) {
                 let cell = document.createElement('div');
                 cell.className = 'matrix-td';
                 row.appendChild(cell);
@@ -169,15 +176,12 @@
 
             document.querySelectorAll('.matrix')[0].appendChild(row);
 
-            rows++;
-
             document.querySelectorAll('.matrix-row').forEach(function (el, index) {
                 let cell = document.createElement('div');
                 cell.className = 'matrix-td';
                 el.appendChild(cell);
                 matrix[index].push(MQ.MathField(cell));
             });
-            columns++;
 
             let row1 = document.createElement('div');
             row1.className = 'vector-row';
@@ -189,7 +193,7 @@
 
             document.querySelectorAll('.vector')[0].appendChild(row1);
 
-            elements++;
+            rows++;
         });
 
         document.querySelector('#remove-el').addEventListener('click', function (ev) {
@@ -198,19 +202,16 @@
             let lastMatrixRow = document.querySelectorAll('.matrix-row')[rows - 1];
             lastMatrixRow.parentElement.removeChild(lastMatrixRow);
             matrix.pop();
-            rows--;
 
             document.querySelectorAll('.matrix-row').forEach(function (el, index) {
                 matrix[index].pop();
-                el.removeChild(el.querySelectorAll('.matrix-td')[columns - 1]);
+                el.removeChild(el.querySelectorAll('.matrix-td')[rows - 1]);
             });
 
-            columns--;
-
-            let lastVectorRow = document.querySelectorAll('.vector-row')[elements - 1];
+            let lastVectorRow = document.querySelectorAll('.vector-row')[rows - 1];
             lastVectorRow.parentElement.removeChild(lastVectorRow);
             vector.pop();
-            elements--;
+            rows--;
         });
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -220,7 +221,7 @@
                 matrix.push([]);
                 let row = document.createElement('div');
                 row.className = 'matrix-row';
-                for (let j = 0; j < columns; j++) {
+                for (let j = 0; j < rows; j++) {
                     let cell = document.createElement('div');
                     cell.className = 'matrix-td';
                     row.appendChild(cell);
@@ -231,7 +232,7 @@
                 document.querySelectorAll('.matrix')[0].appendChild(row);
             }
 
-            for (let i = 0; i < elements; i++) {
+            for (let i = 0; i < rows; i++) {
                 let row = document.createElement('div');
                 row.className = 'vector-row';
                 let cell = document.createElement('div');
@@ -247,12 +248,12 @@
 
         document.querySelector('#reset-button').addEventListener('click', function (ev) {
             for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < columns; j++) {
+                for (let j = 0; j < rows; j++) {
                     matrix[i][j].latex('');
                 }
             }
 
-            for (let i = 0; i < elements; i++) {
+            for (let i = 0; i < rows; i++) {
                 vector[i].latex('');
             }
         });
@@ -277,12 +278,12 @@
                 }
             }
 
-            for (let i = 0; i < elements; i++) {
+            for (let i = 0; i < rows; i++) {
                 vector[i].latex(gen_vectors[0][i]);
             }
 
             for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < columns; j++) {
+                for (let j = 0; j < rows; j++) {
                     matrix[i][j].latex(gen_vectors[i + 1][j]);
                 }
             }
@@ -295,7 +296,7 @@
 
             let locationString = '';
             for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < columns; j++) {
+                for (let j = 0; j < rows; j++) {
                     let val = matrix[i][j].text();
                     if (!val.length) {
                         return false;
@@ -306,7 +307,7 @@
             }
 
             let locationString1 = '';
-            for (let i = 0; i < elements; i++) {
+            for (let i = 0; i < rows; i++) {
                 let val = vector[i].text();
                 if (!val.length) {
                     return false;
@@ -315,7 +316,7 @@
                 locationString1 += val + ' ';
             }
 
-            window.location = this.action + `?rows=${rows}&columns=${columns}&valuesm=${locationString}&valuesv=${locationString1}&step=${step.value}`;
+            window.location = this.action + `?rows=${rows}&valuesm=${locationString}&valuesv=${locationString1}&step=${step.value}`;
         });
 
     </script>
