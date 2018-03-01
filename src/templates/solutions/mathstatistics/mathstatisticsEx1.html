@@ -253,44 +253,45 @@
     </div>
 
     <div class="col-xs-9"></div>
-    <button id="save-to-pdf" class="btn btn-info col-xs-3">Сохранить в pdf</button>
     <script>
-        document.querySelector('#save-to-pdf').addEventListener('click', function () {
-            document.querySelector('.task-description').classList.add('ignore-to-pdf');
-            document.querySelector('#select-visible-type-of-dist').classList.add('ignore-to-pdf');
-            this.classList.add('ignore-to-pdf');
-            [].slice.call(document.querySelectorAll('hr')).forEach(function (e) {
-                e.classList.add('ignore-to-pdf');
-            });
+        document.addEventListener('cut', (e) => e.preventDefault());
+        document.addEventListener('copy', (e) => e.preventDefault());
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => (e.ctrlKey && e.keyCode === 80) ? e.preventDefault() : true);
 
-            document.querySelector('header').classList.add('ignore-to-pdf');
-            [].slice.call(document.querySelectorAll('navigation')).forEach(function (value) {
-                value.classList.add('ignore-to-pdf');
-            });
-
-            let mainBlock = document.querySelector('.main-block');
-            mainBlock.classList.remove('col-md-8');
-            mainBlock.classList.add('col-md-12');
-            document.querySelector('main').classList.remove('top-main');
-
-            console.log(mainBlock.classList);
-
-            document.querySelector('footer').classList.add('ignore-to-pdf');
-            document.querySelector('.post').style.fontSize = '18px';
-
-
-            new Promise((resolve) => {
-                print();
-                resolve();
-            }).then(() => {
-                mainBlock.classList.remove('col-md-12');
-                mainBlock.classList.add('col-md-8');
-                document.querySelector('main').classList.add('top-main');
-                document.querySelector('.post').style.fontSize = '14px';
-            });
-
-
-        });
+        {#document.querySelector('#save-to-pdf').addEventListener('click', function () {#}
+        {#    document.querySelector('.task-description').classList.add('ignore-to-pdf');#}
+        {#    document.querySelector('#select-visible-type-of-dist').classList.add('ignore-to-pdf');#}
+        {#    this.classList.add('ignore-to-pdf');#}
+        {#    [].slice.call(document.querySelectorAll('hr')).forEach(function (e) {#}
+        {#        e.classList.add('ignore-to-pdf');#}
+        {#    });#}
+        {##}
+        {#    document.querySelector('header').classList.add('ignore-to-pdf');#}
+        {#    [].slice.call(document.querySelectorAll('navigation')).forEach(function (value) {#}
+        {#        value.classList.add('ignore-to-pdf');#}
+        {#    });#}
+        {##}
+        {#    let mainBlock = document.querySelector('.main-block');#}
+        {#    mainBlock.classList.remove('col-md-8');#}
+        {#    mainBlock.classList.add('col-md-12');#}
+        {#    document.querySelector('main').classList.remove('top-main');#}
+        {##}
+        {#    console.log(mainBlock.classList);#}
+        {##}
+        {#    document.querySelector('footer').classList.add('ignore-to-pdf');#}
+        {#    document.querySelector('.post').style.fontSize = '18px';#}
+        {##}
+        {##}
+        {#    new Promise((resolve) => {#}
+        {#        print();#}
+        {#        resolve();#}
+        {#    }).then(() => {#}
+        {#        mainBlock.classList.remove('col-md-12');#}
+        {#        mainBlock.classList.add('col-md-8');#}
+        {#        document.querySelector('main').classList.add('top-main');#}
+        {#        document.querySelector('.post').style.fontSize = '14px';#}
+        {#    });#}
 
     </script>
 
