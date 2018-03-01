@@ -108,45 +108,46 @@
             </div>
         </div>
 
-        <div class="form-group col-md-7">
-            <div class="col-xs-4 col-md-4 big-fntz">
-                <span>Размер: </span>
+        <div class="row">
+            <div class="form-group col-md-4 col-sm-12">
+                <div class="col-xs-4 col-md-4 big-fntz">
+                    <span>Размер: </span>
+                </div>
+                <div class="col-xs-8 col-md-8">
+                    <button class="btn btn-info big-fntz remove-padding" id="add-el" type="button">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-primary big-fntz remove-padding" id="remove-el" type="button">
+                        <i class="fa fa-minus" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
-            <div class="col-xs-8 col-md-8">
-                <button class="btn btn-info big-fntz remove-padding" id="add-el" type="button">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-                <button class="btn btn-primary big-fntz remove-padding" id="remove-el" type="button">
-                    <i class="fa fa-minus" aria-hidden="true"></i>
-                </button>
+
+            <div class="form-group col-md-4 col-sm-12">
+                <div class="col-xs-12">
+                    <button class="btn btn-info" id="generate-button" type="button">Сгенерировать значения</button>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3 col-sm12">
+                <div class="col-xs-12">
+                    <button class="btn btn-primary" id="reset-button" type="reset">Очистить форму</button>
+                </div>
             </div>
         </div>
 
-        <div class="form-group col-md-3">
-            <div class="col-xs-12">
-                <button class="btn btn-info" id="generate-button" type="button">Сгенерировать значения</button>
-            </div>
-        </div>
-
-        <div class="form-group col-md-2">
-            <div class="col-xs-12">
-                <button class="btn btn-primary" id="reset-button" type="reset">Очистить форму</button>
-            </div>
-        </div>
-
-        <div class="form-group col-md-12">
-            <div class="col-xs-12 col-md-4">
-                <button class="btn btn-success" type="submit">Получить решение!</button>
-            </div>
-            <div class="col-xs-12 col-md-8 big-fntz">
-                <p><font color="red">{{ solve.err }}</font></p>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <div class="col-xs-12 col-md-4">
+                    <button class="btn btn-success" type="submit">Получить решение!</button>
+                </div>
+                <div class="col-xs-12 col-md-8 big-fntz">
+                    <p><font color="red">{{ solve.err }}</font></p>
+                </div>
             </div>
         </div>
     </form>
 
-    <div class="form-group">
-
-    </div>
 
     <script>
 
