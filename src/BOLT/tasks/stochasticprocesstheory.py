@@ -57,17 +57,18 @@ def stochasticprocesstheoryEx1(request):
     valuesv = request.GET.get('valuesv')
 
     if not check_args(rows, values, valuesv, step) \
-            or float(rows) < 1 \
-            or float(step) < 0 \
-            or float(step) > MAX_STEP:
-        ERR = 'Введите другое значение шага'
-        return {'err': ERR, 'is_valid': False}
+            or float(rows) < 1:
+        return {'is_valid': False}
 
     rows = int(rows)
     try:
         step = int(step)
     except ValueError:
         return {'is_valid': False}
+
+    if not 0 <= step <= MAX_STEP:
+        ERR = 'Введите другое значение шага'
+        return {'err': ERR, 'is_valid': False}
 
     values = values.split(' ')
     valuesv = valuesv.split(' ')
@@ -102,12 +103,17 @@ def stochasticprocesstheoryEx1(request):
     vector_np = vector_np.transpose()
 
     answers_in_steps = []
+    data = [vector]
     for i in range(step):
         matrix_pow_np = np.linalg.matrix_power(matrix_np, i+1)
         cur_answer = matrix_pow_np * vector_np
+        data.append(cur_answer.tolist())
         answers_in_steps.append(matrix2latex(cur_answer.tolist()))
 
     final = np.linalg.matrix_power(matrix_np, MAX_STEP) * vector_np
 
+    index = [i for i in range(step+1)]
+    data = [list(el) for el in zip(*data)]
+
     return {'matrix': matrix2latex(matrix), 'vector': matrix2latex(vector), 'ans': answers_in_steps, 'step': step,
-            'final': matrix2latex(final.tolist()), 'is_valid': True}
+            'final': matrix2latex(final.tolist()), 'index': index, 'data': data, 'is_valid': True}

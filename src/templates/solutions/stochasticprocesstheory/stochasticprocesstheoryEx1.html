@@ -1,6 +1,7 @@
-{% load static %}
+{% load staticfiles %}
 
 <link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+<script src="{% static 'js/Chart.js' %}"></script>
 <style>
     .matrix-td {
         min-width: 40px;
@@ -63,9 +64,76 @@
                 \(P({{ forloop.counter }}) = (A ^{ {{ forloop.counter }} })^T \cdot \vec{p_0} = {{ ans }}\)
             <br></p>
         {% endfor %}
+        <canvas id="chain-chart"></canvas>
         <p>Финальные вероятности состояний цепи:</p>
         <p class="big-formuls-ftnz">$$ P_{\infty} = {{ solve.final }} $$</p>
     </div>
+
+    <script type="text/javascript">
+
+        createChart(
+            'chain-chart', 'line', {{ solve.index }},
+            [
+                {% for el in solve.data %}
+                {
+                    type: 'line',
+                    data: {{ el }}
+                },
+                {% endfor %}
+            ],
+            'Найденные вероятности в зависимости от номера шага'
+        );
+
+        function createChart(canvasId, type, labels, datasets, title, barPercentage) {
+
+            let chartDataset = [];
+            for (let i = 0; i < datasets.length; i++) {
+                chartDataset.push(
+                    {
+                        type: datasets[i].type,
+                        data: datasets[i].data,
+                        borderColor: 'rgba(93,133,245, 1)',
+                        borderWidth: 3,
+                        fill: false,
+                        steppedLine: datasets[i].steppedLine,
+                        lineTension: 0,
+                        pointBackgroundColor: 'white',
+                        pointBorderColor: 'black',
+                        pointBorderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverBackgroundColor: 'black',
+                        showLine: true,
+                    }
+                )
+            }
+
+            new Chart(document.getElementById(canvasId).getContext('2d'), {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: chartDataset
+                },
+                options: {
+                    legend: false,
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: title
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            barPercentage: barPercentage,
+                        }],
+                        yAxes: [{
+                            display: true,
+                        }]
+                    }
+                }
+            });
+        }
+
+    </script>
 {% else %}
 
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" name="norm">
