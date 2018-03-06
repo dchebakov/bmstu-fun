@@ -48,7 +48,7 @@ def stochasticprocesstheoryEx1(request):
                 ' & '.join([str(round(el, 2)) for el in lst]))
 
     ROUNDING_NUMBER = 2
-    MAX_STEP = 100
+    MAX_STEP = 1000
     ERR = 'Введенные данные не прошли проверку на стохастичность'
 
     step = request.GET.get('step')
