@@ -373,22 +373,35 @@
         });
 
         document.querySelector('#generate-button').addEventListener('click', function (ev) {
-            let vectors = [];
-            for (let i = 0; i < rows + 1; i++) {
-                vectors.push([]);
-                for (let j = 0; j < rows - 1; j++) {
-                    vectors[i].push(Math.random());
-                }
-                vectors[i].push(0, 1);
-                vectors[i].sort(function (a, b) {
-                    return a - b;
-                })
-            }
             let gen_vectors = [];
-            for (let i = 0; i < rows + 1; i++) {
-                gen_vectors.push([]);
-                for (let j = 0; j < rows; j++) {
-                    gen_vectors[i].push((vectors[i][j + 1] - vectors[i][j]).toFixed(2));
+            let sum = 0;
+
+            while (sum != rows + 1) {
+                sum = 0;
+                let vectors = [];
+
+                for (let i = 0; i < rows + 1; i++) {
+                    vectors.push([]);
+                    for (let j = 0; j < rows - 1; j++) {
+                        vectors[i].push(Math.random());
+                    }
+                    vectors[i].push(0, 1);
+                    vectors[i].sort(function (a, b) {
+                        return a - b;
+                    })
+                }
+
+                gen_vectors = [];
+                for (let i = 0; i < rows + 1; i++) {
+                    gen_vectors.push([]);
+                    let cur_sum = 0.0;
+                    for (let j = 0; j < rows; j++) {
+                        gen_vectors[i].push((vectors[i][j + 1] - vectors[i][j]).toFixed(2));
+                        cur_sum += parseFloat(gen_vectors[i][j]);
+                    }
+                    if (cur_sum == 1){
+                        sum += 1;
+                    }
                 }
             }
 

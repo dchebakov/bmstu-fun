@@ -26,13 +26,13 @@ def stochasticprocesstheoryEx1(request):
     def stochastic_validity(lst):
         if type(lst[0]) == type(lst):
             for row in lst:
-                if not (0.98 <= sum(row) <= 1.02):
+                if sum(row) != 1:
                     return False
                 for el in row:
                     if not (0 <= el <= 1):
                         return False
         else:
-            if not (0.98 <= sum(lst) <= 1.02):
+            if sum(lst) != 1:
                 return False
             for el in lst:
                 if not (0 <= el <= 1):
@@ -48,7 +48,7 @@ def stochasticprocesstheoryEx1(request):
                 ' & '.join([str(round(el, 2)) for el in lst]))
 
     ROUNDING_NUMBER = 2
-    MAX_STEP = 1000
+    MAX_STEP = 500
     ERR = 'Введенные данные не прошли проверку на стохастичность'
 
     step = request.GET.get('step')
