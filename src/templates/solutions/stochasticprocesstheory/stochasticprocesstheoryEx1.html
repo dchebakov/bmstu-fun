@@ -50,6 +50,14 @@
 
 
 {% if solve.is_valid %}
+    <style>
+        @media print {
+            html, body {
+                display: none;
+            }
+        }
+    </style>
+
     <div class="solution-block">
         <p>Вычисление вероятностей состояний цепи вплоть до {{ solve.step }} шага</p>
         <p>Исходная матрица перехода: </p>
@@ -69,12 +77,14 @@
         <p class="big-formuls-ftnz">$$ P_{\infty} = {{ solve.final }} $$</p>
     </div>
 
+    {% comment %}
 
     <div class="form-group col-md-12">
         <div class="col-xs-12 col-md-4">
             <button id="save-to-pdf" class="btn btn-info">Сохранить в pdf</button>
         </div>
     </div>
+{% endcomment %}
 
     <script type="text/javascript">
 
@@ -143,6 +153,13 @@
     </script>
 
     <script>
+        document.addEventListener('copy', e => e.preventDefault());
+        document.addEventListener('cut', e => e.preventDefault());
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => (e.ctrlKey && e.keyCode === 80) ? e.preventDefault() : true);
+    </script>
+
+    {% comment %}<script>
         document.querySelector('#save-to-pdf').addEventListener('click', function () {
             document.querySelector('.task-description').classList.add('ignore-to-pdf');
             this.classList.add('ignore-to-pdf');
@@ -178,10 +195,24 @@
         })
 
     </script>
-
+{% endcomment %}
 
 
 {% else %}
+    <style>
+        @media print {
+            html, body {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('cut', (e) => e.preventDefault());
+        document.addEventListener('copy', (e) => e.preventDefault());
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => (e.ctrlKey && e.keyCode === 80) ? e.preventDefault() : true);
+    </script>
 
     <form class="form-horizontal" action="{{ task.get_absolute_url }}" name="norm">
         <div class="form-group">

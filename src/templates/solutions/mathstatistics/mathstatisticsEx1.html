@@ -47,6 +47,15 @@
 <script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
 
+    <style>
+        @media print {
+            html, body {
+                display: none;
+            }
+        }
+    </style>
+    
+
     <p class="big-formuls-ftnz">Объем выборки: \(n = {{ solve.numberOfValues }}\) <br>
         Шаг: \(h = {{ solve.step }}\) <br></p>
 
