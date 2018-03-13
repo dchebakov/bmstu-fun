@@ -1,0 +1,134 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+<link rel="stylesheet" href="{% static 'css/vis-network.min.css' %}">
+<script src="{% static 'js/Chart.js' %}"></script>
+<script src={% static 'js/vis.min.js' %}></script>
+
+<style type="text/css">
+    #mynetwork {
+        position: relative;
+        height: 600px;
+        border: 1px solid lightgray;
+    }
+
+    #edge-popUp {
+        display: none;
+        position: absolute;
+        z-index: 299;
+        background-color: #f9f9f9;
+        border: 1px solid lightgray;
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+
+{% if solve.is_valid %}
+    kek
+
+{% else %}
+    <div id="edge-popUp" class="form-horizontal">
+        <div class="form-group">
+            <div id="edge-operation"></div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-2 col-md-2">
+                <label for="edge-label" class="control-label">P:</label>
+            </div>
+            <div class="col-xs-10 col-md-10">
+                <input id="edge-label" value="new value" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="button" value="Сохранить" id="edge-saveButton"/>
+            <input type="button" value="Закрыть" id="edge-cancelButton"/>
+        </div>
+    </div>
+    <div class="post row" id="mynetwork"></div>
+
+
+    <script type="text/javascript">
+
+        var nodes = new vis.DataSet([
+            {id: 1, label: '1', shape: 'circle'},
+            {id: 2, label: '2', shape: 'circle'},
+            {id: 3, label: '3', shape: 'circle'},
+            {id: 4, label: '4', shape: 'circle'},
+            {id: 5, label: '5', shape: 'circle'}
+        ]);
+
+        var edges = new vis.DataSet([
+            {from: 1, to: 3, arrows: 'to', label: '0.5', font: {align: 'top'}},
+            {from: 1, to: 2, arrows: 'to', label: '0.5', font: {align: 'top'}},
+            {from: 2, to: 4, arrows: 'to', label: '0.5', font: {align: 'top'}},
+            {from: 2, to: 5, arrows: 'to', label: '0.5', font: {align: 'top'}}
+        ]);
+
+        function draw() {
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+
+            var container = document.getElementById('mynetwork');
+            var options = {
+                locale: 'ru',
+                manipulation: {
+                    addEdge: function (data, callback) {
+                        if (data.from == data.to) {
+                            var r = confirm("Вы хотите сделать переход в это же состояние?");
+                            if (r != true) {
+                                callback(null);
+                                return;
+                            }
+                        }
+                        document.getElementById('edge-operation').innerHTML = "Добавить ребро";
+                        editEdgeWithoutDrag(data, callback);
+                    },
+                    editEdge: {
+                        editWithoutDrag: function (data, callback) {
+                            document.getElementById('edge-operation').innerHTML = "Редактировать ребро";
+                            editEdgeWithoutDrag(data, callback);
+                        }
+                    }
+                }
+            };
+            network = new vis.Network(container, data, options);
+        }
+
+        function editEdgeWithoutDrag(data, callback) {
+            document.getElementById('edge-label').value = data.label;
+            document.getElementById('edge-saveButton').onclick = saveEdgeData.bind(this, data, callback);
+            document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this, callback);
+            document.getElementById('edge-popUp').style.display = 'block';
+        }
+
+        function clearEdgePopUp() {
+            document.getElementById('edge-saveButton').onclick = null;
+            document.getElementById('edge-cancelButton').onclick = null;
+            document.getElementById('edge-popUp').style.display = 'none';
+        }
+
+        function cancelEdgeEdit(callback) {
+            clearEdgePopUp();
+            callback(null);
+        }
+
+        function saveEdgeData(data, callback) {
+            if (typeof data.to === 'object')
+                data.to = data.to.id
+            if (typeof data.from === 'object')
+                data.from = data.from.id
+            data.label = document.getElementById('edge-label').value;
+            clearEdgePopUp();
+            callback(data);
+        }
+
+
+        draw();
+
+    </script>
+
+
+
+{% endif %}

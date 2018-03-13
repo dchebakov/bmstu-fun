@@ -117,3 +117,7 @@ def stochasticprocesstheoryEx1(request):
 
     return {'matrix': matrix2latex(matrix), 'vector': matrix2latex(vector), 'ans': answers_in_steps, 'step': step,
             'final': matrix2latex(final.tolist()), 'index': index, 'data': data, 'is_valid': True}
+
+@task_decorate
+def stochasticprocesstheoryEx2(request):
+    return {'is_valid': False}
