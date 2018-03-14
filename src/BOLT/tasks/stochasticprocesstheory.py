@@ -9,8 +9,11 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 import numpy as np
+
 import re
 import json
+
+ROUNDING_NUMBER = 2
 
 
 def check_args(*args):
@@ -19,6 +22,15 @@ def check_args(*args):
         if not arg:
             return False
     return True
+
+
+def matrix2latex(lst):
+    if type(lst[0]) == type(lst):
+        return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
+            r' \\ '.join([(str.join(' & ', (str(round(el, ROUNDING_NUMBER)) for el in row))) for row in lst]))
+    else:
+        return r'\begin{{pmatrix}} {} \end{{pmatrix}}^T'.format(
+            ' & '.join([str(round(el, 2)) for el in lst]))
 
 
 @task_decorate
@@ -39,15 +51,6 @@ def stochasticprocesstheoryEx1(request):
                     return False
         return True
 
-    def matrix2latex(lst):
-        if type(lst[0]) == type(lst):
-            return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
-                r' \\ '.join([(str.join(' & ', (str(round(el, ROUNDING_NUMBER)) for el in row))) for row in lst]))
-        else:
-            return r'\begin{{pmatrix}} {} \end{{pmatrix}}^T'.format(
-                ' & '.join([str(round(el, 2)) for el in lst]))
-
-    ROUNDING_NUMBER = 2
     MAX_STEP = 500
     ERR = 'Введенные данные не прошли проверку на стохастичность'
 
@@ -105,19 +108,48 @@ def stochasticprocesstheoryEx1(request):
     answers_in_steps = []
     data = [vector]
     for i in range(step):
-        matrix_pow_np = np.linalg.matrix_power(matrix_np, i+1)
+        matrix_pow_np = np.linalg.matrix_power(matrix_np, i + 1)
         cur_answer = matrix_pow_np * vector_np
         data.append(cur_answer.tolist())
         answers_in_steps.append(matrix2latex(cur_answer.tolist()))
 
     final = np.linalg.matrix_power(matrix_np, MAX_STEP) * vector_np
 
-    index = [i for i in range(step+1)]
+    index = [i for i in range(step + 1)]
     data = [list(el) for el in zip(*data)]
 
     return {'matrix': matrix2latex(matrix), 'vector': matrix2latex(vector), 'ans': answers_in_steps, 'step': step,
             'final': matrix2latex(final.tolist()), 'index': index, 'data': data, 'is_valid': True}
 
+
 @task_decorate
 def stochasticprocesstheoryEx2(request):
-    return {'is_valid': False}
+    NUMBER_OF_NODES = request.GET.get('nn');
+    NUMBER_OF_EDGES = request.GET.get('ne');
+    edges = request.GET.get('edg');
+
+    if not check_args(NUMBER_OF_NODES, NUMBER_OF_EDGES, edges):
+        return {'is_valid': False}
+
+    try:
+        edges = [float(s) for s in edges.split()]
+        NUMBER_OF_NODES = int(NUMBER_OF_NODES)
+        NUMBER_OF_EDGES = int(NUMBER_OF_EDGES)
+    except ValueError:
+        return {'is_valid': False}
+
+    if len(edges) % 3 != 0 or len(edges) / 3 != float(NUMBER_OF_EDGES):
+        return {'is_valid': False}
+
+    edges = [list(el) for el in zip(*[iter(edges)] * 3)]
+
+    H = np.zeros((NUMBER_OF_NODES, NUMBER_OF_NODES))
+
+    for node in range(1, NUMBER_OF_NODES + 1):
+        for edge in edges:
+            if edge[0] == node:
+                H[node - 1][node - 1] -= edge[2]
+            if edge[1] == node:
+                H[node - 1][int(edge[0] - 1)] += edge[2]
+
+    return {'H': matrix2latex(H.tolist()), 'is_valid': True}
