@@ -9,7 +9,7 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 import numpy as np
-from sympy import Symbol, Function, latex
+from sympy import Symbol, Function, latex, solve
 from scipy.integrate import odeint
 
 import re
@@ -129,8 +129,10 @@ def stochasticprocesstheoryEx1(request):
 
 @task_decorate
 def stochasticprocesstheoryEx2(request):
-    TIME_MAX = 10
+    TIME_MAX = 100  # max time value for solving ODE
     TIME_STEP = 0.2
+    TIME_GRAPH = 5  # max time value for plotting
+
     NUMBER_OF_NODES = request.GET.get('nn')
     NUMBER_OF_EDGES = request.GET.get('ne')
     edges = request.GET.get('edg')
@@ -146,7 +148,7 @@ def stochasticprocesstheoryEx2(request):
     except ValueError:
         return {'is_valid': False}
 
-    if len(edges) % 3 != 0 or len(edges) / 3 != float(NUMBER_OF_EDGES):
+    if len(edges) / 3 != float(NUMBER_OF_EDGES):
         return {'is_valid': False}
 
     values = values.split(' ')
@@ -163,8 +165,7 @@ def stochasticprocesstheoryEx2(request):
 
     edges = [list(el) for el in zip(*[iter(edges)] * 3)]
 
-    H = np.zeros((NUMBER_OF_NODES, NUMBER_OF_NODES))
-
+    H = np.zeros((NUMBER_OF_NODES, NUMBER_OF_NODES))  # infinitesimal matrix
     for node in range(1, NUMBER_OF_NODES + 1):
         for edge in edges:
             if edge[0] == node:
@@ -174,10 +175,12 @@ def stochasticprocesstheoryEx2(request):
 
     vector_np = np.array(vector)
     t = Symbol('t')
-    p = [Function('p%d' % i) for i in range(1, NUMBER_OF_NODES + 1)]
-    pt = np.matrix([el(t) for el in p]).transpose()
-    right = (H * pt).tolist()
-    eq = [latex(right[i][0]) for i in range(NUMBER_OF_NODES)]
+    p = [Function('p%d' % i) for i in range(1, NUMBER_OF_NODES + 1)]  # list of pi = sympy.Function('pi')
+    pt = np.matrix([el(t) for el in p]).transpose()  # pi(t)
+    right = (H * pt).tolist()  # right part of ODE-system (matrix)
+    eq = [latex(right[i][0]) for i in range(NUMBER_OF_NODES)]  # right part of ODE-system (strings)
+
+    normalization = latex(sum(pt).tolist()[0][0])
 
     def f(p, t):
         return np.dot(H, p)
@@ -185,8 +188,10 @@ def stochasticprocesstheoryEx2(request):
     time = np.linspace(0, TIME_MAX, TIME_MAX / TIME_STEP + 1)
     data = odeint(f, vector_np, time).tolist()
     final = data[-1]
-    data = [round_list(list(el)) for el in zip(*data)]
+    data = [round_list(list(el)) for el in zip(*data[:int(TIME_GRAPH / TIME_STEP + 1)])]  # data for plotting
+    time = time[:int(TIME_GRAPH / TIME_STEP + 1)]  # time for plotting
 
     return {'H': matrix2latex(H.tolist()), 'eq': eq, 'vector': matrix2latex(vector), 'data': data,
             'time': round_list(time.tolist()), 'final': matrix2latex(final), 'edges': edges, 'nn': NUMBER_OF_NODES,
+            'normalization': normalization,
             'is_valid': True}

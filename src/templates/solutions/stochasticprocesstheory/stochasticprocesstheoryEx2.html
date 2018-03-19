@@ -87,6 +87,14 @@
         </p>
         <canvas id="chain-chart"></canvas>
         <p>Финальные вероятности состояний цепи:</p>
+        <p class="big-formuls-ftnz">
+            $$\left\{\begin{matrix}
+            {% for eq in solve.eq %}
+                {{ eq }}& = 0 \\
+            {% endfor %}
+            {{ solve.normalization }}& = 1\\
+            \end{matrix}\right.$$
+        </p>
         <p class="big-formuls-ftnz">$$ \vec{p_{\infty}} = {{ solve.final }} $$</p>
     </div>
 
@@ -108,21 +116,25 @@
         function createChart(canvasId, type, labels, datasets, title, barPercentage) {
 
             let chartDataset = [];
+            let colors = ['SlateGrey', 'DarkSlateGrey', 'LightSteelBlue', 'SteelBlue', 'DodgerBlue', 'DarkOliveGreen',
+                'ForestGreen', '#00356a', '#c16f78', '#8f6442', '#d18040', '#fecbcf'];
             for (let i = 0; i < datasets.length; i++) {
                 chartDataset.push(
                     {
+                        label: 'P' + (i + 1).toString(),
                         type: datasets[i].type,
                         data: datasets[i].data,
-                        borderColor: 'rgba(93,133,245, 1)',
+                        borderColor: colors[i],
                         borderWidth: 3,
                         fill: false,
                         steppedLine: datasets[i].steppedLine,
                         lineTension: 0,
+                        backgroundColor: colors[i],
                         pointBackgroundColor: 'white',
-                        pointBorderColor: 'black',
+                        pointBorderColor: colors[i],
                         pointBorderWidth: 1,
                         pointRadius: 3,
-                        pointHoverBackgroundColor: 'black',
+                        pointHoverBackgroundColor: 'white',
                         showLine: true,
                     }
                 )
@@ -135,7 +147,14 @@
                     datasets: chartDataset
                 },
                 options: {
-                    legend: false,
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 80,
+                            fontColor: 'black'
+                        }
+                    },
                     responsive: true,
                     title: {
                         display: true,
@@ -151,7 +170,8 @@
                         }]
                     }
                 }
-            });
+            })
+            ;
         }
 
     </script>
