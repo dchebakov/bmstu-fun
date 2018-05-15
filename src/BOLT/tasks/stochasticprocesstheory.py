@@ -301,8 +301,8 @@ def stochasticprocesstheoryEx3(request):
      dataY2.append(N(MX2.subs({t: i})))
      dataY6.append(N(D2.subs({t : i})))
 
-    for i in range (-10,10,1):
-        for j in range(-10,10,1):
+    for i in range (-20,20,1):
+        for j in range(-20,20,1):
             dataNX2.append(i)
             dataNY2.append(j)
             dataZ2.append(N(Kx2.subs({t1:i,t2:j})))
@@ -318,8 +318,8 @@ def stochasticprocesstheoryEx3(request):
      dataY3.append(N(MX3.subs({t: i})))
      dataY7.append(N(D3.subs({t : i})))
 
-     for i in range(-10, 10, 1):
-         for j in range(-10, 10, 1):
+     for i in range(-20, 20, 1):
+         for j in range(-20, 20, 1):
              dataNX3.append(i)
              dataNY3.append(j)
              dataZ3.append(N(Kx3.subs({t1: i, t2: j})))
@@ -338,12 +338,12 @@ def stochasticprocesstheoryEx3(request):
      dataY8.append(N(D4.subs({t : i})))
 
      for i in range(-10, 10, 1):
-         for j in range(-10, 10, 1):
+         for j in range(-20, 20, 1):
              dataNX4.append(i)
              dataNY4.append(j)
              dataZ4.append(N(Kx4.subs({t1: i, t2: j})))
 
-    RXX1 = diff(Kx1,t1)
+    RXX1 = diff(Kx1,t2)
     RX1X = diff(Kx1,t1)
 
     for i in range(-10, 10, 1):
@@ -352,8 +352,8 @@ def stochasticprocesstheoryEx3(request):
             dataNY5.append(j)
             dataZ5.append(N(RXX1.subs({t1: i, t2: j})))
 
-    for i in range(-10, 10, 1):
-        for j in range(-10, 10, 1):
+    for i in range(-20, 20, 1):
+        for j in range(-20, 20, 1):
             dataNX6.append(i)
             dataNY6.append(j)
             dataZ6.append(N(RX1X.subs({t1: i, t2: j})))
@@ -367,7 +367,7 @@ def stochasticprocesstheoryEx3(request):
             'dataNX3' : dataNX3,'dataNY3' : dataNY3,'dataNX4' : dataNX4,'dataNY4' : dataNY4,'dataNX5' : dataNX5,'dataNY5' : dataNY5,
             'dataNX6' : dataNX6,'dataNY6' : dataNY6,'is_valid': True}
 
-
+'''
 @task_decorate
 def stochasticprocesstheoryEx4(request):
     k = request.GET.get('k')
@@ -377,4 +377,4 @@ def stochasticprocesstheoryEx4(request):
     tau = symbols('tau')
     k = parse_expr(k)
     # возвращаем словарь с ответом
-    return {'k': k, 'is_valid': True}
+    return {'k': k, 'is_valid': True}'''
