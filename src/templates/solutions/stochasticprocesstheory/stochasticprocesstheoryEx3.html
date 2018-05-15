@@ -1,0 +1,606 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+<script src="{% static 'js/Chart.js' %}"></script>
+<style>
+    .matrix-td {
+        min-width: 40px;
+        min-height: 30px;
+        text-align: center;
+        padding: 6px;
+        border: 1px solid rgb(85, 85, 85);
+        border-radius: 5px;
+        display: inline-block;
+        margin: 2px 3px;
+    }
+
+    .brackets {
+        border: 2px solid rgb(85, 85, 85);
+        border-radius: 25px;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        padding: 8px;
+        display: inline-block;
+    }
+
+    .big-fntz {
+        line-height: 30px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .remove-padding {
+        padding: 2px 10px !important;
+    }
+
+    .matrix-block {
+        display: flex;
+    }
+
+    .label-div {
+        margin: auto;
+    }
+
+    .post {
+        overflow-x: hidden;
+    }
+
+</style>
+
+<head>
+               <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+{% if solve.is_valid %}
+    <style>
+        @media print {
+            html, body {
+                display: none;
+            }
+        }
+    </style>
+
+    <div class="solution-block">
+
+
+        <p>Корреляционная матрица: </p>
+        <p class="big-formuls-ftnz">$$ A = {{ solve.matrix }} $$</p>
+        <p>Вектор мат. ожидания: </p>
+        <p class="big-formuls-ftnz">$$ \vec{m} = {{ solve.vector }} $$</p>
+        <p>Введеная функция: </p>
+        <p class="big-formuls-ftnz">$$ f = {{ solve.f }} $$</p>
+        <p class="big-formuls-ftnz">$$ D[u]  = {{ solve.DU }} $$</p>
+        <p class="big-formuls-ftnz">$$ D[v] = {{ solve.DV }} $$</p>
+        <p class="big-formuls-ftnz">$$ cov(u,v) = {{ solve.cov }} $$</p>
+        <br>
+        <p class="big-formuls-ftnz">$$ Y_1 = X(t) $$</p>
+        <p class="big-formuls-ftnz">$$ f = {{ solve.f }} $$</p>
+        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX1 }} $$</p>
+        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx1 }} $$</p>
+        <p class="big-formuls-ftnz">$$ D = {{ solve.D1 }} $$</p>
+        <div id="first" style="width:600px;height:400px;"></div>
+        <div id="fifth" style="width:600px;height:400px;"></div>
+        <div id="ninth" style="width:600px;height:400px;"></div>
+        <br>
+        <p class="big-formuls-ftnz">$$ Y_2 = dX(t)/dt $$</p>
+        <p class="big-formuls-ftnz">$$ f = {{ solve.Df }} $$</p>
+        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX2 }} $$</p>
+        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx2 }} $$</p>
+        <p class="big-formuls-ftnz">$$ D = {{ solve.D2 }} $$</p>
+        <div id="second" style="width:600px;height:400px;"></div>
+        <div id="sixth" style="width:600px;height:400px;"></div>
+        <div id="tenth" style="width:600px;height:400px;"></div>
+        <br>
+        <p class="big-formuls-ftnz">$$ Y_3 = X(t)+dX(t)/dt $$</p>
+        <p class="big-formuls-ftnz">$$ f = {{ solve.Nf }} $$</p>
+        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX3 }} $$</p>
+        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx3 }} $$</p>
+        <p class="big-formuls-ftnz">$$ D = {{ solve.D3 }} $$</p>
+        <div id="third" style="width:600px;height:400px;"></div>
+        <div id="seventh" style="width:600px;height:400px;"></div>
+        <div id="eleventh" style="width:600px;height:400px;"></div>
+        <br>
+        <p class="big-formuls-ftnz">$$ Y_4 = &#8750 X(s)ds $$</p>
+        <p class="big-formuls-ftnz">$$ f = {{ solve.If }} $$</p>
+        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX4 }} $$</p>
+        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx4 }} $$</p>
+        <p class="big-formuls-ftnz">$$ D = {{ solve.D4 }} $$</p>
+        <div id="fourth" style="width:600px;height:400px;"></div>
+        <div id="eighth" style="width:600px;height:400px;"></div>
+        <div id="twelfth" style="width:600px;height:400px;"></div>
+        <br>
+        <p class="big-formuls-ftnz">$$ Rxx' = {{ solve.RXX1 }} $$</p>
+        <div id="thirteenth" style="width:600px;height:400px;"></div>
+        <p class="big-formuls-ftnz">$$ Rx'x = {{ solve.RX1X }} $$</p>
+        <div id="fourteenth" style="width:600px;height:400px;"></div>
+
+    </div>
+
+    {% comment %}
+
+        <div class="form-group col-md-12">
+            <div class="col-xs-12 col-md-4">
+                <button id="save-to-pdf" class="btn btn-info">Сохранить в pdf</button>
+            </div>
+        </div>
+
+    {% endcomment %}
+<!--
+    <script type="text/javascript">
+
+        createChart(
+            'chain-chart', 'line', {{ solve.index }},
+            [
+                {% for el in solve.data %}
+                    {
+                        type: 'line',
+                        data: {{ el }}
+                    },
+                {% endfor %}
+            ],
+            'Найденные вероятности в зависимости от номера шага'
+        );
+
+        function createChart(canvasId, type, labels, datasets, title, barPercentage) {
+
+            let chartDataset = [];
+            for (let i = 0; i < datasets.length; i++) {
+                chartDataset.push(
+                    {
+                        type: datasets[i].type,
+                        data: datasets[i].data,
+                        borderColor: 'rgba(93,133,245, 1)',
+                        borderWidth: 3,
+                        fill: false,
+                        steppedLine: datasets[i].steppedLine,
+                        lineTension: 0,
+                        pointBackgroundColor: 'white',
+                        pointBorderColor: 'black',
+                        pointBorderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverBackgroundColor: 'black',
+                        showLine: true,
+                    }
+                )
+            }
+
+            new Chart(document.getElementById(canvasId).getContext('2d'), {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: chartDataset
+                },
+                options: {
+                    legend: false,
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: title
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            barPercentage: barPercentage,
+                        }],
+                        yAxes: [{
+                            display: true,
+                        }]
+                    }
+                }
+            });
+        }
+
+    </script>
+-->
+    <script>
+    var layout1 = {
+        title: 'Mx',
+        font: {
+            family: 'Courier New, monospace',
+            size: 18,
+            color: '#7f7f7f'
+        }
+    };
+
+       var layout2 = {
+        title: 'D(t)',
+        font: {
+            family: 'Courier New, monospace',
+            size: 18,
+            color: '#7f7f7f'
+        }
+       };
+
+      var layout3 = {
+        title: 'K(t1,t2)',
+        autosize: true,
+
+
+        font: {
+            family: 'Courier New, monospace',
+            size: 18,
+            color: '#7f7f7f'
+        },
+
+      };
+
+
+FIRST = document.getElementById('first');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY1 }},
+      mode: 'lines',
+    }
+];
+Plotly.newPlot(FIRST, data,layout1);
+
+SECOND = document.getElementById('second');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY2 }},
+      mode: 'lines',
+    }
+];
+Plotly.newPlot(SECOND, data,layout1);
+
+THIRD = document.getElementById('third');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY3 }},
+      mode: 'lines',
+    }
+];
+Plotly.newPlot(THIRD, data,layout1);
+
+FOURTH = document.getElementById('fourth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY4 }},
+      mode: 'lines',
+    }
+];
+Plotly.newPlot(FOURTH, data,layout1);
+
+
+FIFTH = document.getElementById('fifth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY5 }},
+      mode: 'lines',
+    }
+];
+Plotly.newPlot(FIFTH, data,layout2);
+
+SIXTH= document.getElementById('sixth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY6 }},
+      mode: 'lines'
+
+    }
+];
+Plotly.newPlot(SIXTH, data,layout2);
+
+
+SEVENTH = document.getElementById('seventh');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY7 }},
+      mode: 'lines'
+
+    }
+];
+Plotly.newPlot(SEVENTH, data,layout2);
+
+EIGHTH = document.getElementById('eighth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(300,100,200)',
+      x : {{ solve.dataX }},
+      y : {{ solve.dataY8 }},
+      mode: 'lines'
+
+    }
+];
+Plotly.newPlot(EIGHTH, data,layout2);
+
+NINTH = document.getElementById('ninth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(200,200,200)',
+      x : {{ solve.dataNX1 }},
+      y : {{ solve.dataNY1 }},
+      z : {{ solve.dataZ1 }},
+      type: 'mesh3d'
+    }
+];
+Plotly.newPlot(NINTH, data,layout3);
+
+TENTH = document.getElementById('tenth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(200,200,200)',
+      x : {{ solve.dataNX2 }},
+      y : {{ solve.dataNY2 }},
+      z : {{ solve.dataZ2 }},
+      type: 'mesh3d'
+    }
+];
+Plotly.newPlot(TENTH, data,layout3);
+
+ELEVENTH = document.getElementById('eleventh');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(200,200,200)',
+      x : {{ solve.dataNX3 }},
+      y : {{ solve.dataNY3 }},
+      z : {{ solve.dataZ3 }},
+      type: 'mesh3d'
+    }
+];
+Plotly.newPlot(ELEVENTH, data,layout3);
+
+TWELFTH = document.getElementById('twelfth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(200,200,200)',
+      x : {{ solve.dataNX4 }},
+      y : {{ solve.dataNY4 }},
+      z : {{ solve.dataZ4 }},
+      type: 'mesh3d'
+    }
+];
+Plotly.newPlot(TWELFTH, data,layout3);
+
+TWELFTH = document.getElementById('thirteenth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(200,200,200)',
+      x : {{ solve.dataNX5 }},
+      y : {{ solve.dataNY5 }},
+      z : {{ solve.dataZ5 }},
+      type: 'mesh3d'
+    }
+];
+Plotly.newPlot(TWELFTH, data);
+
+TWELFTH = document.getElementById('fourteenth');
+var data=[
+    {
+      opacity:0.8,
+      color:'rgb(200,200,200)',
+      x : {{ solve.dataNX6 }},
+      y : {{ solve.dataNY6 }},
+      z : {{ solve.dataZ6 }},
+      type: 'mesh3d'
+    }
+];
+Plotly.newPlot(TWELFTH, data);
+
+    </script>
+
+    <script>
+        document.addEventListener('copy', e => e.preventDefault());
+        document.addEventListener('cut', e => e.preventDefault());
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => (e.ctrlKey && e.keyCode === 80) ? e.preventDefault() : true);
+    </script>
+
+    {% comment %}
+
+        <script>
+            document.querySelector('#save-to-pdf').addEventListener('click', function () {
+                document.querySelector('.task-description').classList.add('ignore-to-pdf');
+                this.classList.add('ignore-to-pdf');
+                [].slice.call(document.querySelectorAll('hr')).forEach(function (e) {
+                    e.classList.add('ignore-to-pdf');
+                });
+
+                document.querySelector('header').classList.add('ignore-to-pdf');
+                [].slice.call(document.querySelectorAll('navigation')).forEach(function (value) {
+                    value.classList.add('ignore-to-pdf');
+                });
+
+                let mainBlock = document.querySelector('.main-block');
+                mainBlock.classList.remove('col-md-8');
+                mainBlock.classList.add('col-md-12');
+                document.querySelector('main').classList.remove('top-main');
+
+                document.querySelector('footer').classList.add('ignore-to-pdf');
+                document.querySelector('.post').style.fontSize = '18px';
+
+
+                new Promise((resolve) => {
+                    print();
+                    resolve();
+                }).then(() => {
+                    mainBlock.classList.remove('col-md-12');
+                    mainBlock.classList.add('col-md-8');
+                    document.querySelector('main').classList.add('top-main');
+                    document.querySelector('.post').style.fontSize = '14px';
+                });
+            })
+
+        </script>
+    {% endcomment %}
+
+
+
+{% else %}
+    <style>
+        @media print {
+            html, body {
+                display: none;
+            }
+        }
+    </style>
+
+
+    <script>
+        document.addEventListener('cut', (e) => e.preventDefault());
+        document.addEventListener('copy', (e) => e.preventDefault());
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => (e.ctrlKey && e.keyCode === 80) ? e.preventDefault() : true);
+    </script>
+
+
+
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label class="control-label" for="f">Введите f(u,v):</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="f" name="f" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-8 col-xs-12 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 text-center">
+                        <p class="big-fntz"> Ковариационная матрица: </p>
+                    </div>
+                </div>
+                <div class="matrix-block row">
+                    <div class="col-xs-3 big-fntz label-div">
+                        <label for="matrix-A" class="label-control big-formuls-ftnz">$$ A = $$</label>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="brackets">
+                            <div class="matrix" id="matrix-A"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-4 col-xs-12 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 text-center">
+                        <p class="big-fntz">Вектор мат. ожидания: </p>
+                    </div>
+                </div>
+                <div class="matrix-block row">
+                    <div class="col-xs-3 big-fntz label-div">
+                        <label for="vector-p" class="label-control big-formuls-ftnz">$$ \vec{m} = $$</label>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="brackets">
+                            <div id="vector-p" class="vector"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get" name="norm">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <div class="col-xs-12 col-md-4">
+                    <button class="btn btn-success" type="submit">Получить решение!</button>
+                </div>
+                <div class="col-xs-12 col-md-8 big-fntz">
+                    <p><font color="red">{{ solve.err }}</font></p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        let rows = 2;
+        let matrix = [];
+        let vector = [];
+
+         document.addEventListener('DOMContentLoaded', function () {
+            MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
+
+            for (let i = 0; i < rows; i++) {
+                matrix.push([]);
+                let row = document.createElement('div');
+                row.className = 'matrix-row';
+                for (let j = 0; j < rows; j++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'matrix-td';
+                    row.appendChild(cell);
+                    let mathCell = MQ.MathField(cell);
+                    matrix[i].push(mathCell);
+                }
+
+                document.querySelectorAll('.matrix')[0].appendChild(row);
+            }
+
+            for (let i = 0; i < rows; i++) {
+                let row = document.createElement('div');
+                row.className = 'vector-row';
+                let cell = document.createElement('div');
+                cell.className = 'matrix-td';
+                row.appendChild(cell);
+                let mathCell = MQ.MathField(cell);
+                vector.push(mathCell);
+
+                document.querySelectorAll('.vector')[0].appendChild(row);
+            }
+
+             document.forms['norm'].addEventListener('submit', function (ev) {
+            ev.preventDefault();
+
+
+            let locationString = '';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < rows; j++) {
+                    let val = matrix[i][j].text();
+                    if (!val.length) {
+                        return false;
+                    }
+
+                    locationString += val + ' ';
+                }
+            }
+
+            let locationString1 = '';
+            for (let i = 0; i < rows; i++) {
+                let val = vector[i].text();
+                if (!val.length) {
+                    return false;
+                }
+
+                locationString1 += val + ' ';
+            }
+            let f = document.querySelector('#f');
+           let metricUri = encodeURIComponent(f.value);
+            window.location = this.action + `?rows=${rows}&valuesm=${locationString}&valuesv=${locationString1}&fun=${metricUri}`;
+        });
+
+              });
+
+
+    </script>
+
+{% endif %}
