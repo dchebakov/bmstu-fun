@@ -9,7 +9,7 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from sympy import Symbol, Function, latex, solve
 from sympy import *
 from scipy.integrate import odeint
