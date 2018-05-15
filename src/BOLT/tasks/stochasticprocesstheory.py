@@ -28,7 +28,6 @@ def check_args(*args):
             return False
     return True
 
-
 def matrix2latex(lst):
     if type(lst[0]) == type(lst):
         return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
