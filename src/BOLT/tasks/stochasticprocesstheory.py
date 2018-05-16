@@ -9,14 +9,15 @@ from ..forms import CommentForm
 
 from .probabilitytheory import task_decorate, comments
 import numpy as np
-#import matplotlib.pyplot as plt
-from sympy import Symbol, Function, latex, solve
-from sympy import *
+from sympy import Symbol, Function, latex, integrate, diff, symbols, simplify, N
 from scipy.integrate import odeint
-from sympy.parsing.sympy_parser import parse_expr
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, function_exponentiation, \
+    implicit_application
 import re
 import json
 import os
+
+import time # delete this after release Ex3
 
 ROUNDING_NUMBER = 2
 ERR = 'Введенные данные не прошли проверку на стохастичность'
@@ -199,14 +200,42 @@ def stochasticprocesstheoryEx2(request):
             'normalization': normalization,
             'is_valid': True}
 
+
 @task_decorate
 def stochasticprocesstheoryEx3(request):
+    '''
+    1, надо много чего обернуть в try..catch, чтобы не валилось в случае неправильного ввода (что-то ты говорил про то,
+        что компоненты матрицы должны быть симметричны - это тоже надо проверять)
+    2, очень много одинаковых массивов, зачем тебе два массива (1, 2, 3) с разными именами? Используй один
+        переменных тоже по-минимому дополнительных
+    3, в питоне есть хорошая штука - генераторы списков, например
+       my_list = [i for i in range(5)] => my_list = [0, 1, 2, 3, 4]
+       избавляет от лишних циклов и объявлений массивов (27 одинаковых строчек "имя_массива = []" не есть хорошо
+    4, не импорти весь симпай, только те функции, которые нужны
+    5, в пайчарме Ctrl+Alt+L приводит твой код в порядок
+    6, время жрет функция integrate(), попробуй отдельно в консоли посчитать этот интеграл, надо как-то оптимизировать
+        или заменить эту операцию
+    '''
+    start_time = time.time()
+
     rows = request.GET.get('rows')
     values = request.GET.get('valuesm')
     valuesv = request.GET.get('valuesv')
     fun = request.GET.get('fun')
+
+    print("ALL DATA GET: ", time.time() - start_time)
+    start_time = time.time()
+
     if not check_args(rows, values, valuesv) \
             or float(rows) < 1:
+        return {'is_valid': False}
+
+    fun = re.sub(r'\^', '**', str(fun))  # replace ^ to **
+    transformations = standard_transformations + (
+        function_exponentiation, implicit_application,)  # instructions for parser
+    try:
+        fun = parse_expr(fun, transformations=transformations)
+    except:
         return {'is_valid': False}
 
     rows = int(rows)
@@ -225,7 +254,6 @@ def stochasticprocesstheoryEx3(request):
                 return {'is_valid': False}
         matrix.append(row)
 
-
     vector = []
     for _ in range(rows):
         try:
@@ -233,13 +261,17 @@ def stochasticprocesstheoryEx3(request):
         except ValueError:
             return {'is_valid': False}
 
+    print("PARSE THE DATA: ", time.time() - start_time)
+    start_time = time.time()
 
     DU = matrix[0].copy().pop(0)
     DV = matrix[1].copy().pop(1)
     cov = matrix[0].copy().pop(1)
     MU = vector.copy().pop(0)
     MV = vector.copy().pop(1)
-    u ,v, t, t1, t2, s = symbols('u v t t1 t2 s')
+
+    u, v, t, t1, t2, s = symbols('u v t t1 t2 s')
+
     dataX = []
     dataY = []
     dataY1 = []
@@ -269,103 +301,177 @@ def stochasticprocesstheoryEx3(request):
     dataNX6 = []
     dataNY6 = []
     '''fun = 'u*sint+v*2'''
-    fun=parse_expr(fun)
-    MX1 = fun.subs({u:MU,v:MV})
+
+    print("ONE: ", time.time() - start_time)
+    start_time = time.time()
+
+    MX1 = fun.subs({u: MU, v: MV})
     x = fun - MX1
-    x1 = x.subs({t:t1})
-    x2 = x.subs({t:t2})
-    Kx1 = simplify(x1.coeff(u)*x2.coeff(u)*DU+x1.coeff(v)*x2.coeff(u)*cov+x1.coeff(u)*x2.coeff(v)*cov+x1.coeff(v)*x2.coeff(v)*DV)
-    D1 = parse_expr(str((simplify(Kx1.subs({t1:t,t2:t})))))
+    x1 = x.subs({t: t1})
+    x2 = x.subs({t: t2})
+    Kx1 = simplify(
+        x1.coeff(u) * x2.coeff(u) * DU + x1.coeff(v) * x2.coeff(u) * cov + x1.coeff(u) * x2.coeff(v) * cov + x1.coeff(
+            v) * x2.coeff(v) * DV)
+    D1 = parse_expr(str((simplify(Kx1.subs({t1: t, t2: t})))))
 
-    print(dataX)
+    print("TWO: ", time.time() - start_time)
+    start_time = time.time()
 
-    for i in range(-10, 10,1):
-     dataX.append(i)
-     dataY.append(i)
-     dataY1.append(MX1.subs({t : i}))
-     dataY5.append(N(D1.subs({t : i})))
+    for i in range(-10, 10):
+        dataX.append(i)
+        dataY.append(i)
+        dataY1.append(MX1.subs({t: i}))
+        # dataY5.append(N(D1.subs({t: i})))
+        dataY5.append(D1.subs({t: i}))
 
-    for i in range (-20,20,1):
-        for j in range(-20,20,1):
+    for i in range(-20, 20):
+        for j in range(-20, 20):
             dataNX1.append(i)
             dataNY1.append(j)
-            dataZ1.append(N(Kx1.subs({t1:i,t2:j})))
-    Dfun = diff(fun,t)
-    MX2 = Dfun.subs({u:MU,v:MV})
-    x = Dfun - MX2
-    x1 = x.subs({t:t1})
-    x2 = x.subs({t:t2})
-    Kx2 = simplify(x1.coeff(u)*x2.coeff(u)*DU+x1.coeff(v)*x2.coeff(u)*cov+x1.coeff(u)*x2.coeff(v)*cov+x1.coeff(v)*x2.coeff(v)*DV)
-    D2 = simplify(Kx2.subs({t1:t,t2:t}))
-    for i in range(-10, 10):
-     dataY2.append(N(MX2.subs({t: i})))
-     dataY6.append(N(D2.subs({t : i})))
+            # dataZ1.append(N(Kx1.subs({t1: i, t2: j})))
+            dataZ1.append(Kx1.subs({t1: i, t2: j}))
 
-    for i in range (-20,20,1):
-        for j in range(-20,20,1):
+    print("\tBEFORE DIFF: ", time.time() - start_time)
+    start_time = time.time()
+
+    Dfun = diff(fun, t)
+
+    print("\tAFTER DIFF: ", time.time() - start_time)
+    start_time = time.time()
+
+    MX2 = Dfun.subs({u: MU, v: MV})
+    x = Dfun - MX2
+    x1 = x.subs({t: t1})
+    x2 = x.subs({t: t2})
+    Kx2 = simplify(
+        x1.coeff(u) * x2.coeff(u) * DU + x1.coeff(v) * x2.coeff(u) * cov + x1.coeff(u) * x2.coeff(v) * cov + x1.coeff(
+            v) * x2.coeff(v) * DV)
+    D2 = simplify(Kx2.subs({t1: t, t2: t}))
+
+    print("THREE: ", time.time() - start_time)
+    start_time = time.time()
+
+    for i in range(-10, 10):
+        # dataY2.append(N(MX2.subs({t: i})))
+        # dataY6.append(N(D2.subs({t: i})))
+        dataY2.append(MX2.subs({t: i}))
+        dataY6.append(D2.subs({t: i}))
+
+    for i in range(-20, 20):
+        for j in range(-20, 20):
             dataNX2.append(i)
             dataNY2.append(j)
-            dataZ2.append(N(Kx2.subs({t1:i,t2:j})))
+            # dataZ2.append(N(Kx2.subs({t1: i, t2: j})))
+            dataZ2.append(Kx2.subs({t1: i, t2: j}))
 
-    Nfun = fun+Dfun
-    MX3 = Nfun.subs({u:MU,v:MV})
+    print("FOUR: ", time.time() - start_time)
+    start_time = time.time()
+
+    Nfun = fun + Dfun
+    MX3 = Nfun.subs({u: MU, v: MV})
     x = Nfun - MX3
-    x1 = x.subs({t:t1})
-    x2 = x.subs({t:t2})
-    Kx3 = simplify(x1.coeff(u)*x2.coeff(u)*DU+x1.coeff(v)*x2.coeff(u)*cov+x1.coeff(u)*x2.coeff(v)*cov+x1.coeff(v)*x2.coeff(v)*DV)
-    D3 = simplify(Kx3.subs({t1:t,t2:t}))
+    x1 = x.subs({t: t1})
+    x2 = x.subs({t: t2})
+    Kx3 = simplify(
+        x1.coeff(u) * x2.coeff(u) * DU + x1.coeff(v) * x2.coeff(u) * cov + x1.coeff(u) * x2.coeff(v) * cov + x1.coeff(
+            v) * x2.coeff(v) * DV)
+    D3 = simplify(Kx3.subs({t1: t, t2: t}))
+
+    print("FIVE: ", time.time() - start_time)
+    start_time = time.time()
+
     for i in range(-10, 10):
-     dataY3.append(N(MX3.subs({t: i})))
-     dataY7.append(N(D3.subs({t : i})))
+        # dataY3.append(N(MX3.subs({t: i})))
+        # dataY7.append(N(D3.subs({t: i})))
+        dataY3.append(MX3.subs({t: i}))
+        dataY7.append(D3.subs({t: i}))
 
-     for i in range(-20, 20, 1):
-         for j in range(-20, 20, 1):
-             dataNX3.append(i)
-             dataNY3.append(j)
-             dataZ3.append(N(Kx3.subs({t1: i, t2: j})))
+        for i in range(-20, 20):
+            for j in range(-20, 20):
+                dataNX3.append(i)
+                dataNY3.append(j)
+                # dataZ3.append(N(Kx3.subs({t1: i, t2: j})))
+                dataZ3.append(Kx3.subs({t1: i, t2: j}))
 
-    Ifun = fun.subs(t,s)
-    Ifun = integrate(Ifun,(s,0,t))
+    print("\tBEFORE SUBS: ", time.time() - start_time)
+    start_time = time.time()
+
+    Ifun = fun.subs(t, s)
+
+    print("\tAFTER SUBS: ", time.time() - start_time)
+    start_time = time.time()
+
+    print("\tBEFORE INT: ", time.time() - start_time)
+    start_time = time.time()
+
+    Ifun = integrate(Ifun, (s, 0, t))
+
+    print("\tAFTER INT: ", time.time() - start_time)
+    start_time = time.time()
+
     MX4 = Ifun.subs({u: MU, v: MV})
     x = Ifun - MX4
     x1 = x.subs({t: t1})
     x2 = x.subs({t: t2})
-    Kx4 = simplify(x1.coeff(u)*x2.coeff(u)*DU+x1.coeff(v)*x2.coeff(u)*cov+x1.coeff(u)*x2.coeff(v)*cov+x1.coeff(v)*x2.coeff(v)*DV)
+    Kx4 = simplify(
+        x1.coeff(u) * x2.coeff(u) * DU + x1.coeff(v) * x2.coeff(u) * cov + x1.coeff(u) * x2.coeff(v) * cov + x1.coeff(
+            v) * x2.coeff(v) * DV)
     D4 = simplify(Kx4.subs({t1: t, t2: t}))
     count = 0
+
+    print("SIX: ", time.time() - start_time)
+    start_time = time.time()
+
     for i in range(-10, 10):
-     dataY4.append(N(MX4.subs({t: i})))
-     dataY8.append(N(D4.subs({t : i})))
+        # dataY4.append(N(MX4.subs({t: i})))
+        # dataY8.append(N(D4.subs({t: i})))
+        dataY4.append(MX4.subs({t: i}))
+        dataY8.append(D4.subs({t: i}))
 
-     for i in range(-10, 10, 1):
-         for j in range(-20, 20, 1):
-             dataNX4.append(i)
-             dataNY4.append(j)
-             dataZ4.append(N(Kx4.subs({t1: i, t2: j})))
+        for i in range(-10, 10):
+            for j in range(-20, 20):
+                dataNX4.append(i)
+                dataNY4.append(j)
+                # dataZ4.append(N(Kx4.subs({t1: i, t2: j})))
+                dataZ4.append(Kx4.subs({t1: i, t2: j}))
 
-    RXX1 = diff(Kx1,t2)
-    RX1X = diff(Kx1,t1)
+    print("\tBEFORE DIFF: ", time.time() - start_time)
+    start_time = time.time()
 
-    for i in range(-10, 10, 1):
-        for j in range(-10, 10, 1):
+    RXX1 = diff(Kx1, t2)
+    RX1X = diff(Kx1, t1)
+
+    print("\tAFTER DIFF: ", time.time() - start_time)
+    start_time = time.time()
+
+    for i in range(-10, 10):
+        for j in range(-10, 10):
             dataNX5.append(i)
             dataNY5.append(j)
-            dataZ5.append(N(RXX1.subs({t1: i, t2: j})))
-
-    for i in range(-20, 20, 1):
-        for j in range(-20, 20, 1):
+            # dataZ5.append(N(RXX1.subs({t1: i, t2: j})))
+            dataZ5.append(RXX1.subs({t1: i, t2: j}))
+    for i in range(-20, 20):
+        for j in range(-20, 20):
             dataNX6.append(i)
             dataNY6.append(j)
-            dataZ6.append(N(RX1X.subs({t1: i, t2: j})))
+            # dataZ6.append(N(RX1X.subs({t1: i, t2: j})))
+            dataZ6.append(RX1X.subs({t1: i, t2: j}))
 
-    return {'f' : fun ,'Df' : Dfun ,'Nf' : Nfun , 'If' : Ifun, 'matrix': matrix2latex(matrix), 'vector': matrix2latex(vector),'DU' : DU,'DV' : DV,'cov' : cov,
-             'MX1': MX1,'MX2' : MX2,'MX3' : MX3,'MX4' : MX4,'Kx1' : Kx1,'Kx2' : Kx2,'Kx3' : Kx3,'Kx4' : Kx4,'D1' : D1,
-            'D2' : D2,'D3' : D3,'D4' : D4,'RXX1' : RXX1, 'RX1X' : RX1X, 'dataX' : dataX, 'dataY' : dataY, 'dataY1' : dataY1,
-             'dataY2' : dataY2,'dataY3' : dataY3,'dataY4' : dataY4,'dataY5' : dataY5,'dataY6' : dataY6,'dataY7' : dataY7,
-            'dataY8' : dataY8,'dataZ1' : dataZ1,'dataZ2' : dataZ2,'dataZ3' : dataZ3,'dataZ4' : dataZ4,
-            'dataZ5' : dataZ5,'dataZ6' : dataZ6,'dataNX1' : dataNX1,'dataNY1' : dataNY1,'dataNX2' : dataNX2,'dataNY2' : dataNY2,
-            'dataNX3' : dataNX3,'dataNY3' : dataNY3,'dataNX4' : dataNX4,'dataNY4' : dataNY4,'dataNX5' : dataNX5,'dataNY5' : dataNY5,
-            'dataNX6' : dataNX6,'dataNY6' : dataNY6,'is_valid': True}
+    print("SEVEN: ", time.time() - start_time)
+    start_time = time.time()
+
+    return {'f': fun, 'Df': Dfun, 'Nf': Nfun, 'If': Ifun, 'matrix': matrix2latex(matrix),
+            'vector': matrix2latex(vector), 'DU': DU, 'DV': DV, 'cov': cov,
+            'MX1': MX1, 'MX2': MX2, 'MX3': MX3, 'MX4': MX4, 'Kx1': Kx1, 'Kx2': Kx2, 'Kx3': Kx3, 'Kx4': Kx4, 'D1': D1,
+            'D2': D2, 'D3': D3, 'D4': D4, 'RXX1': RXX1, 'RX1X': RX1X, 'dataX': dataX, 'dataY': dataY, 'dataY1': dataY1,
+            'dataY2': dataY2, 'dataY3': dataY3, 'dataY4': dataY4, 'dataY5': dataY5, 'dataY6': dataY6, 'dataY7': dataY7,
+            'dataY8': dataY8, 'dataZ1': dataZ1, 'dataZ2': dataZ2, 'dataZ3': dataZ3, 'dataZ4': dataZ4,
+            'dataZ5': dataZ5, 'dataZ6': dataZ6, 'dataNX1': dataNX1, 'dataNY1': dataNY1, 'dataNX2': dataNX2,
+            'dataNY2': dataNY2,
+            'dataNX3': dataNX3, 'dataNY3': dataNY3, 'dataNX4': dataNX4, 'dataNY4': dataNY4, 'dataNX5': dataNX5,
+            'dataNY5': dataNY5,
+            'dataNX6': dataNX6, 'dataNY6': dataNY6, "time": time.time() - start_time, 'is_valid': True}
+
 
 '''
 @task_decorate

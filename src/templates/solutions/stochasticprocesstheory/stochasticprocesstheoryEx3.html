@@ -49,7 +49,7 @@
 </style>
 
 <head>
-               <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 {% if solve.is_valid %}
@@ -63,14 +63,14 @@
 
     <div class="solution-block">
 
-
+        <h2>TIME: {{ solve.time }}</h2>
         <p>Корреляционная матрица: </p>
         <p class="big-formuls-ftnz">$$ A = {{ solve.matrix }} $$</p>
         <p>Вектор мат. ожидания: </p>
         <p class="big-formuls-ftnz">$$ \vec{m} = {{ solve.vector }} $$</p>
         <p>Введеная функция: </p>
         <p class="big-formuls-ftnz">$$ f = {{ solve.f }} $$</p>
-        <p class="big-formuls-ftnz">$$ D[u]  = {{ solve.DU }} $$</p>
+        <p class="big-formuls-ftnz">$$ D[u] = {{ solve.DU }} $$</p>
         <p class="big-formuls-ftnz">$$ D[v] = {{ solve.DV }} $$</p>
         <p class="big-formuls-ftnz">$$ cov(u,v) = {{ solve.cov }} $$</p>
         <br>
@@ -126,19 +126,19 @@
         </div>
 
     {% endcomment %}
-<!--
+    <!--
     <script type="text/javascript">
 
         createChart(
-            'chain-chart', 'line', {{ solve.index }},
-            [
-                {% for el in solve.data %}
-                    {
-                        type: 'line',
-                        data: {{ el }}
-                    },
-                {% endfor %}
-            ],
+{#            'chain-chart', 'line', {{ solve.index }},#}
+{#            [#}
+{#                {% for el in solve.data %}#}
+{#                    {#}
+{#                        type: 'line',#}
+{#                        data: {{ el }}#}
+{#                    },#}
+{#                {% endfor %}#}
+{#            ],#}
             'Найденные вероятности в зависимости от номера шага'
         );
 
@@ -194,216 +194,216 @@
     </script>
 -->
     <script>
-    var layout1 = {
-        title: 'Mx',
-        font: {
-            family: 'Courier New, monospace',
-            size: 18,
-            color: '#7f7f7f'
-        }
-    };
+        var layout1 = {
+            title: 'Mx',
+            font: {
+                family: 'Courier New, monospace',
+                size: 18,
+                color: '#7f7f7f'
+            }
+        };
 
-       var layout2 = {
-        title: 'D(t)',
-        font: {
-            family: 'Courier New, monospace',
-            size: 18,
-            color: '#7f7f7f'
-        }
-       };
+        var layout2 = {
+            title: 'D(t)',
+            font: {
+                family: 'Courier New, monospace',
+                size: 18,
+                color: '#7f7f7f'
+            }
+        };
 
-      var layout3 = {
-        title: 'K(t1,t2)',
-        autosize: true,
-
-
-        font: {
-            family: 'Courier New, monospace',
-            size: 18,
-            color: '#7f7f7f'
-        },
-
-      };
+        var layout3 = {
+            title: 'K(t1,t2)',
+            autosize: true,
 
 
-FIRST = document.getElementById('first');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY1 }},
-      mode: 'lines',
-    }
-];
-Plotly.newPlot(FIRST, data,layout1);
+            font: {
+                family: 'Courier New, monospace',
+                size: 18,
+                color: '#7f7f7f'
+            },
 
-SECOND = document.getElementById('second');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY2 }},
-      mode: 'lines',
-    }
-];
-Plotly.newPlot(SECOND, data,layout1);
-
-THIRD = document.getElementById('third');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY3 }},
-      mode: 'lines',
-    }
-];
-Plotly.newPlot(THIRD, data,layout1);
-
-FOURTH = document.getElementById('fourth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY4 }},
-      mode: 'lines',
-    }
-];
-Plotly.newPlot(FOURTH, data,layout1);
+        };
 
 
-FIFTH = document.getElementById('fifth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY5 }},
-      mode: 'lines',
-    }
-];
-Plotly.newPlot(FIFTH, data,layout2);
+        FIRST = document.getElementById('first');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY1 }},
+                mode: 'lines',
+            }
+        ];
+        Plotly.newPlot(FIRST, data, layout1);
 
-SIXTH= document.getElementById('sixth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY6 }},
-      mode: 'lines'
+        SECOND = document.getElementById('second');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY2 }},
+                mode: 'lines',
+            }
+        ];
+        Plotly.newPlot(SECOND, data, layout1);
 
-    }
-];
-Plotly.newPlot(SIXTH, data,layout2);
+        THIRD = document.getElementById('third');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY3 }},
+                mode: 'lines',
+            }
+        ];
+        Plotly.newPlot(THIRD, data, layout1);
+
+        FOURTH = document.getElementById('fourth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY4 }},
+                mode: 'lines',
+            }
+        ];
+        Plotly.newPlot(FOURTH, data, layout1);
 
 
-SEVENTH = document.getElementById('seventh');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY7 }},
-      mode: 'lines'
+        FIFTH = document.getElementById('fifth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY5 }},
+                mode: 'lines',
+            }
+        ];
+        Plotly.newPlot(FIFTH, data, layout2);
 
-    }
-];
-Plotly.newPlot(SEVENTH, data,layout2);
+        SIXTH = document.getElementById('sixth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY6 }},
+                mode: 'lines'
 
-EIGHTH = document.getElementById('eighth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY8 }},
-      mode: 'lines'
+            }
+        ];
+        Plotly.newPlot(SIXTH, data, layout2);
 
-    }
-];
-Plotly.newPlot(EIGHTH, data,layout2);
 
-NINTH = document.getElementById('ninth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(200,200,200)',
-      x : {{ solve.dataNX1 }},
-      y : {{ solve.dataNY1 }},
-      z : {{ solve.dataZ1 }},
-      type: 'mesh3d'
-    }
-];
-Plotly.newPlot(NINTH, data,layout3);
+        SEVENTH = document.getElementById('seventh');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY7 }},
+                mode: 'lines'
 
-TENTH = document.getElementById('tenth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(200,200,200)',
-      x : {{ solve.dataNX2 }},
-      y : {{ solve.dataNY2 }},
-      z : {{ solve.dataZ2 }},
-      type: 'mesh3d'
-    }
-];
-Plotly.newPlot(TENTH, data,layout3);
+            }
+        ];
+        Plotly.newPlot(SEVENTH, data, layout2);
 
-ELEVENTH = document.getElementById('eleventh');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(200,200,200)',
-      x : {{ solve.dataNX3 }},
-      y : {{ solve.dataNY3 }},
-      z : {{ solve.dataZ3 }},
-      type: 'mesh3d'
-    }
-];
-Plotly.newPlot(ELEVENTH, data,layout3);
+        EIGHTH = document.getElementById('eighth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(300,100,200)',
+                x: {{ solve.dataX }},
+                y: {{ solve.dataY8 }},
+                mode: 'lines'
 
-TWELFTH = document.getElementById('twelfth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(200,200,200)',
-      x : {{ solve.dataNX4 }},
-      y : {{ solve.dataNY4 }},
-      z : {{ solve.dataZ4 }},
-      type: 'mesh3d'
-    }
-];
-Plotly.newPlot(TWELFTH, data,layout3);
+            }
+        ];
+        Plotly.newPlot(EIGHTH, data, layout2);
 
-THIRTEENTH = document.getElementById('thirteenth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(200,200,200)',
-      x : {{ solve.dataNX5 }},
-      y : {{ solve.dataNY5 }},
-      z : {{ solve.dataZ5 }},
-      type: 'mesh3d'
-    }
-];
-Plotly.newPlot(THIRTEENTH, data);
+        NINTH = document.getElementById('ninth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(200,200,200)',
+                x: {{ solve.dataNX1 }},
+                y: {{ solve.dataNY1 }},
+                z: {{ solve.dataZ1 }},
+                type: 'mesh3d'
+            }
+        ];
+        Plotly.newPlot(NINTH, data, layout3);
 
-FOURTEENTH = document.getElementById('fourteenth');
-var data=[
-    {
-      opacity:0.8,
-      color:'rgb(200,200,200)',
-      x : {{ solve.dataNX6 }},
-      y : {{ solve.dataNY6 }},
-      z : {{ solve.dataZ6 }},
-      type: 'mesh3d'
-    }
-];
-Plotly.newPlot(FOURTEENTH, data);
+        TENTH = document.getElementById('tenth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(200,200,200)',
+                x: {{ solve.dataNX2 }},
+                y: {{ solve.dataNY2 }},
+                z: {{ solve.dataZ2 }},
+                type: 'mesh3d'
+            }
+        ];
+        Plotly.newPlot(TENTH, data, layout3);
+
+        ELEVENTH = document.getElementById('eleventh');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(200,200,200)',
+                x: {{ solve.dataNX3 }},
+                y: {{ solve.dataNY3 }},
+                z: {{ solve.dataZ3 }},
+                type: 'mesh3d'
+            }
+        ];
+        Plotly.newPlot(ELEVENTH, data, layout3);
+
+        TWELFTH = document.getElementById('twelfth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(200,200,200)',
+                x: {{ solve.dataNX4 }},
+                y: {{ solve.dataNY4 }},
+                z: {{ solve.dataZ4 }},
+                type: 'mesh3d'
+            }
+        ];
+        Plotly.newPlot(TWELFTH, data, layout3);
+
+        THIRTEENTH = document.getElementById('thirteenth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(200,200,200)',
+                x: {{ solve.dataNX5 }},
+                y: {{ solve.dataNY5 }},
+                z: {{ solve.dataZ5 }},
+                type: 'mesh3d'
+            }
+        ];
+        Plotly.newPlot(THIRTEENTH, data);
+
+        FOURTEENTH = document.getElementById('fourteenth');
+        var data = [
+            {
+                opacity: 0.8,
+                color: 'rgb(200,200,200)',
+                x: {{ solve.dataNX6 }},
+                y: {{ solve.dataNY6 }},
+                z: {{ solve.dataZ6 }},
+                type: 'mesh3d'
+            }
+        ];
+        Plotly.newPlot(FOURTEENTH, data);
 
     </script>
 
@@ -472,65 +472,64 @@ Plotly.newPlot(FOURTEENTH, data);
     </script>
 
 
-
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get" name="norm">
         <div class="form-group">
             <div class="col-xs-3">
-                <label class="control-label" for="f">Введите f(u,v):</label>
+                <label class="control-label" for="f">Введите $$f(u,v):$$</label>
             </div>
             <div class="col-xs-9">
-                <input class="form-control" type="text" id="f" name="f" required>
+                <div class="math-control" id="f" name="f" required></div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="form-group col-md-8 col-xs-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12 col-xs-12 text-center">
-                        <p class="big-fntz"> Ковариационная матрица: </p>
+            <div class="row">
+                <div class="form-group col-md-8 col-xs-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 text-center">
+                            <p class="big-fntz"> Ковариационная матрица: </p>
+                        </div>
+                    </div>
+                    <div class="matrix-block row">
+                        <div class="col-xs-3 big-fntz label-div">
+                            <label for="matrix-A" class="label-control big-formuls-ftnz">$$ A = $$</label>
+                        </div>
+                        <div class="col-xs-9">
+                            <div class="brackets">
+                                <div class="matrix" id="matrix-A"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="matrix-block row">
-                    <div class="col-xs-3 big-fntz label-div">
-                        <label for="matrix-A" class="label-control big-formuls-ftnz">$$ A = $$</label>
+
+                <div class="form-group col-md-4 col-xs-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 text-center">
+                            <p class="big-fntz">Вектор мат. ожидания: </p>
+                        </div>
                     </div>
-                    <div class="col-xs-9">
-                        <div class="brackets">
-                            <div class="matrix" id="matrix-A"></div>
+                    <div class="matrix-block row">
+                        <div class="col-xs-3 big-fntz label-div">
+                            <label for="vector-p" class="label-control big-formuls-ftnz">$$ \vec{m} = $$</label>
+                        </div>
+                        <div class="col-xs-9">
+                            <div class="brackets">
+                                <div id="vector-p" class="vector"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group col-md-4 col-xs-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12 col-xs-12 text-center">
-                        <p class="big-fntz">Вектор мат. ожидания: </p>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div class="col-xs-12 col-md-4">
+                        <button class="btn btn-success" type="submit">Получить решение!</button>
                     </div>
-                </div>
-                <div class="matrix-block row">
-                    <div class="col-xs-3 big-fntz label-div">
-                        <label for="vector-p" class="label-control big-formuls-ftnz">$$ \vec{m} = $$</label>
-                    </div>
-                    <div class="col-xs-9">
-                        <div class="brackets">
-                            <div id="vector-p" class="vector"></div>
-                        </div>
+                    <div class="col-xs-12 col-md-8 big-fntz">
+                        <p><font color="red">{{ solve.err }}</font></p>
                     </div>
                 </div>
             </div>
-        </div>
-
-<form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get" name="norm">
-        <div class="row">
-            <div class="form-group col-md-12">
-                <div class="col-xs-12 col-md-4">
-                    <button class="btn btn-success" type="submit">Получить решение!</button>
-                </div>
-                <div class="col-xs-12 col-md-8 big-fntz">
-                    <p><font color="red">{{ solve.err }}</font></p>
-                </div>
-            </div>
-        </div>
     </form>
 
     <script>
@@ -538,8 +537,10 @@ Plotly.newPlot(FOURTEENTH, data);
         let matrix = [];
         let vector = [];
 
-         document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
             MQ = MathQuill.getInterface(MathQuill.getInterface.MAX);
+
+            let f = MQ.MathField(document.querySelector('#f'));
 
             for (let i = 0; i < rows; i++) {
                 matrix.push([]);
@@ -568,39 +569,34 @@ Plotly.newPlot(FOURTEENTH, data);
                 document.querySelectorAll('.vector')[0].appendChild(row);
             }
 
-             document.forms['norm'].addEventListener('submit', function (ev) {
-            ev.preventDefault();
+            document.forms['norm'].addEventListener('submit', function (ev) {
+                ev.preventDefault();
 
+                let locationString = '';
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < rows; j++) {
+                        let val = matrix[i][j].text();
+                        if (!val.length) {
+                            return false;
+                        }
 
-            let locationString = '';
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < rows; j++) {
-                    let val = matrix[i][j].text();
+                        locationString += val + ' ';
+                    }
+                }
+
+                let locationString1 = '';
+                for (let i = 0; i < rows; i++) {
+                    let val = vector[i].text();
                     if (!val.length) {
                         return false;
                     }
 
-                    locationString += val + ' ';
+                    locationString1 += val + ' ';
                 }
-            }
-
-            let locationString1 = '';
-            for (let i = 0; i < rows; i++) {
-                let val = vector[i].text();
-                if (!val.length) {
-                    return false;
-                }
-
-                locationString1 += val + ' ';
-            }
-            let f = document.querySelector('#f');
-           let metricUri = encodeURIComponent(f.value);
-            window.location = this.action + `?rows=${rows}&valuesm=${locationString}&valuesv=${locationString1}&fun=${metricUri}`;
+                let fUri = encodeURIComponent(f.text());
+                window.location = this.action + `?rows=${rows}&fun=${fUri}&valuesm=${locationString}&valuesv=${locationString1}`;
+            });
         });
-
-              });
-
-
     </script>
 
 {% endif %}
