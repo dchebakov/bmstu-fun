@@ -102,7 +102,7 @@ def diffgeometryEx2(request):
     diffs_diff = get_unique(diffs_diff)
 
     diffs_diff_new = [el.replace('*', '') for el in diffs_diff]
-    print(diffs_diff, diffs_diff_new)
+
     metric = replace_in_metric(metric, diffs_diff, diffs_diff_new)
     # get sympy-eval from string-metric
     transformations = standard_transformations + (function_exponentiation, implicit_application,)
