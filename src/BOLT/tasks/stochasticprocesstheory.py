@@ -252,7 +252,6 @@ def stochasticprocesstheoryEx3(request):
     Datafun.append((Dfun))
     Nfun = fun+Dfun
     Datafun.append((Nfun))
-    print()
     Ifun = fun.subs(t,s)
     Ifun = integrate(Ifun, (s, 0, t))
     Datafun.append((Ifun))
