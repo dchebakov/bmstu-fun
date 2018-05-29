@@ -1,0 +1,74 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
+<script src="{% static 'js/Chart.js' %}"></script>
+<style>
+    .matrix-td {
+        min-width: 40px;
+        min-height: 30px;
+        text-align: center;
+        padding: 6px;
+        border: 1px solid rgb(85, 85, 85);
+        border-radius: 5px;
+        display: inline-block;
+        margin: 2px 3px;
+    }
+
+    .brackets {
+        border: 2px solid rgb(85, 85, 85);
+        border-radius: 25px;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        padding: 8px;
+        display: inline-block;
+    }
+
+    .big-fntz {
+        line-height: 30px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .remove-padding {
+        padding: 2px 10px !important;
+    }
+
+    .matrix-block {
+        display: flex;
+    }
+
+    .label-div {
+        margin: auto;
+    }
+
+    .post {
+        overflow-x: hidden;
+    }
+
+</style>
+
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">
+            \( K \) = {{ solve.k }}
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label class="control-label" for="k">Введите K(tau):</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="k" name="k" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
