@@ -207,7 +207,6 @@ def stochasticprocesstheoryEx3(request):
     values = request.GET.get('valuesm')
     valuesv = request.GET.get('valuesv')
     fun = request.GET.get('fun')
-
     print("ALL DATA GET: ", time.time() - start_time)
     start_time = time.time()
 
