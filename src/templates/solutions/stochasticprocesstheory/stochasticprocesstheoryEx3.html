@@ -24,8 +24,8 @@
     }
 
     .big-fntz {
-        line-height: 30px;
-        font-size: 16px;
+        line-height: 50px;
+        font-size: 5px;
         text-align: center;
         vertical-align: middle;
     }
@@ -49,7 +49,13 @@
 </style>
 
 <head>
-               <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.4.0/math.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/nerdamer@0.7.11/nerdamer.core.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/nerdamer@0.7.11/Solve.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/nerdamer@0.7.11/Extra.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/nerdamer@0.7.11/Calculus.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/nerdamer@0.7.11/Algebra.js"></script>
 </head>
 
 {% if solve.is_valid %}
@@ -61,139 +67,159 @@
         }
     </style>
 
+
+
     <div class="solution-block">
 
 
         <p>Корреляционная матрица: </p>
-        <p class="big-formuls-ftnz">$$ A = {{ solve.matrix }} $$</p>
+        <p class="big-ftnz">$$ A = {{ solve.matrix }} $$</p>
         <p>Вектор мат. ожидания: </p>
-        <p class="big-formuls-ftnz">$$ \vec{m} = {{ solve.vector }} $$</p>
+        <p class="big-ftnz">$$ \vec{m} = {{ solve.vector }} $$</p>
         <p>Введеная функция: </p>
-        <p class="big-formuls-ftnz">$$ f = {{ solve.f }} $$</p>
-        <p class="big-formuls-ftnz">$$ D[u]  = {{ solve.DU }} $$</p>
-        <p class="big-formuls-ftnz">$$ D[v] = {{ solve.DV }} $$</p>
-        <p class="big-formuls-ftnz">$$ cov(u,v) = {{ solve.cov }} $$</p>
+        <p class="big-ftnz">$$ f = {{ solve.f }} $$</p>
+        <p class="big-ftnz">$$ D[u]  = {{ solve.DU }} $$</p>
+        <p class="big-ftnz">$$ D[v] = {{ solve.DV }} $$</p>
+        <p class="big-ftnz">$$ cov(u,v) = {{ solve.cov }} $$</p>
         <br>
-        <p class="big-formuls-ftnz">$$ Y_1 = X(t) $$</p>
-        <p class="big-formuls-ftnz">$$ f = {{ solve.f }} $$</p>
-        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX1 }} $$</p>
-        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx1 }} $$</p>
-        <p class="big-formuls-ftnz">$$ D = {{ solve.D1 }} $$</p>
+        <p class="big-ftnz">$$ Y_1 = X(t) $$</p>
+        <p class="big-ftnz">$$ f = {{ solve.f }} $$</p>
+        <p class="big-ftnz" id="0"></p>
+        <p class="big-ftnz" id="4"></p>
+        <p class="big-ftnz" id="8"></p>
         <div id="first" style="width:600px;height:400px;"></div>
         <div id="fifth" style="width:600px;height:400px;"></div>
         <div id="ninth" style="width:600px;height:400px;"></div>
         <br>
-        <p class="big-formuls-ftnz">$$ Y_2 = dX(t)/dt $$</p>
-        <p class="big-formuls-ftnz">$$ f = {{ solve.Df }} $$</p>
-        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX2 }} $$</p>
-        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx2 }} $$</p>
-        <p class="big-formuls-ftnz">$$ D = {{ solve.D2 }} $$</p>
+        <p class="big-ftnz">$$ Y_2 = dX(t)/dt $$</p>
+        <p class="big-ftnz">$$ f = {{ solve.Df }} $$</p>
+        <p class="big-ftnz" id="1"></p>
+        <p class="big-ftnz" id="5"></p>
+        <p class="big-ftnz" id="9"></p>
         <div id="second" style="width:600px;height:400px;"></div>
         <div id="sixth" style="width:600px;height:400px;"></div>
         <div id="tenth" style="width:600px;height:400px;"></div>
         <br>
-        <p class="big-formuls-ftnz">$$ Y_3 = X(t)+dX(t)/dt $$</p>
-        <p class="big-formuls-ftnz">$$ f = {{ solve.Nf }} $$</p>
-        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX3 }} $$</p>
-        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx3 }} $$</p>
-        <p class="big-formuls-ftnz">$$ D = {{ solve.D3 }} $$</p>
+        <p class="big-ftnz">$$ Y_3 = X(t)+dX(t)/dt $$</p>
+        <p class="big-ftnz">$$ f = {{ solve.Nf }} $$</p>
+        <p class="big-ftnz" id="2"></p>
+        <p class="big-ftnz" id="6"></p>
+        <p class="big-ftnz" id="10"></p>
         <div id="third" style="width:600px;height:400px;"></div>
         <div id="seventh" style="width:600px;height:400px;"></div>
         <div id="eleventh" style="width:600px;height:400px;"></div>
         <br>
-        <p class="big-formuls-ftnz">$$ Y_4 = &#8750 X(s)ds $$</p>
-        <p class="big-formuls-ftnz">$$ f = {{ solve.If }} $$</p>
-        <p class="big-formuls-ftnz">$$ Mx = {{ solve.MX4 }} $$</p>
-        <p class="big-formuls-ftnz">$$ Kx = {{ solve.Kx4 }} $$</p>
-        <p class="big-formuls-ftnz">$$ D = {{ solve.D4 }} $$</p>
+        <p class="big-ftnz">$$ Y_4 = &#8750 X(s)ds $$</p>
+        <p class="big-ftnz">$$ f = {{ solve.If }} $$</p>
+        <p class="big-ftnz" id="3"></p>
+        <p class="big-ftnz" id="7"></p>
+        <p class="big-ftnz" id="11"></p>
         <div id="fourth" style="width:600px;height:400px;"></div>
         <div id="eighth" style="width:600px;height:400px;"></div>
         <div id="twelfth" style="width:600px;height:400px;"></div>
         <br>
-        <p class="big-formuls-ftnz">$$ Rxx' = {{ solve.RXX1 }} $$</p>
+        <p class="big-ftnz" id="12"></p>
         <div id="thirteenth" style="width:600px;height:400px;"></div>
-        <p class="big-formuls-ftnz">$$ Rx'x = {{ solve.RX1X }} $$</p>
+        <p class="big-ftnz" id="13"></p>
         <div id="fourteenth" style="width:600px;height:400px;"></div>
 
     </div>
 
-    {% comment %}
+    <script>
+            var Data = []
+            Data.push(nerdamer('{{ solve.Datafun.0 }}'));
+            Data.push(nerdamer('{{ solve.Datafun.1 }}'));
+            Data.push(nerdamer('{{ solve.Datafun.2 }}'));
+            Data.push(nerdamer('{{ solve.Datafun.3 }}'));
 
-        <div class="form-group col-md-12">
-            <div class="col-xs-12 col-md-4">
-                <button id="save-to-pdf" class="btn btn-info">Сохранить в pdf</button>
-            </div>
-        </div>
+            var MX=[],KX=[],D=[],x,RG=5,data2DMY=[[]],data2DDY=[[]],data3DZ=[[]];
 
-    {% endcomment %}
-<!--
-    <script type="text/javascript">
 
-        createChart(
-            'chain-chart', 'line', {{ solve.index }},
-            [
-                {% for el in solve.data %}
-                    {
-                        type: 'line',
-                        data: {{ el }}
-                    },
-                {% endfor %}
-            ],
-            'Найденные вероятности в зависимости от номера шага'
-        );
+            for (var i = 0; i < 4; i++)
+            {
+                //console.log(i);
+                data2DMY[i]=[];
+                data2DDY[i]=[];
+                data3DZ[i]=[];
+                temp = Data[i].sub('u',{{ solve.MU }});
+                temp = temp.sub('v',{{ solve.MV }});
+                MX.push(temp);
+                document.getElementById(i.toString()).innerHTML ='$$'+'Mx ='+ MX[i].toString()+'$$' ;
+                //console.log(Data[i].toString());
+                //console.log(MX[i].toString());
+                x = nerdamer(Data[i]+'-('+MX[i]+')');
+                //console.log(x.toString());
+                temp = nerdamer('expand('+'('+x.sub('t','t1')+')*('+ x.sub('t','t2')+'))');
+                //console.log(temp.toString());
+                temp = temp.sub('u^2',{{ solve.DU }});
+                temp = temp.sub('v^2',{{ solve.DV }});
+                temp = temp.sub('u*v',{{ solve.cov }});
+                temp = temp.sub('v*u',{{ solve.cov }});
+                temp = temp.sub('u',{{ solve.MU }});
+                temp = temp.sub('v',{{ solve.MV }});
+                //console.log(temp.toString());
+                KX.push(temp);
+                document.getElementById((i+4).toString()).innerHTML ='$$'+'Kx ='+ KX[i].toString()+'$$';
+                temp = temp.sub('t1','t');
+                temp = temp.sub('t2','t');
+                D.push(temp);
+                document.getElementById((i+8).toString()).innerHTML ='$$'+'D ='+ D[i].toString()+'$$';
+                //console.log(D[i].toString());
+                var count2D =0,count3D=0;
 
-        function createChart(canvasId, type, labels, datasets, title, barPercentage) {
+                for (var j = -RG; j < RG+1; j++)
+                {
 
-            let chartDataset = [];
-            for (let i = 0; i < datasets.length; i++) {
-                chartDataset.push(
-                    {
-                        type: datasets[i].type,
-                        data: datasets[i].data,
-                        borderColor: 'rgba(93,133,245, 1)',
-                        borderWidth: 3,
-                        fill: false,
-                        steppedLine: datasets[i].steppedLine,
-                        lineTension: 0,
-                        pointBackgroundColor: 'white',
-                        pointBorderColor: 'black',
-                        pointBorderWidth: 1,
-                        pointRadius: 3,
-                        pointHoverBackgroundColor: 'black',
-                        showLine: true,
-                    }
-                )
+                    data2DMY[i].push(MX[i].sub('t',j));
+                    data2DMY[i][count2D]=(math.eval((data2DMY[i][count2D]).toString())).toPrecision(3);
+                    data2DDY[i].push(D[i].sub('t',j));
+                    data2DDY[i][count2D]=(math.eval((data2DDY[i][count2D]).toString())).toPrecision(3);
+
+                     for (var k = -RG; k < RG+1; k++)
+                     {
+                         temp = KX[i].sub('t1', k);
+                         temp = temp.sub('t2', j);
+                         data3DZ[i].push(temp);
+                         data3DZ[i][count3D]=(math.eval(data3DZ[i][count3D].toString())).toPrecision(3);
+                         count3D++;
+                     }
+
+                    count2D++;
+
+                }
+
+               /* x = Data[i] - MX[i];
+                console.log(x);
+            */
+               //console.log(data2DMY[i].toString());
+               //console.log(data2DDY[i].toString());
+               //console.log(data3DZ[i].toString())
             }
 
-            new Chart(document.getElementById(canvasId).getContext('2d'), {
-                type: type,
-                data: {
-                    labels: labels,
-                    datasets: chartDataset
-                },
-                options: {
-                    legend: false,
-                    responsive: true,
-                    title: {
-                        display: true,
-                        text: title
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            barPercentage: barPercentage,
-                        }],
-                        yAxes: [{
-                            display: true,
-                        }]
-                    }
-                }
-            });
+    RXX1 = nerdamer.diff(KX[0],'t2');
+    RX1X = nerdamer.diff(KX[0],'t1');
+    //console.log(RXX1.toString());
+    //console.log(RX1X.toString());
+    data3DZ[4]=[];
+    data3DZ[5]=[];
+    count3D = 0;
+        for (var j = -RG; j < RG+1; j++)
+        {
+            for (var k = -RG; k < RG+1; k++) {
+                temp = RXX1.sub('t1',j);
+                temp = temp.sub('t2',k);
+                data3DZ[4].push(temp);
+                data3DZ[4][count3D]=(math.eval(data3DZ[4][count3D].toString())).toPrecision(3);
+                temp = RX1X.sub('t1',j);
+                temp = temp.sub('t2',k);
+                data3DZ[5].push(temp);
+                data3DZ[5][count3D]=(math.eval(data3DZ[5][count3D].toString())).toPrecision(3);
+                count3D++;
+            }
         }
+    document.getElementById('12').innerHTML = '$$'+'RXY ='+ RXX1.toString()+'$$';
+    document.getElementById('13').innerHTML = '$$'+'RYX ='+ RX1X.toString()+'$$';
 
-    </script>
--->
-    <script>
     var layout1 = {
         title: 'Mx',
         font: {
@@ -225,14 +251,24 @@
 
       };
 
+    var data2DX = [], data3DX = [], data3DY = [];
+    for (i = - RG; i < RG+1;i++)
+    {
+        data2DX.push(i)
+        for (j = - RG; j < RG+1;j++)
+        {
+            data3DX.push(i)
+            data3DY.push(j)
+        }
+    }
 
 FIRST = document.getElementById('first');
 var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY1 }},
+      x : data2DX,
+      y : data2DMY[0],
       mode: 'lines',
     }
 ];
@@ -243,8 +279,8 @@ var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY2 }},
+      x : data2DX,
+      y : data2DMY[1],
       mode: 'lines',
     }
 ];
@@ -255,8 +291,8 @@ var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY3 }},
+      x : data2DX,
+      y : data2DMY[2],
       mode: 'lines',
     }
 ];
@@ -267,8 +303,8 @@ var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY4 }},
+      x : data2DX,
+      y : data2DMY[3],
       mode: 'lines',
     }
 ];
@@ -280,8 +316,8 @@ var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY5 }},
+      x : data2DX,
+      y : data2DDY[0],
       mode: 'lines',
     }
 ];
@@ -292,8 +328,8 @@ var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY6 }},
+      x : data2DX,
+      y : data2DDY[1],
       mode: 'lines'
 
     }
@@ -306,8 +342,8 @@ var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY7 }},
+      x : data2DX,
+      y : data2DDY[2],
       mode: 'lines'
 
     }
@@ -319,8 +355,8 @@ var data=[
     {
       opacity:0.8,
       color:'rgb(300,100,200)',
-      x : {{ solve.dataX }},
-      y : {{ solve.dataY8 }},
+      x : data2DX,
+      y : data2DDY[3],
       mode: 'lines'
 
     }
@@ -330,12 +366,15 @@ Plotly.newPlot(EIGHTH, data,layout2);
 NINTH = document.getElementById('ninth');
 var data=[
     {
-      opacity:0.8,
+      opacity:1.0,
       color:'rgb(200,200,200)',
-      x : {{ solve.dataNX1 }},
-      y : {{ solve.dataNY1 }},
-      z : {{ solve.dataZ1 }},
-      type: 'mesh3d'
+      autocolorscale: true,
+      colorbar : 'thickness',
+      x : data3DX,
+      y : data3DY,
+      z : data3DZ[0],
+
+      type: 'mesh3d',
     }
 ];
 Plotly.newPlot(NINTH, data,layout3);
@@ -343,11 +382,11 @@ Plotly.newPlot(NINTH, data,layout3);
 TENTH = document.getElementById('tenth');
 var data=[
     {
-      opacity:0.8,
+      opacity:1.0,
       color:'rgb(200,200,200)',
-      x : {{ solve.dataNX2 }},
-      y : {{ solve.dataNY2 }},
-      z : {{ solve.dataZ2 }},
+      x : data3DX,
+      y : data3DY,
+      z : data3DZ[1],
       type: 'mesh3d'
     }
 ];
@@ -356,11 +395,11 @@ Plotly.newPlot(TENTH, data,layout3);
 ELEVENTH = document.getElementById('eleventh');
 var data=[
     {
-      opacity:0.8,
+      opacity:1.0,
       color:'rgb(200,200,200)',
-      x : {{ solve.dataNX3 }},
-      y : {{ solve.dataNY3 }},
-      z : {{ solve.dataZ3 }},
+      x : data3DX,
+      y : data3DY,
+      z : data3DZ[2],
       type: 'mesh3d'
     }
 ];
@@ -369,11 +408,11 @@ Plotly.newPlot(ELEVENTH, data,layout3);
 TWELFTH = document.getElementById('twelfth');
 var data=[
     {
-      opacity:0.8,
+      opacity:1.0,
       color:'rgb(200,200,200)',
-      x : {{ solve.dataNX4 }},
-      y : {{ solve.dataNY4 }},
-      z : {{ solve.dataZ4 }},
+      x : data3DX,
+      y : data3DY,
+      z : data3DZ[3],
       type: 'mesh3d'
     }
 ];
@@ -382,11 +421,11 @@ Plotly.newPlot(TWELFTH, data,layout3);
 THIRTEENTH = document.getElementById('thirteenth');
 var data=[
     {
-      opacity:0.8,
+      opacity:1.0,
       color:'rgb(200,200,200)',
-      x : {{ solve.dataNX5 }},
-      y : {{ solve.dataNY5 }},
-      z : {{ solve.dataZ5 }},
+      x : data3DX,
+      y : data3DY,
+      z : data3DZ[4],
       type: 'mesh3d'
     }
 ];
@@ -395,17 +434,30 @@ Plotly.newPlot(THIRTEENTH, data);
 FOURTEENTH = document.getElementById('fourteenth');
 var data=[
     {
-      opacity:0.8,
+      opacity:1.0,
       color:'rgb(200,200,200)',
-      x : {{ solve.dataNX6 }},
-      y : {{ solve.dataNY6 }},
-      z : {{ solve.dataZ6 }},
+      x : data3DX,
+      y : data3DY,
+      z : data3DZ[5],
       type: 'mesh3d'
     }
 ];
 Plotly.newPlot(FOURTEENTH, data);
 
     </script>
+
+
+    {% comment %}
+
+        <div class="form-group col-md-12">
+            <div class="col-xs-12 col-md-4">
+                <button id="save-to-pdf" class="btn btn-info">Сохранить в pdf</button>
+            </div>
+        </div>
+
+    {% endcomment %}
+
+
 
     <script>
         document.addEventListener('copy', e => e.preventDefault());
@@ -604,3 +656,4 @@ Plotly.newPlot(FOURTEENTH, data);
     </script>
 
 {% endif %}
+
