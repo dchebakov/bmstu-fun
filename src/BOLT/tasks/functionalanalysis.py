@@ -61,7 +61,8 @@ def functionalanalysisEx1(request):
     B = B.tolist()
 
     eucl_norm = np.sqrt(max_eig)
-    cheb_norm = round(max(sum(row) for row in np.abs(matrix_np)), ROUNDING_NUMBER)
+    abs_matrix = np.abs(matrix_np).tolist()
+    cheb_norm = round(max(sum(row) for row in abs_matrix), ROUNDING_NUMBER)
 
     def matrix2latex(lst):
         return r'\begin{{pmatrix}} {} \end{{pmatrix}}'.format(
