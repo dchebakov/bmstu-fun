@@ -376,10 +376,15 @@ def utility(request):
 			a_for_uniform = float(content['a_for_uniform'])
 			b_for_uniform = float(content['b_for_uniform'])
 			sample_volume = int(content['volume'])
+
+			if sample_volume < 1:
+				return HttpResponse('err', content_type='application/json')
 			
 			if sample_type == 'norm':
 				res = ss.norm.rvs(loc=m_for_norm, scale=d_for_norm, size=sample_volume)
 			elif sample_type == 'exp':
+				if lambda_for_exp <= 0:
+					return HttpResponse('err', content_type='application/json')
 				res = ss.expon.rvs(scale=1 / lambda_for_exp, size=sample_volume)
 			elif sample_type == 'uniform':
 				res = ss.uniform.rvs(loc=a_for_uniform, scale=(b_for_uniform - a_for_uniform), size=sample_volume)

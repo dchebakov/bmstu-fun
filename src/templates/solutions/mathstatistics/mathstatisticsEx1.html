@@ -54,7 +54,7 @@
             }
         }
     </style>
-    
+
 
     <p class="big-formuls-ftnz">Объем выборки: \(n = {{ solve.numberOfValues }}\) <br>
         Шаг: \(h = {{ solve.step }}\) <br></p>
@@ -520,7 +520,7 @@
 
 {% else %}
 
-    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+    <form class="form-horizontal" name="sample-form" action="{{ task.get_absolute_url }}" method="get">
         <div class="form-group">
             <div class="col-xs-3">
                 <label class="control-label" for="sample">Введите выборку: </label>
@@ -528,6 +528,12 @@
             <div class="col-xs-9">
                     <textarea id="sample" class="form-control"
                               name="numbers" required maxlength="5000" rows="4"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group col-md-12 col-sm-12">
+            <div class="col-xs-12">
+                <button class="btn btn-info" id="generate-button" type="button">Сгенерировать значения</button>
             </div>
         </div>
 
@@ -555,5 +561,48 @@
             </div>
         </div>
     </form>
+
+    <script>
+        function getRandomArbitrary(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        document.querySelector('#generate-button').addEventListener('click', function (e) {
+
+            const csrfToken = getCookie('csrftoken');
+
+            const textArea = document.querySelector('#sample');
+            const types = ["norm", "exp", "uniform"];
+            const type = types[Math.floor(Math.random() * types.length)];
+
+            e.preventDefault();
+            fetch('/utility/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({
+                    type: type,
+                    m_for_norm: getRandomArbitrary(-5, 6),
+                    d_for_norm: getRandomArbitrary(0, 5),
+                    lambda_for_exp: getRandomArbitrary(0, 5),
+                    a_for_uniform: getRandomArbitrary(0, 5),
+                    b_for_uniform: getRandomArbitrary(5, 10),
+                    volume: Math.floor(getRandomArbitrary(10, 101)),
+                    case: 'sample'
+                }),
+                credentials: 'include'
+            })
+                .then(response => response.text())
+                .then(function (res) {
+
+                    if (res !== 'err' && res !== 'nan') {
+                        textArea.value = res;
+                    }
+                });
+        });
+    </script>
 
 {% endif %}
