@@ -79,6 +79,16 @@ def bernoulli(gen, k_gen, n, k):
     return combinations(n, k) * p ** k * q ** (n - k)
 
 
+def from_exp_to_tex_number(number):
+    if round(number, 4) == 0:
+        parts_of_number = str(number).split("e-")
+        return f"""{round(float(parts_of_number[0]) / 10, 2)}\cdot\
+10^{ {1 - int(parts_of_number[1])} }"""
+    else:
+        return round(number, 5)
+
+
+
 @task_decorate
 def probabilitytheoryEx1(request):
     def calc_prob(x):
@@ -131,9 +141,7 @@ def probabilitytheoryEx2(request):
     P_without = M / N
 
     """С возвращением"""
-    p = []
-    for i in n:
-        p.append(i / sum(n))
+    p = [i / sum(n) for i in n]
     p_mult = multiplication(*[p[i] ** j for i, j in enumerate(m)])
     k = multiplication(*(permutations(mi) for mi in m))
     P_with = permutations(sum(m)) / k * p_mult
@@ -278,13 +286,16 @@ def probabilitytheoryEx7(request):
     except TypeError:
         return {'is_valid': False}
 
+    if S1 < 0 or S2 < 0 or R <= 0:
+        return {'is_valid': False}
+
     if S2 + S1 > math.pi * R ** 2:
         return {'is_valid': False}
 
     P = (S1 + S2) / (math.pi * R ** 2)
 
     solve = {
-        'S1': S1, 'S2': S2, 'R': R,
+        'S1': S1, 'S2': S2, 'R': R ** 2,
         'P': round(P, 3), 'is_valid': True,
     }
 
@@ -330,6 +341,12 @@ def probabilitytheoryEx9(request):
 
     p1, p2, n1, n2 = float(p1), float(p2), int(n1), int(n2)
 
+    if not 0 <= p1 <= 1 and not 0 <= p2 <= 1:
+        return {'is_valid': False}
+
+    if n1 <= 0 or n2 <= 0:
+        return {'is_valid': False}
+
     """Сначала найдем вероятности промаха для каждого стрелка:"""
     q1 = 1 - p1
     q2 = 1 - p2
@@ -342,7 +359,8 @@ def probabilitytheoryEx9(request):
 
     solve = {
         "p1": p1, "p2": p2, "n1": n1, "n2": n2,
-        "q1": q1, "q2": q2, "P": round(P, 3), 'is_valid': True,
+        "q1": round(q1, 3), "q2": round(q2, 3),
+        "P": round(P, 3), 'is_valid': True,
     }
 
     return solve
@@ -357,9 +375,11 @@ def probabilitytheoryEx10(request):
 
     k = int(k)
 
+    if k <= 0:
+        return {'is_valid': False}
+
     """Вероятность выпадения герба и решки одинаковы, p = q = 0,5"""
     p = 0.5
-    q = 1 - p
 
     """вероятность того, что А выиграет до k броска равна сумме вероятностей того,
     что А выиграет на 1 броске, на 2 броске, …, на k-1 броске"""
@@ -389,10 +409,47 @@ def probabilitytheoryEx10(request):
     P_B3 = 1 - P_A3
 
     solve = {
-        'P_A1': round(P_A1, 3), 'P_A2': round(P_A2, 3), 'P_A3': round(P_A3, 3),
-        'P_B1': round(P_B1, 3), 'P_B2': round(P_B2, 3), 'P_B3': round(P_B3, 3),
-        'dk': 2 * k, 'is_valid': True, 'dk_minus_3': 2 * k - 3, 'k_minus_1': k - 1,
-        'dk_minus_2': 2 * k - 2, 'dk_minus_1': 2 * k - 1, 'k': k,
+        'P_A1': round(P_A1, 3), 'P_B1': round(P_B1, 3),
+        'P_A2': round(P_A2, 3), 'P_B2': round(P_B2, 3),
+        'P_A3': round(P_A3, 3), 'P_B3': round(P_B3, 3),
+        'k': k, 'k_1': k - 1, 'dk_2': 2 * k - 2, 'dk_3': 2 * k - 3,
+        'dk_1': 2 * k - 1, 'dk': 2 * k, 'is_valid': True,
+    }
+
+    return solve
+
+
+@task_decorate
+def probabilitytheoryEx11(request):
+    m = request.GET.get('m')
+
+    if not check_args(m):
+        return {'is_valid': False}
+
+    m = int(m)
+
+    if m <= 0:
+        return {'is_valid': False}
+
+    """число различных последовательностей извлечения шаров."""
+    N = permutations(m)
+    """только одна последовательность соответствует извлечению в порядке 1, 2, ...,"""
+    P_A = 1 / N
+
+    """число различных последовательностей извлечения шаров, имеющих хотя бы одну неподвижную 
+    точку (то есть имеющих хотя бы одно совпадение номера шара и номера извлечения)."""
+    M_B = sum([
+        (-1) ** (i + 1) * combinations(m, i) * permutations(m - i)
+        for i in range(1, m + 1)
+    ])
+    P_B = M_B / N
+
+    """Событие C противоположно событию B , поэтому вероятность"""
+    P_C = 1 - P_B
+
+    solve ={
+        "m": m, "M_B": M_B, "P_A": from_exp_to_tex_number(P_A),
+        "P_B": round(P_B, 3), "P_C": round(P_C, 3), 'is_valid': True
     }
 
     return solve

@@ -1,0 +1,43 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Используем классическое определение вероятности:
+            \( P = \large \frac{M}{N} \), где \( M \large \) – число исходов, благоприятствующих
+            осуществлению события, а \( N \) – число всех возможных исходов.<br>
+            \(N = m! = {{ solve.m }}!\) - число различных последовательностей извлечения шаров.<br>
+            \(M(A) = 1\) - только одна последовательность соответствует извлечению в порядке 1, 2, ..., \(
+            m\), поэтому \(P(A) = \large \frac{1}{ {{ solve.m }}! }\)\(\approx {{ solve.P_A }}\)<br>
+            \(M(B)=\sum\limits_{i=1}^m (-1)^{i+1}C^{i}_{m} (m-i)! = {{ solve.M_B }}\) - число различных
+            последовательностей извлечения шаров, имеющих хотя бы одну неподвижную точку (то есть имеющих
+            хотя бы одно совпадение номера шара и номера извлечения).<br>
+            Вероятность \( P(B)=\large\frac{ {{ solve.M_B }} }{ {{ solve.m }}! }\)\(\approx{{ solve.P_B }}\).<br>
+            Событие \(C\) противоположно событию \(B\), поэтому вероятность \(P(C)=1 − P(B) = 1 − {{ solve.P_B }}
+            = {{solve.P_C}}\).<br><br>
+            Найдем предельные значения вероятностей при \(m \rightarrow\infty\).<br>
+            \(\lim\limits_{m\to\infty}P(A)=\lim\limits_{m\to\infty}\large\frac{1}{m!}\)\(=0\)<br>
+            \(\lim\limits_{m\to\infty}P(B)=\lim\limits_{m\to\infty}\large\frac{\sum\limits_{i=1}^m
+            (-1)^{i+1}C^{i}_{m} (m-i)!}{m!}\)\(=\lim\limits_{m\to\infty}\sum\limits_{i=1}^m
+            \large\frac{(-1)^{i+1}}{i!}\)\(=1-\large\frac{1}{e}\)\(\approx 0,632\),<br>
+            \(\lim\limits_{m\to\infty}P(C)=1-\lim\limits_{m\to\infty}P(B)=\large\frac{1}{e}\)
+            \(\approx 0,368\).
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="m" class="control-label big-formuls-ftnz">Введите \(m\)</label>
+            </div>
+
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="m" name="m" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+
+{% endif %}
