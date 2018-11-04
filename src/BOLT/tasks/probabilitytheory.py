@@ -82,8 +82,9 @@ def bernoulli(gen, k_gen, n, k):
 def from_exp_to_tex_number(number):
     if round(number, 4) == 0:
         parts_of_number = str(number).split("e-")
-        return f"""{round(float(parts_of_number[0]) / 10, 2)}\cdot\
-10^{ {1 - int(parts_of_number[1])} }"""
+        return "{0} \cdot 10^{{{1}}}".format(
+            round(float(parts_of_number[0]) / 10, 2), 1 - int(parts_of_number[1])
+        )
     else:
         return round(number, 5)
 
@@ -341,7 +342,7 @@ def probabilitytheoryEx9(request):
 
     p1, p2, n1, n2 = float(p1), float(p2), int(n1), int(n2)
 
-    if not 0 <= p1 <= 1 and not 0 <= p2 <= 1:
+    if not 0 <= p1 <= 1 or not 0 <= p2 <= 1:
         return {'is_valid': False}
 
     if n1 <= 0 or n2 <= 0:
