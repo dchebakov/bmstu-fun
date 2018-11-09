@@ -457,6 +457,31 @@ def probabilitytheoryEx11(request):
 
 
 @task_decorate
+def probabilitytheoryEx12(request):
+    n1 = request.GET.get('n1')
+    n2 = request.GET.get('n2')
+
+    if not check_args(n1, n2):
+        return {'is_valid': False}
+
+    n1, n2 = int(n1), int(n2)
+
+    if (n1 < 0) or (n2 < 0) or not (0 <= n1 + n2 <= 1000):
+        return {'is_valid': False}
+
+    p1, p2, p3 = n1 / 1000, n2 / 1000, (1000 - n1 - n2) / 1000
+    p = p1 * 0.06 + p2 * 0.05 + p3 * 0.04
+
+    solve = {
+        "p": round(p, 4), "p1": p1, "p2": p2,
+        "p3": p3, "n1": n1, "n2": n2,
+        "n3": 1000 - n1 - n2, "is_valid": True,
+    }
+
+    return solve
+
+
+@task_decorate
 def probabilitytheoryEx19(request):
     N = request.GET.get('N')
     M = request.GET.get('M')

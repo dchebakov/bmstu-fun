@@ -1,3 +1,5 @@
+{% load staticfiles %}
+<script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
     <div class="solution-block">
         <p>Решение:</p>
@@ -11,10 +13,171 @@
             Закрашенная область \( S \) соответствует тем моментам начала событий, при которых они
             «перекрываются», так как между началами событий проходит не больше времени, чем длится событие
             (самое первое).
-            $$рисунок$$
+        </p>
+    </div>
+    <div class="solution-block">
+        <canvas id="chart"></canvas>
+        <script>
+
+
+                var T1 = {{ solve.T1 }}
+                var T2 = {{ solve.T2 }}
+                var t = {{ solve.t }}
+                var ctx = document.getElementById('chart').getContext('2d');
+
+                var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: "triangle_top",
+                        data: [{
+                                  x: T1,
+                                  y: T1 + t
+                                },
+                                {
+                                  x: T1,
+                                  y: T2
+                                },
+                                {
+                                  x: T2 - t,
+                                  y: T2
+                                }],
+                        lineTension: 0,
+                        fill: false,
+                        borderColor: "black",
+                        borderDash: [10, 10],
+                        borderWidth: 2
+                    },
+                    {
+                        label: "triangle_bottom",
+                        data: [{
+                                  x: T1 + 10,
+                                  y: T1
+                                },
+                                {
+                                  x: T2,
+                                  y: T1
+                                },
+                                {
+                                  x: T2,
+                                  y: T2 - 10
+                                }],
+                        lineTension: 0,
+                        fill: false,
+                        borderColor: "black",
+                        borderDash: [10, 10],
+                        borderWidth: 2
+                    },
+                    {
+                        label: "third",
+                        data: [{
+                                  x: T1,
+                                  y: T1
+                                },
+                                {
+                                  x: T2,
+                                  y: T2
+                                }],
+                        fill: false,
+                        borderColor: "black",
+                        borderDash: [10, 10],
+                        borderWidth: 1
+                    },
+                    {
+                        label: "first",
+                        data: [{
+                                  x: T1,
+                                  y: T1 + t
+                                },
+                                {
+                                  x: T2 - t,
+                                  y: T2
+                                }],
+                        backgroundColor: 'pink',
+                        fill: '-1',
+                        borderColor: "black"
+                    },
+                    {
+                        label: "second",
+                        data: [
+                                {
+                                  x: T1 + 10,
+                                  y: T1
+                                },
+                                {
+                                  x: T2,
+                                  y: T2 - 10
+                                }],
+                        backgroundColor: 'pink',
+                        fill: '-2',
+                        borderColor: "black"
+                    }]
+                },
+                options: {
+                    animation: {
+                        duration: 0,
+                    },
+                    elements: {
+                        point: {
+                            radius: 0
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 't',
+                                fontColor: "black",
+                            },
+                            type: 'linear',
+                            gridLines: {
+                                display: false,
+                            },
+                            ticks: {
+                                max: T2,
+                                min: T1,
+                                maxTicksLimit: 4,
+                                fontColor: "black",
+                            }
+                        }],
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 't',
+                                fontColor: "black",
+                            },
+                            type: 'linear',
+                            gridLines: {
+                                display: false,
+                            },
+                            ticks: {
+                                max: T2,
+                                min: T1,
+                                maxTicksLimit: 4,
+                                fontColor: "black",
+                            }
+                        }]
+                    },
+                    legend: false,
+                    responsive: true,
+                    tooltips: {
+                        enabled: false
+                    }
+                }
+                });
+                ctx.fillStyle = "black"
+                ctx.font = "40px serif";
+                ctx.fillText("S1", 70, 45);
+                ctx.fillText("S", 340, 160);
+                ctx.fillText("S2", 605, 280);
+        </script>
+    </div>
+    <div class="solution-block">
+        <p class="big-formuls-ftnz">
             Тогда по геометрическому определению вероятности вероятность события A (события «перекрываются»
             во времени) равна отношению площади заштрихованной фигуры к площади всего квадрата. Площадь
-            фигуры вычислим как площадь квадрата минус площади двух равнобедренных прямоугольных треугольника:
+            фигуры вычислим как площадь квадрата минус площади двух равнобедренных прямоугольных треугольника (\(
+            S_1,\ S_2\) соответственно):
             \( P(A) = \large \frac{ {{ solve.T }}^2 - \frac{1}{2} ({{ solve.T }}-10)^2 - \frac{1}{2} ({{ solve.T }}
             - {{ solve.t }})^2 }{ {{ solve.T }}^2 } \) \(= {{ solve.P }}\).
             Вероятность противоположного события \( \bar A \) (события не «перекрываются» во времени) равна

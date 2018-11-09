@@ -1,0 +1,47 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Введем полную группу независимых гипотез:<br>
+            \(H_i=\ \) (Лампы принадлежат \(i\)-ой партии), \(i=1,2,3\). Найдем
+            вероятности гипотез, по классическому определению вероятностей.
+            Всего ламп \(1000\), из них \(1\)-ой партии принадлежат \({{ solve.n1 }}
+            \), то есть \(P(H_1) = \large \frac{ {{ solve.n1 }} }{1000}\)\(=
+            {{ solve.p1 }}\), \(2\)-ой партии принадлежат \({{ solve.n2 }}\),
+            то есть \(P(H_2) = \large \frac{ {{ solve.n2 }} }{1000}\)\(=
+            {{ solve.p2 }}\), остальные \(1000-{{solve.n1}}-{{solve.n2}}=
+            {{solve.n3}}\) ламп принадлежат \(3\)-ей партии, поэтому \(P(H_3) =
+            \large \frac{ {{ solve.n3 }} }{1000}\)\(={{ solve.p3 }}\).<br>
+            Введем событие \(A=\ \) (Лампа бракованная). По условию даны априорные
+            вероятности:<br>
+            \(P(A|H_1)=0,06,\ P(A|H_2)=0,05,\ P(A|H_3)=0,04\).<br>
+            Вероятность события \(A\) найдем по вормуле полной вероятности:
+            \(P(A)=P(A|H_1)P(H_1)+P(A|H_2)P(H_2)+P(A|H_3)P(H_3)=\)<br>
+            \({{solve.p1}}\cdot0,06+{{solve.p2}}\cdot0,05+{{solve.p3}}\cdot0,04={{solve.p}}\)
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n1" class="control-label big-formuls-ftnz">Введите \(n_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n1" name="n1" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n2" class="control-label big-formuls-ftnz">Введите \(n_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n2" name="n2" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+
+{% endif %}
