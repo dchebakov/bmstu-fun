@@ -10,64 +10,23 @@
             Рассмотрим прямоугольную систему координат \(xOy\). В этой системе координат всем возможным
             значениям времени начала событий соответствуют точки квадрата со стороной \(T_2 − T_1 =
             {{ solve.T2 }} − {{ solve.T1 }} = {{ solve.T }} \) (см. рисунок).<br>
-            Закрашенная область \( S \) соответствует тем моментам начала событий, при которых они
+            Закрашенная в розовый цвет область соответствует тем моментам начала событий, при которых они
             «перекрываются», так как между началами событий проходит не больше времени, чем длится событие
             (самое первое).
         </p>
     </div>
     <div class="solution-block">
-        <canvas id="chart"></canvas>
+        <canvas id="chart" style="position: relative; height:150px; width:300px"></canvas>
         <script>
-
-
-                var T1 = {{ solve.T1 }}
-                var T2 = {{ solve.T2 }}
-                var t = {{ solve.t }}
-                var ctx = document.getElementById('chart').getContext('2d');
+                var T1 = {{ solve.T1 }},
+                    T2 = {{ solve.T2 }},
+                    t = {{ solve.t }},
+                    ctx = document.getElementById('chart').getContext('2d');
 
                 var chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    datasets: [{
-                        label: "triangle_top",
-                        data: [{
-                                  x: T1,
-                                  y: T1 + t
-                                },
-                                {
-                                  x: T1,
-                                  y: T2
-                                },
-                                {
-                                  x: T2 - t,
-                                  y: T2
-                                }],
-                        lineTension: 0,
-                        fill: false,
-                        borderColor: "black",
-                        borderDash: [10, 10],
-                        borderWidth: 2
-                    },
-                    {
-                        label: "triangle_bottom",
-                        data: [{
-                                  x: T1 + 10,
-                                  y: T1
-                                },
-                                {
-                                  x: T2,
-                                  y: T1
-                                },
-                                {
-                                  x: T2,
-                                  y: T2 - 10
-                                }],
-                        lineTension: 0,
-                        fill: false,
-                        borderColor: "black",
-                        borderDash: [10, 10],
-                        borderWidth: 2
-                    },
+                    datasets: [
                     {
                         label: "third",
                         data: [{
@@ -98,6 +57,26 @@
                         borderColor: "black"
                     },
                     {
+                        label: "triangle_top",
+                        data: [{
+                                  x: T1,
+                                  y: T1 + t
+                                },
+                                {
+                                  x: T1,
+                                  y: T2
+                                },
+                                {
+                                  x: T2 - t,
+                                  y: T2
+                                }],
+                        lineTension: 0,
+                        fill: '-1',
+                        borderColor: "black",
+                        borderDash: [10, 10],
+                        borderWidth: 2
+                    },
+                    {
                         label: "second",
                         data: [
                                 {
@@ -109,8 +88,28 @@
                                   y: T2 - 10
                                 }],
                         backgroundColor: 'pink',
-                        fill: '-2',
+                        fill: '-3',
                         borderColor: "black"
+                    },
+                    {
+                        label: "triangle_bottom",
+                        data: [{
+                                  x: T1 + 10,
+                                  y: T1
+                                },
+                                {
+                                  x: T2,
+                                  y: T1
+                                },
+                                {
+                                  x: T2,
+                                  y: T2 - 10
+                                }],
+                        lineTension: 0,
+                        fill: '-1',
+                        borderColor: "black",
+                        borderDash: [10, 10],
+                        borderWidth: 2
                     }]
                 },
                 options: {
@@ -162,24 +161,18 @@
                     responsive: true,
                     tooltips: {
                         enabled: false
-                    }
+                    },
                 }
                 });
-                ctx.fillStyle = "black"
-                ctx.font = "40px serif";
-                ctx.fillText("S1", 70, 45);
-                ctx.fillText("S", 340, 160);
-                ctx.fillText("S2", 605, 280);
         </script>
     </div>
     <div class="solution-block">
         <p class="big-formuls-ftnz">
             Тогда по геометрическому определению вероятности вероятность события A (события «перекрываются»
-            во времени) равна отношению площади заштрихованной фигуры к площади всего квадрата. Площадь
-            фигуры вычислим как площадь квадрата минус площади двух равнобедренных прямоугольных треугольника (\(
-            S_1,\ S_2\) соответственно):
-            \( P(A) = \large \frac{ {{ solve.T }}^2 - \frac{1}{2} ({{ solve.T }}-10)^2 - \frac{1}{2} ({{ solve.T }}
-            - {{ solve.t }})^2 }{ {{ solve.T }}^2 } \) \(= {{ solve.P }}\).
+            во времени) равна отношению площади заштрихованной в розовый цвет фигуры к площади всего квадрата. Площадь
+            фигуры вычислим как площадь квадрата минус площади двух равнобедренных прямоугольных треугольника,
+            заштрихованных в серый цвет: \( P(A) = \large \frac{ {{ solve.T }}^2 - \frac{1}{2} ({{ solve.T }}-10)^2
+            - \frac{1}{2} ({{ solve.T }} - {{ solve.t }})^2 }{ {{ solve.T }}^2 } \) \(= {{ solve.P }}\).
             Вероятность противоположного события \( \bar A \) (события не «перекрываются» во времени) равна
             \( P( \bar A) = 1 − P(A) = {{ solve.not_P }} \).
         </p>

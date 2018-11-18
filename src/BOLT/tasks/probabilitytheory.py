@@ -228,13 +228,11 @@ def probabilitytheoryEx5(request):
         return {'is_valid': False}
     k = int(k)
 
-    try:
-        P = 1 - 2 / k
-    except ZeroDivisionError:
+    if k <= 2:
         return {'is_valid': False}
 
     solve = {
-        'k': k, 'P': round(P, 3),
+        'k': k, 'P': round((k - 2) / k, 3),
         'k_minus_1': k - 1, 'is_valid': True,
     }
 
@@ -253,10 +251,16 @@ def probabilitytheoryEx6(request):
 
     T1, T2, t = int(T1), int(T2), int(t)
 
-    if T2 <= T1:
+
+
+    if T2 <= T1 or T2 < 0 or T1 < 0 or t <= 0:
         return {'is_valid': False}
 
     T = T2 - T1  # сторона квадрата
+
+    if t > T:
+        return {'is_valid': False}
+
     S = T ** 2  # площадь квадрата
     S1 = 1 / 2 * (T - 10) ** 2  # площадь верхнего треугольника
     S2 = 1 / 2 * (T - t) ** 2  # площадь нижнего треугольника

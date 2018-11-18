@@ -5,7 +5,41 @@
             Используем геометрическое определение вероятности. Построим схематично отрезок и
             изобразим точки, отстоящие от концов отрезка на расстояние \( \large
             \frac{1}{ {{ solve.k }} }\):<br>
-            $$ рисунок $$
+        </p>
+    </div>
+    <div class="solution-block">
+        <canvas id="line" style="position: relative; height:150px; width:300px"></canvas>
+        <script>
+                var k = {{ solve.k }},
+                    ctx = document.getElementById('line').getContext('2d'),
+                    x = 50, y = 75, length = 200;
+
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + length, y);
+                ctx.stroke();
+                ctx.arc(x + length / k, y, 5, 0, Math.PI*2, true);
+                ctx.arc(x + length * (k - 1) / k, y, 5, 0, Math.PI*2, true);
+                ctx.arc(x, y, 5, 0, Math.PI*2, true);
+                ctx.arc(x + length, y, 5, 0, Math.PI*2, true);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(x + length / k, y + 5);
+                ctx.lineTo(x + length * (k - 1) / k, y + 5);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = '#ff0000';
+                ctx.stroke();
+                ctx.fillStyle = "black";
+                ctx.strokeStyle = "#F00";
+                ctx.font = "italic 10pt Arial";
+                ctx.fillText("0", x - 5, y - 10);
+                ctx.fillText("1/" + k, x + length / k - 10, y + 20);
+                ctx.fillText(k - 1 + "/" + k, x + length * (k - 1) / k - 10, y + 20);
+                ctx.fillText("1", x + length - 5, y - 10);
+        </script>
+    </div>
+    <div class="solution-block">
+        <p class="big-formuls-ftnz">
             Отрезок в центре (между точками \( \large \frac{1}{ {{ solve.k }} } \) и
             \( \large \frac{ {{ solve.k_minus_1 }} }{ {{ solve.k }} } \)) характеризуется тем,
             что любая точка внутри этого отрезка отстоит от концов единичного отрезка на расстояние
