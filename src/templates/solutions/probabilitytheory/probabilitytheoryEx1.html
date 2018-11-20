@@ -1,3 +1,20 @@
+
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label class="control-label" for="N">Введите N: </label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="N" name="N" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+
 {% if solve.is_valid %}
     <div class="solution-block">
         <p>Решение: </p>
@@ -64,23 +81,5 @@
                 \) {% endif %}
             {% if not solve.N %} На 0 делить нельзя :( {% endif %}</p>
     </div>
-
-{% else %}
-
-    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
-        <div class="form-group">
-            <div class="col-xs-3">
-                <label class="control-label" for="N">Введите N: </label>
-            </div>
-            <div class="col-xs-9">
-                <input class="form-control" type="number" id="N" name="N" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-xs-12">
-                <button class="btn btn-success" type="submit">Получить решение!</button>
-            </div>
-        </div>
-    </form>
 
 {% endif %}
