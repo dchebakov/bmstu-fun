@@ -1,0 +1,91 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Введем полную группу гипотез:<br>
+            {% for h1, h2 in solve.Hi %}
+                \(H_{ {{forloop.counter}} } =\) (Из первой урны во вторую переложили \({{h1}}\) белых и \({{h2}}
+                \) черных шаров){% if forloop.last %}.<br>{% else %},<br>{% endif %}
+            {% endfor %}
+            <br>Найдем вероятности гипотез по классическому определению вероятности:<br>
+            {% for p in solve.Pi %}
+            {% for h1, h2 in solve.Hi %}
+            {% if forloop.parentloop.counter == forloop.counter %}
+                \(P(H_{ {{forloop.counter}} })= \large \frac{C^{ {{h1}} }_{ {{solve.N1}} } \cdot
+                C^{ {{h2}} }_{ {{solve.M1}} }}{C^{ {{solve.K}} }_{ {{solve.N1M1}}}}\)\(={{p}}\)
+                {% if forloop.last %}.<br>{% else %};\(\ \ \){% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            <br>После перекладывания шаров во второй урне станет (при выполнении соответствующей гипотезы):<br>
+            {% for h1, h2 in solve.H1i %}
+                \(H_{ {{forloop.counter}} } =\) \({{h1}}\) белых и \({{h2}}\) черных шаров.<br>
+            {% endfor %}
+            <br>Введем событие \(A =\) (Из второй урны выбран белый шар). Найдем условные вероятности по
+            классическому определению вероятности:<br>
+            {% for p in solve.PHi %}
+            {% for h1, h2 in solve.H1i %}
+            {% if forloop.parentloop.counter == forloop.counter %}
+                \(P(A|H_{ {{forloop.counter}} })= \large \frac{ {{h1}} }{ {{h1}} + {{h2}} }\)\(={{p}}\)
+                {% if forloop.last %}.<br>{% else %};\(\ \ \){% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            <br>Найдем вероятность события \(A\) по формуле полной вероятности:<br>
+            \(P(A)= \sum P(A|H_i)P(H_i) = \)
+            {% for p1, p2 in solve.sum %}
+                {% if forloop.last %}
+                    \({{p1}} \cdot {{p2}}= {{solve.P}}\).<br>{% else %}\({{p1}} \cdot
+                    {{p2}}+\)
+                {% endif %}
+            {% endfor %}
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="N1" class="control-label big-formuls-ftnz">Введите \(N_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="N1" name="N1" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="M1" class="control-label big-formuls-ftnz">Введите \(M_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="M1" name="M1" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="N2" class="control-label big-formuls-ftnz">Введите \(N_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="N2" name="N2" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="M2" class="control-label big-formuls-ftnz">Введите \(M_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="M2" name="M2" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="K" class="control-label big-formuls-ftnz">Введите \(K\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="K" name="K" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}

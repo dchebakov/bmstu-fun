@@ -486,6 +486,39 @@ def probabilitytheoryEx12(request):
 
 
 @task_decorate
+def probabilitytheoryEx13(request):
+    N1 = request.GET.get('N1')
+    M1 = request.GET.get('M1')
+    N2 = request.GET.get('N2')
+    M2 = request.GET.get('M2')
+    K = request.GET.get('K')
+
+    if not check_args(N1, N2, M1, M2, K):
+        return {'is_valid': False}
+
+    N1, N2, M1, M2, K = int(N1), int(N2), int(M1), int(M2), int(K)
+
+    if N1 < 0 or N2 < 0 or M1 < 0 or M2 < 0 or K < 0 or N1 + M1 < K:
+        return {'is_valid': False}
+
+    H = [(K - i, i) for i in range(K + 1)]
+    P = [round(combinations(N1, H[i][0]) * combinations(M1, H[i][1]) /
+         combinations(N1 + M1, K), 3) for i in range(K + 1)]
+    H1 = [(N2 + d[0], M2 + d[1]) for d in H]
+    P_H = [round(d[0] / sum(d), 3) for d in H1]
+
+    res = sum([P[i] * P_H[i] for i in range(K + 1)])
+    solve = {
+        "is_valid": True, "P": round(res, 3),
+        "Hi": H, "H1i": H1, "Pi": P,
+        "PHi": P_H, "N1M1": N1 + M1,
+        "N1": N1, "M1": M1, "K": K, "sum": zip(P_H, P)
+    }
+
+    return solve
+
+
+@task_decorate
 def probabilitytheoryEx19(request):
     N = request.GET.get('N')
     M = request.GET.get('M')
