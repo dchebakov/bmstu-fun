@@ -1,0 +1,81 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Введем полную группу гипотез:<br>
+            {% for h1, h2 in solve.Hi %}
+                \(H_{ {{forloop.counter}} } =\) (Выбрано \({{h1}}\) чистых и \({{h2}}
+                \) гашеных марки){% if forloop.last %}.<br>{% else %},<br>{% endif %}
+            {% endfor %}
+            <br>Найдем вероятности гипотез по классическому определению вероятности:<br>
+            {% for p in solve.Pi %}
+            {% for h1, h2 in solve.Hi %}
+            {% if forloop.parentloop.counter == forloop.counter %}
+                \(P(H_{ {{forloop.counter}} })= \large \frac{C^{ {{h1}} }_{ {{solve.k}} } \cdot
+                C^{ {{h2}} }_{ {{solve.l}} }}{C^{ {{solve.m}} }_{ {{solve.kl}}}}\)\(={{p}}\)
+                {% if forloop.last %}.<br>{% else %};\(\ \ \){% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            <br>Введем событие \(A =\) (После гашения все \({{solve.n}}\) выбранных марок &ndash; чистые). Найдем
+            априорные условные вероятности \(P(A|H_i)\):<br>
+            {% for p in solve.PHi %}
+            {% for h1, h2 in solve.H1i %}
+            {% if forloop.parentloop.counter == forloop.counter %}
+                \(H_{ {{forloop.counter}} } =\) \({{h1}}\) чистых и \({{h2}}\) гашеных марки,<br>
+                \(P(A|H_{ {{forloop.counter}} })= \large \frac{ C^{ {{solve.n}} }_{ {{h1}} } }{ C^{ {{solve.n}}
+                }_{ {{h1}} + {{h2}} }} \)\(={{p}}\)
+                {% if forloop.last %}.<br>{% else %}.<br>{% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            <br>Найдем вероятность события \(A\) по формуле полной вероятности:<br>
+            \(P(A)= \sum P(A|H_i)P(H_i) = \)
+            {% for p1, p2 in solve.sum %}
+                {% if forloop.last %}
+                    \({{p1}} \cdot {{p2}}= {{solve.P}}\).<br>{% else %}\({{p1}} \cdot
+                    {{p2}}+\)
+                {% endif %}
+            {% endfor %}
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="k" class="control-label big-formuls-ftnz">Введите \(k\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="k" name="k" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="l" class="control-label big-formuls-ftnz">Введите \(l\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="l" name="l" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="m" class="control-label big-formuls-ftnz">Введите \(m\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="m" name="m" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n" class="control-label big-formuls-ftnz">Введите \(n\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n" name="n" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
