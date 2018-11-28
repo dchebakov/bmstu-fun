@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
-
+from scipy.stats import norm
 import re
 
 
@@ -607,6 +607,50 @@ def probabilitytheoryEx16(request):
         "is_valid": True, "part": n + m -1, "n_1": n - 1,
         "m": m, "last": m + n, "n": n, "P": round(P, 3),
     }
+    return solve
+
+
+@task_decorate
+def probabilitytheoryEx17(request):
+    """Вероятность выигрыша в лотерею на один билет равна p. Куплено n билетов. Найти наивероятнейшее число
+    выигравших билетов и соответствующую вероятность. (при p=0.3, n=15 --> k = 4 ; 0.219)"""
+    p = request.GET.get('p')
+    n = request.GET.get('n')
+
+    if not check_args(n):
+        return {'is_valid': False}
+
+    n = int(n)
+
+    try:
+        p = float(p)
+    except (ValueError, TypeError):
+        return {'is_valid': False}
+    q = 1 - p
+    if n < 0 or not 0 < p < 1 or n * p - q < 0:
+        return {'is_valid': False}
+
+    left, right = round(n * p - q, 3), round(n * p + p, 3)
+    if math.ceil(left) == math.floor(right):
+        count = 1
+        k = math.ceil(left)
+        P = round(bernoulli(1, p, n, k), 3)
+        solve = {
+            'n': n, 'p': p, 'q': q, 'k': k,
+            'count': count, 'P': P, 'left': left,
+            'right': right, 'n_k': n - k, 'is_valid': True,
+        }
+    else:
+        count = 2
+        k = (int(left), int(right))
+        P = (round(bernoulli(1, p, n, k[0]), 3), round(bernoulli(1, p, n, k[1]), 3))
+        res = list(zip(k, P))
+        n_k = [n - k[0], n - k[1]]
+        solve = {
+            'n': n, 'p': p, 'q': q, 'count': count, 'left': left,
+            'right': right, 'n_k': n_k, 'res': res, 'is_valid': True,
+        }
+
     return solve
 
 

@@ -1,0 +1,51 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">
+            Имеем схему Бернулли с параметрами \(n={{solve.n}}\) и \(p={{solve.p}}, q={{solve.q}}\). Наивероятнейшее
+            число выигрышных билетов \(k\) определяется из формулы
+            $$np-q\leq k\leq np+p,$$
+            $${{solve.left}}\leq k\leq{{solve.right}}$$
+            {% if solve.count == 1 %}
+            откуда \(k={{solve.k}}\). Соответствующую вероятность найдем по формуле Бернулли:<br>
+            \(P=P_{ {{solve.n}} }({{solve.k}})=C^{ {{solve.k}} }_{ {{solve.n}} }
+            \cdot{{solve.p}}^{ {{ solve.k }} }\cdot{{solve.q}}^{ {{ solve.n_k }} }={{solve.P}}\).
+            {% else %}
+            {% for k, P in solve.res %}
+            {% for n_k in solve.n_k %}
+            {% if forloop.parentloop.counter == forloop.counter %}
+            \(k={{k}}\). Соответствующую вероятность найдем по формуле Бернулли:<br>
+            \(P=P_{ {{solve.n}} }({{k}})=C^{ {{k}} }_{ {{solve.n}} }
+            \cdot{{solve.p}}^{ {{k}} }\cdot{{solve.q}}^{ {{n_k}} }={{P}}\)
+            {% if forloop.last %}.<br>{% else %},<br>{% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+         <div class="form-group">
+            <div class="col-xs-3">
+                <label for="p" class="control-label big-formuls-ftnz">Введите \(p\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="p" name="p" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n" class="control-label big-formuls-ftnz">Введите \(n\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n" name="n" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
