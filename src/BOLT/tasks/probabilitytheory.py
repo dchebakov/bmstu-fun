@@ -551,6 +551,42 @@ def probabilitytheoryEx14(request):
 
 
 @task_decorate
+def probabilitytheoryEx15(request):
+    m1 = request.GET.get('m1')
+    m2 = request.GET.get('m2')
+    m3 = request.GET.get('m3')
+    n1 = request.GET.get('n1')
+    n2 = request.GET.get('n2')
+    n3 = request.GET.get('n3')
+    j = request.GET.get('j')
+
+    if not check_args(m1, m2, m3, n1, n2, n3, j):
+        return {'is_valid': False}
+
+    m1, m2, m3, n1, n2, n3, j = int(m1), int(m2), int(m3), int(n1), int(n2), int(n3), int(j)
+
+    if m1 + m2 + m3 != 100 or not 0 <= m1 <= 100 or not 0 <= m2 <= 100 or not 0 <= m3 <= 100:
+        return {'is_valid': False}
+
+    if not 0 <= n1 <= 100 or not 0 <= n2 <= 100 or not 0 <= n3 <= 100 or j > 3 or j < 1:
+        return {'is_valid': False}
+
+    H = [1, 2, 3]  # группа гипотез
+    P = [p / 100 for p in (m1, m2, m3)]  # вероятности гипотез
+    P_H = [p / 100 for p in (n1, n2, n3)]  # вероятности априорных событий
+    res = sum([P[i] * P_H[i] for i in range(3)])  # полная вероятность
+    P_Hj = P[j - 1] * P_H[j - 1]
+    P_res = P_Hj / res  # вероятность того, что изделие выпущено j-ым заводом
+
+    solve = {
+        "is_valid": True, "P": round(res, 3), 'P_Hj': round(P_Hj, 3),
+        "Hi": H, "Pi": P, "PHi": P_H, 'j': j, 'res': round(P_res, 3),
+    }
+
+    return solve
+
+
+@task_decorate
 def probabilitytheoryEx19(request):
     N = request.GET.get('N')
     M = request.GET.get('M')

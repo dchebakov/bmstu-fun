@@ -1,0 +1,89 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Введем полную группу гипотез:<br>
+            {% for h in solve.Hi %}
+                \(H_{ {{forloop.counter}} } =\) (Изделие выпущено на  \({{h}}\) заводе)
+            {% if forloop.last %}.<br>{% else %},<br>{% endif %}
+            {% endfor %}
+            <br>По условию известны вероятности гипотез:<br>
+            {% for p in solve.Pi %}
+                \(P(H_{ {{forloop.counter}} })= {{p}}\)
+                {% if forloop.last %}.<br>{% else %};\(\ \ \){% endif %}
+            {% endfor %}
+            <br>Введем событие \(A =\) (Изделие первосортное). По условию известны априорные вероятности:<br>
+            {% for p in solve.PHi %}
+                \(P(A|H_{ {{forloop.counter}} })={{p}}\)
+                {% if forloop.last %}.<br>{% else %};\(\ \ \){% endif %}
+            {% endfor %}
+            <br>Вероятность того, что изделие выпущено на \({{solve.j}}\) заводе, если оно оказалось первосортным
+            \(P(H_{ {{solve.j}} }|A)\) найдем по формуле Байеса:<br>
+            \(P(H_{ {{solve.j}} }|A)=\large\frac{P(A|H_{ {{solve.j}} })\cdot P(H_{ {{solve.j}} })}{P(A|H_1)P(H_1)\cdot
+            P(A|H_2)P(H_2)\cdot P(A|H_3)P(H_3)}\)\(=\large\frac{ {{solve.P_Hj}} }{ {{solve.P}} }\)\(={{solve.res}}\)
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="m1" class="control-label big-formuls-ftnz">Введите \(m_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="m1" name="m1" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="m2" class="control-label big-formuls-ftnz">Введите \(m_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="m2" name="m2" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="m3" class="control-label big-formuls-ftnz">Введите \(m_3\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="m3" name="m3" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n1" class="control-label big-formuls-ftnz">Введите \(n_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n1" name="n1" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n2" class="control-label big-formuls-ftnz">Введите \(n_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n2" name="n2" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n3" class="control-label big-formuls-ftnz">Введите \(n_3\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n3" name="n3" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="j" class="control-label big-formuls-ftnz">Введите \(j\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="j" name="j" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
