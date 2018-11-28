@@ -587,6 +587,30 @@ def probabilitytheoryEx15(request):
 
 
 @task_decorate
+def probabilitytheoryEx16(request):
+    """Монета бросается до тех пор, пока герб не выпадает n раз. Определить вероятность того,
+     что цифра выпадет m раз. (при n=6, m=5 --> p=0.123)"""
+    n = request.GET.get('n')
+    m = request.GET.get('m')
+
+    if not check_args(n, m):
+        return {'is_valid': False}
+
+    m, n = int(m), int(n)
+
+    if m < 0 or n <= 0:
+        return {'is_valid': False}
+
+    P = bernoulli(2, 1, n + m - 1, m) / 2  # Вероятности выпадения герба и цифры одинаковы и равны 1/2
+
+    solve = {
+        "is_valid": True, "part": n + m -1, "n_1": n - 1,
+        "m": m, "last": m + n, "n": n, "P": round(P, 3),
+    }
+    return solve
+
+
+@task_decorate
 def probabilitytheoryEx19(request):
     N = request.GET.get('N')
     M = request.GET.get('M')
