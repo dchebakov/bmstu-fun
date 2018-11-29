@@ -1,0 +1,51 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Используем интегральную теорему Муавра-Лапласа:<br>
+            \(P_{n}(k_1,k_2)=\Phi\bigl(\large\frac{k_2-np}{\sqrt{npq}}\bigr)\)
+            \(-\Phi\bigl(\large\frac{k_1-np}{\sqrt{npq}}\bigr)\), значения функции Лапласа берутся из таблицы.<br>
+            \(P_{ {{solve.n}} }({{solve.k1}},{{solve.k2}})=\Phi({{solve.arg2}})-\Phi({{solve.arg1}})
+            ={{solve.f2}} {% if solve.plus %}+{% else %}-{% endif %} {{solve.f1}}={{solve.P}}\).
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n" class="control-label big-formuls-ftnz">Введите \(n\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n" name="n" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="p" class="control-label big-formuls-ftnz">Введите \(p\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="p" name="p" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="k1" class="control-label big-formuls-ftnz">Введите \(k_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="k1" name="k1" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="k2" class="control-label big-formuls-ftnz">Введите \(k_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="k2" name="k2" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}

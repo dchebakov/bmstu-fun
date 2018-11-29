@@ -720,5 +720,46 @@ def probabilitytheoryEx19(request):
     e_lam = math.exp(-lam).real
     m_fact = math.factorial(M)
     Pa = round(lam_m * e_lam / m_fact, 6)
+
     solve = {'Pa': Pa, 'N': N, 'M': M, 'P': P, 'lam': lam, 'is_valid': True}
+
+    return solve
+
+
+@task_decorate
+def probabilitytheoryEx20(request):
+    """Вероятность наступления некоторого события в каждом из n независимых испытаний равна p.
+    Определить вероятность того, что число m наступлений события удовлетворяет неравенству k1 ≤ m ≤ k2.
+    (n=100; p=0,7; k1 = 65; k2 = 75 --> 0.7242.)"""
+    k1 = request.GET.get('k1')
+    k2 = request.GET.get('k2')
+    n = request.GET.get('n')
+    p = request.GET.get('p')
+
+    if not check_args(k1, k2, n):
+        return {'is_valid': False}
+    k1, k2, n = int(k1), int(k2), int(n)
+    try:
+        p = float(p)
+    except (ValueError, TypeError):
+        return {'is_valid': False}
+    if k1 > k2 or not 0 <= k1 <= n or not 0 <= k2 <= n or not 0 < p < 1:
+        return {'is_valid': False}
+
+    q = 1 - p
+    f_arg1 = round((k1 - n * p) / math.sqrt(n * p * q), 2)
+    f_arg2 = round((k2 - n * p) / math.sqrt(n * p * q), 2)
+    plus = False
+    f1 = round(norm.cdf(f_arg1) - 0.5, 4)
+    f2 = round(norm.cdf(f_arg2) - 0.5, 4)
+    P = round(f2 - f1, 4)
+    if f1 < 0:
+        plus = True
+        f1 = -f1
+
+    solve = {
+        'is_valid': True, 'k1': k1, 'k2': k2, 'n': n,
+        'p': p, 'q': q, 'arg1': f_arg1, 'arg2': f_arg2,
+        'f1': f1, 'f2': f2, 'P': P, 'plus': plus,
+    }
     return solve
