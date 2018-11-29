@@ -627,7 +627,7 @@ def probabilitytheoryEx17(request):
     except (ValueError, TypeError):
         return {'is_valid': False}
     q = 1 - p
-    if n < 0 or not 0 < p < 1 or n * p - q < 0:
+    if n <= 0 or not 0 < p < 1 or n * p - q < 0:
         return {'is_valid': False}
 
     left, right = round(n * p - q, 3), round(n * p + p, 3)
@@ -650,6 +650,45 @@ def probabilitytheoryEx17(request):
             'n': n, 'p': p, 'q': q, 'count': count, 'left': left,
             'right': right, 'n_k': n_k, 'res': res, 'is_valid': True,
         }
+
+    return solve
+
+
+@task_decorate
+def probabilitytheoryEx18(request):
+    """На каждый лотерейный билет с вероятностью p1 может выпасть крупный выигрыш, с вероятностью p2 - мелкий выигрыш
+    и с вероятностью p3 билет может оказаться без выигрыша, ∑pi = 1. Куплено n билетов. Определить вероятность
+    получения n1 крупных выигрышей и n2 мелких. (n=15, n1=2; n2 =2; p1=0,15; p2=0,2 --> 0.065)"""
+    n1 = request.GET.get('n1')
+    n2 = request.GET.get('n2')
+    n = request.GET.get('n')
+    p1 = request.GET.get('p1')
+    p2 = request.GET.get('p2')
+
+    if not check_args(n, n1, n2):
+        return {'is_valid': False}
+
+    n, n1, n2 = int(n), int(n1), int(n2)
+    if n <= 0 or n1 < 0 or n2 < 0 or n1 + n2 > n:
+        return {'is_valid': False}
+    n3 = n - n1 - n2
+    try:
+        p1, p2 = float(p1), float(p2)
+    except (ValueError, TypeError):
+        return {'is_valid': False}
+
+    if 0 <= p1 <= 1 and 0 <= p2 <= 1 and 0 <= p1 + p2 <= 1:
+        p3 = 1 - p1 - p2
+    else:
+        return {'is_valid': False}
+
+    P = math.factorial(n) / (math.factorial(n1) * math.factorial(n2) * math.factorial(n3)) *\
+        p1 ** n1 * p2 ** n2 * p3 ** n3
+
+    solve = {
+        'is_valid': True, 'n': n, 'n1': n1, 'n2': n2, 'n3': n3,
+        'p1': p1, 'p2': p2, 'p3': round(p3, 3), 'P': round(P, 3),
+    }
 
     return solve
 

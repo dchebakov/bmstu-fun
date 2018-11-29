@@ -1,0 +1,63 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">Имеем полиномиальную схему с тремя исходами и вероятностями:<br>
+            Крупный выигрыш, \(p_1={{solve.p1}}\),<br>
+            Мелкий выигрыш, \(p_2={{solve.p2}}\),<br>
+            Нет выигрыша, \(p_3={{solve.p3}}\).<br><br>
+            Тогда вероятность того, что при покупке \({{solve.n}}\) билетов будет \({{solve.n1}}\) с крупным выигрышем,
+            \({{solve.n2}}\) с мелким выигрышем и \({{solve.n3}}\) без выигрыша, равна:<br>
+            \(P_{ {{solve.n}} }({{solve.n1}},{{solve.n2}},{{solve.n3}})=\large\frac{ {{solve.n}}! }{ {{solve.n1}}!\cdot
+            {{solve.n2}}!\cdot {{solve.n3}}!}({{solve.p1}})^{ {{solve.n1}} }\cdot ({{solve.p2}})^{ {{solve.n2}} }\cdot
+            ({{solve.p3}})^{ {{solve.n3}} }\)\(={{solve.P}}\).
+        </p>
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n" class="control-label big-formuls-ftnz">Введите \(n\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n" name="n" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n1" class="control-label big-formuls-ftnz">Введите \(n_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n1" name="n1" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n2" class="control-label big-formuls-ftnz">Введите \(n_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n2" name="n2" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="p1" class="control-label big-formuls-ftnz">Введите \(p_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="p1" name="p1" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="p2" class="control-label big-formuls-ftnz">Введите \(p_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="p2" name="p2" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
