@@ -1,0 +1,225 @@
+{% if solve.is_valid %}
+    <div class="solution-block"><p>Решение: </p>
+        <p class="big-formuls-ftnz">
+            {% if solve.type == '1' %}
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                {\large\frac{1}{\gamma-{{solve.a}} }}, & x \in [ {{solve.a}}; {{solve.b}} ]; \\
+                0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
+                \end{array}
+                \right.$$
+                Найдем параметр \(\gamma\) из условия нормировки:<br>
+                \(\int\limits^{\infty}_{-\infty}f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {\large\frac{dx}{\gamma-{{solve.a}} }}={\large\frac{ {{solve.b}}-{{solve.a}} }{\gamma-{{solve.a}} }}=1\),
+                отсюда \(\gamma={{solve.gamma}}\).<br>
+                Функция плотности распределения примет вид:<br>
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                {{solve.f}}, & x \in [ {{solve.a}}; {{solve.b}} ]; \\
+                0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
+                \end{array}
+                \right.$$
+                Математическое ожидание определим следующим образом:<br>
+                \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}xdx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
+                \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
+                Функция распределения:<br>
+                $$F(x)=\left\{
+                \begin{array}{ccc}
+                0, & x < {{solve.a}}; \\
+                {{solve.f}}(x-{{solve.a}}), & {{solve.a}} \leq x < {{solve.b}}; \\
+                1, & x \geq {{solve.b}}. \\
+                \end{array}
+                \right.$$
+                Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
+                \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
+            {% elif solve.type == '2' %}
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                {{solve.f}}, & x \in [\gamma; {{solve.b}} ]; \\
+                0, & x \notin [\gamma; {{solve.b}} ]. \\
+                \end{array}
+                \right.$$
+                Найдем параметр \(\gamma\) из условия нормировки:<br>
+                \(\int\limits^{\infty}_{-\infty}f(x)\,dx=\int\limits^{ {{solve.b}} }_{\gamma}
+                {{solve.a}}\,dx={{solve.f}}({{solve.b}}-\gamma)=1\), отсюда \(\gamma={{solve.gamma}}\).<br>
+                Функция плотности распределения примет вид:<br>
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                {{solve.f}}, & x \in [ {{solve.a}}; {{solve.b}} ]; \\
+                0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
+                \end{array}
+                \right.$$
+                Математическое ожидание определим следующим образом:<br>
+                \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
+                \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
+                Функция распределения:<br>
+                $$F(x)=\left\{
+                \begin{array}{ccc}
+                0, & x < {{solve.a}}; \\
+                {{solve.f}}(x-{{solve.a}}), & {{solve.a}} \leq x < {{solve.b}}; \\
+                1, & x \geq {{solve.b}}. \\
+                \end{array}
+                \right.$$
+                Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
+                \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
+            {% elif solve.type == '3' %}
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                \gamma, & x \in [{{solve.a}}; {{solve.b}} ]; \\
+                0, & x \notin [{{solve.a}}; {{solve.b}} ]. \\
+                \end{array}
+                \right.$$
+                Найдем параметр \(\gamma\) из условия нормировки:<br>
+                \(\int\limits^{\infty}_{-\infty}f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                \gamma\,dx=\gamma({{solve.b}}-{{solve.a}})=1\), отсюда \(\gamma={{solve.gamma}}\).<br>
+                Функция плотности распределения примет вид:<br>
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                {{solve.f}}, & x \in [ {{solve.a}}; {{solve.b}} ]; \\
+                0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
+                \end{array}
+                \right.$$
+                Математическое ожидание определим следующим образом:<br>
+                \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
+                \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
+                Функция распределения:<br>
+                $$F(x)=\left\{
+                \begin{array}{ccc}
+                0, & x < {{solve.a}}; \\
+                {{solve.f}}(x-{{solve.a}}), & {{solve.a}} \leq x < {{solve.b}}; \\
+                1, & x \geq {{solve.b}}. \\
+                \end{array}
+                \right.$$
+                Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
+                \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
+            {% elif solve.type == '4' %}
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                {{solve.f}}, & x \in [{\large\frac{b-\gamma }{2}};{\large\frac{b+\gamma }{2}}]; \\
+                0, & x \notin [{\large\frac{b-\gamma }{2}};{\large\frac{b+\gamma }{2}}]. \\
+                \end{array}
+                \right.$$
+                Найдем параметр \(\gamma\) из условия нормировки:<br>
+                \(\int\limits^{\infty}_{-\infty}f(x)\,dx=\int\limits^{\frac{b+\gamma }{2}}_{\frac{b-\gamma }{2}}
+                {{solve.f}}\,dx={{solve.f}}(\frac{b+\gamma }{2}-\frac{b-\gamma }{2})=1\), отсюда \(\gamma={{solve.gamma}}\).<br>
+                Функция плотности распределения примет вид:<br>
+                $$f(x)=\left\{
+                \begin{array}{ccc}
+                {{solve.f}}, & x \in [ {{solve.a}}; {{solve.b}} ]; \\
+                0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
+                \end{array}
+                \right.$$
+                Математическое ожидание определим следующим образом:<br>
+                \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
+                \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
+                Функция распределения:<br>
+                $$F(x)=\left\{
+                \begin{array}{ccc}
+                0, & x < {{solve.a}}; \\
+                {{solve.f}}(x-{{solve.a}}), & {{solve.a}} \leq x < {{solve.b}}; \\
+                1, & x \geq {{solve.b}}. \\
+                \end{array}
+                \right.$$
+                Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
+                \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
+            {% endif %}
+        </p>
+    </div>
+{% else %}
+   <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+       <div class="solution-block">
+           $$\begin{array}{lcr}
+                1)\ f(x)=\left\{
+                \begin{array}{cc}
+                    {\large\frac{1}{\gamma-a}}, & x \in [a;b]; \\
+                    0, & x \notin [a;b]; \\
+                \end{array}
+                \right. &
+                2)\ f(x)=\left\{
+                \begin{array}{cc}
+                    a, & x \in [\gamma;b]; \\
+                    0, & x \notin [\gamma;b]; \\
+                \end{array}
+                \right. \\ \\
+                3)\ f(x)=\left\{
+                \begin{array}{cc}
+                    \gamma, & x \in [a;b]; \\
+                    0, & x \notin [a;b]; \\
+                \end{array}
+                \right. &
+                4)\ f(x)=\left\{
+                \begin{array}{cc}
+                    a, & x \in [{\large\frac{b-\gamma }{2}};{\large\frac{b+\gamma }{2}}]; \\
+                    0, & x \notin [{\large\frac{b-\gamma }{2}};{\large\frac{b+\gamma }{2}}]. \\
+                \end{array}
+                \right.
+            \end{array}$$
+       </div>
+       <div class="form-group">
+            <div class="col-sm-5">
+                <label for="type" class="type">Выберите \(f(x)\):</label>
+            </div>
+            <div class="col-sm-6">
+                <select name="type" id="type" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="a" class="control-label big-formuls-ftnz">Введите \(a\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="a" name="a" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="b" class="control-label big-formuls-ftnz">Введите \(b\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="b" name="b" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="x1" class="control-label big-formuls-ftnz">Введите \(x_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="x1" name="x1" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="x2" class="control-label big-formuls-ftnz">Введите \(x_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="x2" name="x2" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}

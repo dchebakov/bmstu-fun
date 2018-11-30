@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
-from scipy.stats import norm
+from scipy.stats import norm, uniform
 import re
 
 
@@ -761,5 +761,75 @@ def probabilitytheoryEx20(request):
         'is_valid': True, 'k1': k1, 'k2': k2, 'n': n,
         'p': p, 'q': q, 'arg1': f_arg1, 'arg2': f_arg2,
         'f1': f1, 'f2': f2, 'P': P, 'plus': plus,
+    }
+    return solve
+
+
+@task_decorate
+def probabilitytheoryEx21(request):
+    """Дана плотность распределения f(x) случайной величины ξ. Найти параметр γ,
+    математическое ожидание, дисперсию, функцию распределения случайной величины ξ, вероятность выполнния
+    неравенства x1 < ξ < x2."""
+    x1 = request.GET.get('x1')
+    x2 = request.GET.get('x2')
+    a = request.GET.get('a')
+    b = request.GET.get('b')
+    uniform_type = request.GET.get('type')
+    if not check_args(uniform_type) and uniform_type not in ('1', '2', '3', '4'):
+        return {'is_valid': False}
+    try:
+        a, b, x1, x2 = float(a), float(b), float(x1), float(x2)
+    except (ValueError, TypeError):
+        return {'is_valid': False}
+
+    if x2 < x1:
+        return {'is_valid': False}
+
+    def uniform_type_1(a, b, x1, x2):
+        γ = b
+        f = 1 / (γ - a)
+        mean = uniform.mean(a, b - a)
+        var = uniform.var(a, b - a)
+        p = uniform.cdf(x2, a, b - a) - uniform.cdf(x1, a, b - a)
+        return γ, mean, var, p, f, a, b
+
+    def uniform_type_2(a, b, x1, x2):
+        γ = (a * b - 1) / a
+        f = a
+        a = γ
+        mean = uniform.mean(a, b - a)
+        var = uniform.var(a, b - a)
+        p = uniform.cdf(x2, a, b - a) - uniform.cdf(x1, a, b - a)
+        return γ, mean, var, p, f, a, b
+
+    def uniform_type_3(a, b, x1, x2):
+        γ = f = 1 / (b - a)
+        mean = uniform.mean(a, b - a)
+        var = uniform.var(a, b - a)
+        p = uniform.cdf(x2, a, b - a) - uniform.cdf(x1, a, b - a)
+        return γ, mean, var, p, f, a, b
+
+    def uniform_type_4(a, b, x1, x2):
+        γ = 1 / a
+        f = a
+        a = (a * b - 1) / (2 * a)
+        b = a + γ
+        mean = uniform.mean(a, b - a)
+        var = uniform.var(a, b - a)
+        p = uniform.cdf(x2, a, b - a) - uniform.cdf(x1, a, b - a)
+        return γ, mean, var, p, f, a, b
+
+    distributions = {
+        '1': uniform_type_1,
+        '2': uniform_type_2,
+        '3': uniform_type_3,
+        '4': uniform_type_4,
+    }
+    γ, mean, var, p, f, a, b = distributions[uniform_type](a, b, x1, x2)
+    solve = {
+        'type': uniform_type, 'a': a, 'b': b, 'x1': x1, 'x2': x2,
+        'gamma': round(γ, 2), 'mean': round(mean, 2),
+        'mean2': round(var + mean ** 2, 2), 'var': round(var, 2),
+        'p': round(p, 2), 'f': round(f, 2), 'is_valid': True,
     }
     return solve
