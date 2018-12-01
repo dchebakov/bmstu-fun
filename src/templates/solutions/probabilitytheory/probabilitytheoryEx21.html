@@ -1,3 +1,5 @@
+{% load staticfiles %}
+<script src="{% static 'js/Chart.js' %}"></script>
 {% if solve.is_valid %}
     <div class="solution-block"><p>Решение: </p>
         <p class="big-formuls-ftnz">
@@ -19,12 +21,15 @@
                 0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-pdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Математическое ожидание определим следующим образом:<br>
                 \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}xdx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                {{solve.f}}xdx={\large\frac{ {{solve.f}}(({{solve.b}})^2-({{solve.a}})^2)}{2}}={{solve.mean}}\).<br>
                 Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
                 \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}(({{solve.b}})^3-({{solve.a}})^3)}{3}}={{solve.mean2}}\);<br>
                 Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
                 Функция распределения:<br>
                 $$F(x)=\left\{
@@ -34,6 +39,9 @@
                 1, & x \geq {{solve.b}}. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-cdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
                 \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
             {% elif solve.type == '2' %}
@@ -53,12 +61,15 @@
                 0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-pdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Математическое ожидание определим следующим образом:<br>
                 \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}(({{solve.b}})^2-({{solve.a}})^2)}{2}}={{solve.mean}}\).<br>
                 Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
                 \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}(({{solve.b}})^3-({{solve.a}})^3)}{3}}={{solve.mean2}}\);<br>
                 Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
                 Функция распределения:<br>
                 $$F(x)=\left\{
@@ -68,6 +79,9 @@
                 1, & x \geq {{solve.b}}. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-cdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
                 \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
             {% elif solve.type == '3' %}
@@ -87,12 +101,15 @@
                 0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-pdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Математическое ожидание определим следующим образом:<br>
                 \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}(({{solve.b}})^2-({{solve.a}})^2)}{2}}={{solve.mean}}\).<br>
                 Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
                 \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}(({{solve.b}})^3-({{solve.a}})^3)}{3}}={{solve.mean2}}\);<br>
                 Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
                 Функция распределения:<br>
                 $$F(x)=\left\{
@@ -102,6 +119,9 @@
                 1, & x \geq {{solve.b}}. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-cdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
                 \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
             {% elif solve.type == '4' %}
@@ -121,12 +141,15 @@
                 0, & x \notin [ {{solve.a}}; {{solve.b}} ]. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-pdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Математическое ожидание определим следующим образом:<br>
                 \(M[\xi]=\int\limits^{\infty}_{-\infty}xf(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}({{solve.b}}^2-{{solve.a}}^2)}{2}}={{solve.mean}}\).<br>
+                {{solve.f}}x\,dx={\large\frac{ {{solve.f}}(({{solve.b}})^2-({{solve.a}})^2)}{2}}={{solve.mean}}\).<br>
                 Формула для определения дисперсии имеет вид: \(D[\xi]=M[\xi^2]-\bigl(M[\xi]\bigr)^2\),<br>
                 \(M[\xi^2]=\int\limits^{\infty}_{-\infty}x^2f(x)\,dx=\int\limits^{ {{solve.b}} }_{ {{solve.a}} }
-                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}({{solve.b}}^3-{{solve.a}}^3)}{3}}={{solve.mean2}}\);<br>
+                {{solve.f}}x^2dx={\large\frac{ {{solve.f}}(({{solve.b}})^3-({{solve.a}})^3)}{3}}={{solve.mean2}}\);<br>
                 Тогда \(D[\xi]={{solve.mean2}}-{{solve.mean}}^2={{solve.var}}\);<br>
                 Функция распределения:<br>
                 $$F(x)=\left\{
@@ -136,11 +159,207 @@
                 1, & x \geq {{solve.b}}. \\
                 \end{array}
                 \right.$$
+        </p>
+        <canvas id="chart-cdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
                 Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
                 \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})={{solve.p}}\).
             {% endif %}
         </p>
     </div>
+<script>
+var a = parseFloat("{{ solve.a }}".replace(',', '.')),
+    b = parseFloat("{{ solve.b }}".replace(',', '.')),
+    f = parseFloat("{{ solve.f }}".replace(',', '.')),
+    d = (b - a) / 2;
+function createConfig(details, data) {
+			return {
+				type: 'line',
+				data: {
+					datasets: [{
+						steppedLine: details.steppedLine,
+						data: data,
+						borderColor: details.color,
+						fill: false,
+					}]
+				},
+				options: {
+                    animation: {
+                        duration: 0,
+                    },
+                    elements: {
+                        point: {
+                            radius: 0
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'f(x)',
+                                fontColor: "black",
+                            },
+                            type: 'linear',
+                            gridLines: {
+                                display: false,
+                            },
+                            ticks: {
+                                max: 3 * f / 2,
+                                min: 0,
+                                fontColor: "black",
+                            }
+                        }],
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'x',
+                                fontColor: "black",
+                            },
+                            type: 'linear',
+                            gridLines: {
+                                display: false,
+                            },
+                            ticks: {
+                                max: b + d,
+                                min: a - d,
+                                fontColor: "black",
+                            }
+                        }]
+                    },
+                    legend: false,
+                    responsive: true,
+                    tooltips: {
+                        enabled: false
+                    },
+                }
+			};
+		}
+
+var data = [{
+        x: a - d,
+        y: 0
+    },
+    {
+        x: a,
+        y: f
+    },
+    {
+        x: b,
+        y: f
+    },
+    {
+        x: b,
+        y: 0
+    },
+    {
+        x: b + d,
+        y: 0
+    }];
+
+var details = {
+	steppedLine: true,
+	color: 'black'
+	};
+    var ctx = document.getElementById('chart-pdf').getContext('2d');
+	var config = createConfig(details, data);
+	new Chart(ctx, config);
+</script>
+<script>
+var a = parseFloat("{{ solve.a }}".replace(',', '.')),
+    b = parseFloat("{{ solve.b }}".replace(',', '.')),
+    f = parseFloat("{{ solve.f }}".replace(',', '.')),
+    d = (b - a) / 2;
+function createConfig(details, data) {
+			return {
+				type: 'line',
+				data: {
+					datasets: [{
+						steppedLine: details.steppedLine,
+						data: data,
+						borderColor: details.color,
+						fill: false,
+					}]
+				},
+				options: {
+                    animation: {
+                        duration: 0,
+                    },
+                    elements: {
+                        line: {
+            tension: 0
+        },
+                        point: {
+                            radius: 0
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'F(x)',
+                                fontColor: "black",
+                            },
+                            type: 'linear',
+                            gridLines: {
+                                display: false,
+                            },
+                            ticks: {
+                                max: 1,
+                                min: 0,
+                                fontColor: "black",
+                            }
+                        }],
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'x',
+                                fontColor: "black",
+                            },
+                            type: 'linear',
+                            gridLines: {
+                                display: false,
+                            },
+                            ticks: {
+                                max: b + d,
+                                min: a - d,
+                                fontColor: "black",
+                            }
+                        }]
+                    },
+                    legend: false,
+                    responsive: true,
+                    tooltips: {
+                        enabled: false
+                    },
+                }
+			};
+		}
+
+var data = [{
+        x: a - d,
+        y: 0
+    },
+    {
+        x: a,
+        y: 0
+    },
+    {
+        x: b,
+        y: 1
+    },
+    {
+        x: b + d,
+        y: 1
+    }];
+
+var details = {
+	steppedLine: false,
+	color: 'black'
+	};
+    var ctx = document.getElementById('chart-cdf').getContext('2d');
+	var config = createConfig(details, data);
+	new Chart(ctx, config);
+</script>
 {% else %}
    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
        <div class="solution-block">

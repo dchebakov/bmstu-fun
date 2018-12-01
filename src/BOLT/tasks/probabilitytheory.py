@@ -827,8 +827,8 @@ def probabilitytheoryEx21(request):
     }
     γ, mean, var, p, f, a, b = distributions[uniform_type](a, b, x1, x2)
     solve = {
-        'type': uniform_type, 'a': a, 'b': b, 'x1': x1, 'x2': x2,
-        'gamma': round(γ, 2), 'mean': round(mean, 2),
+        'type': uniform_type, 'a': round(a, 2), 'b': round(b, 2),
+        'x1': x1, 'x2': x2, 'gamma': round(γ, 2), 'mean': round(mean, 2),
         'mean2': round(var + mean ** 2, 2), 'var': round(var, 2),
         'p': round(p, 2), 'f': round(f, 2), 'is_valid': True,
     }
