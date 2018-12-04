@@ -1,0 +1,82 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение: </p>
+        <p class="big-formuls-ftnz">
+            1) \(\ \displaystyle f(x)={{ solve.expr }}={{ solve.fracs }}\);<br> Тогда \(\displaystyle\int\limits_0^2f(x)\,dx=
+            \int\limits_0^2[ {{ solve.fracs }}]\,dx= \\ \displaystyle ={{ solve.expr_int }}\approx{{ solve.res }}\).<br><br>
+            2)  Используя квадратурные формулы прямоугольников, трапеций и парабол, приближённо вычислим интеграл \(
+            \int\limits_0^2f(\tau)\,d\tau\) на отрезке \([0;\,2]\), для \(A=\langle{\tau_0,...,\tau_{20}}\rangle\) &ndash;
+            равномерной сетке. Результаты приближенных расчетов запишем в таблицу 1.<br><br>
+            3) Далее, строим \(B\)интерполяционный полином Лагранжа \(L_\kappa(x)\), где \(B=\langle{\tau_0,...,\tau_{10}}
+            \rangle\) &ndash; чебышевская сетка на отрезке \([0;\,2]\).<br><br>
+            4)  Используя квадратурные формулы прямоугольников, трапеций и парабол, приближённо вычислим интеграл \(
+            \int\limits_0^2L_\kappa(x)\,dx\). Также результаты занесем в таблицу 1.</p>
+            <table class="table-bordered big-formuls-ftnz" title="Таблица 1" align="center">
+                <tr>
+                    <td></td>
+                    <td>Формула прямоугольников</td>
+                    <td>Формула трапеций</td>
+                    <td>Формула парабол</td>
+                </tr>
+                <tr>
+                    <td>\(f(\tau)\)</td>
+                    <td>{{ solve.rect_f }}</td>
+                    <td>{{ solve.trap_f }}</td>
+                    <td>{{ solve.simp_f }}</td>
+                </tr>
+                <tr>
+                    <td>\(L_\kappa(\tau)\)</td>
+                    <td>{{ solve.rect_l }}</td>
+                    <td>{{ solve.trap_l }}</td>
+                    <td>{{ solve.simp_l }}</td>
+                </tr>
+            </table>
+        <p align="center">(таб. 1)</p>
+        <p class="big-formuls-ftnz">Из таблице видно, что результат формулы парабол оказался самым близким. Также не
+        трудно заметить, что \(B\)интерполяционный полином Лагранжа \(L_\kappa(x)\) показал, практически, идентичный
+        результат в сравнении с заданной функцией.
+    </div>
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="solution-block">
+            $$f(x)={\frac{(a+52-n)x^4+(b-52+n)x^2+c}{(x^2+1)(x+1)}}$$
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n" class="control-label big-formuls-ftnz">Введите \(n\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="n" name="n" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="a" class="control-label big-formuls-ftnz">Введите \(a\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="a" name="a" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="b" class="control-label big-formuls-ftnz">Введите \(b\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="b" name="b" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="c" class="control-label big-formuls-ftnz">Введите \(c\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="c" name="c" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
