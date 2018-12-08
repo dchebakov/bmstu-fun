@@ -4,6 +4,7 @@ from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
 from scipy.stats import norm, uniform
+import numpy as np
 import re
 
 
@@ -87,7 +88,6 @@ def from_exp_to_tex_number(number):
         )
     else:
         return round(number, 5)
-
 
 
 @task_decorate
@@ -831,5 +831,40 @@ def probabilitytheoryEx21(request):
         'x1': x1, 'x2': x2, 'gamma': round(γ, 2), 'mean': round(mean, 2),
         'mean2': round(var + mean ** 2, 2), 'var': round(var, 2),
         'p': round(p, 2), 'f': round(f, 2), 'is_valid': True,
+    }
+    return solve
+
+
+@task_decorate
+def probabilitytheoryEx22(request):
+    x1 = request.GET.get('x1')
+    x2 = request.GET.get('x2')
+    a = request.GET.get('a')
+    b = request.GET.get('b')
+    c = request.GET.get('c')
+
+    try:
+        a, b, c, x1, x2 = float(a), float(b), float(c), float(x1), float(x2)
+    except (ValueError, TypeError):
+        return {'is_valid': False}
+
+    if x2 < x1 or a >= 0:
+        return {'is_valid': False}
+
+    gamma = math.exp((b ** 2 - 4 * c * a) / (4 * a)) * math.sqrt(-a / math.pi)
+    pdf = norm(-b / (2 * a), math.sqrt(-1 / (2 * a)))
+    mean = pdf.mean()
+    var = pdf.var()
+    f1 = round(pdf.cdf(x1) - 0.5, 3)
+    f2 = round(pdf.cdf(x2) - 0.5, 3)
+    p = round(f2 - f1, 3)
+    x = np.linspace(mean - var - 2, mean + var + 2, num=50)
+    y_pdf = pdf.pdf(x)
+    y_cdf = pdf.cdf(x)
+    solve = {
+        "gamma": round(gamma, 3), "mean": round(mean, 3), "var": round(var, 3),
+        "p": p, "a": a, "b": "{:+}".format(b), "c": "{:+}".format(c), "f1": f1,
+        "f2": f2, "x": list(x), "pdf": list(y_pdf), "cdf": list(y_cdf),
+        "var_kv": round(np.sqrt(var), 3), "x1": x1, "x2": x2, 'is_valid': True,
     }
     return solve

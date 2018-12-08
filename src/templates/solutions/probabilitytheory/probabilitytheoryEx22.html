@@ -1,0 +1,152 @@
+{% load staticfiles %}
+<script src="{% static 'js/Chart.js' %}"></script>
+{% if solve.is_valid %}
+    <div class="solution-block"><p>Решение: </p>
+        <p class="big-formuls-ftnz">
+            $$\displaystyle f(x)=\gamma\,e^{ {{solve.a}}x^2{{solve.b}}x{{solve.c}} }$$
+            Найдем параметр \(\gamma\) из условия нормировки:<br>
+            \(\int\limits^{\infty}_{-\infty}f(x)\,dx=\gamma\int\limits^{\infty}_{-\infty}
+            e^{ {{solve.a}}x^2{{solve.b}}x{{solve.c}} }\,dx=1\),
+            отсюда \(\gamma\approx{{solve.gamma}}\).<br>
+            Функция плотности распределения примет вид:<br>
+            $$\displaystyle f(x)={{solve.gamma}}\,e^{ {{solve.a}}x^2{{solve.b}}x{{solve.c}} }$$
+        </p>
+        <canvas id="chart-pdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
+                Математическое ожидание определим следующим образом:<br>
+                \(m=M[\xi]=\int\limits^{\infty}_{-\infty}x\,f(x)\,dx=\int\limits^{\infty}_{-\infty}{{solve.gamma}}x\,
+                e^{ {{solve.a}}x^2{{solve.b}}x{{solve.c}} }\,dx\approx{{solve.mean}}\).<br>
+                Дисперсия:<br>
+                \(\sigma^2=D[\xi]=\int\limits^{\infty}_{-\infty}(x-m)^2\,f(x)\,dx=\int\limits^{\infty}_{-\infty}
+                {{solve.gamma}}(x-m)^2\,e^{ {{solve.a}}x^2{{solve.b}}x{{solve.c}} }\,dx\approx{{solve.var}}\);<br>
+                Наша СВ \(\ \xi\sim N({{solve.mean}};\,{{solve.var_kv}})\), тогда функция распределения имеет вид:<br>
+                $$F(x)=\Phi\left(\frac{x-m}{\sigma}\right)=\Phi\left(\frac{x-({{solve.mean}})}{ {{solve.var_kv}} }
+                \right),\ где\ \Phi(x)=\frac{1}{2\pi}\int\limits^x_{-\infty}e^{-\frac{t^2}{2}}\,dt$$<br>
+        </p>
+        <canvas id="chart-cdf" style="position: relative; height:150px; width:300px"></canvas>
+        <p class="big-formuls-ftnz">
+                Вероятность выполнния неравенства \( {{solve.x1}} < \xi < {{solve.x2}} \) найдем по определению:<br>
+                \(P({{solve.x1}} < \xi < {{solve.x2}})=F({{solve.x2}})-F({{solve.x1}})\approx{{solve.p}}\).
+        </p>
+    </div>
+<script>
+var data = {{ solve.pdf }},
+    labels = {{ solve.x }},
+    options = {
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
+        scales: {
+            yAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: 'f(x)',
+                    fontColor: "black",
+                },
+                gridLines: {
+                    display: false,
+                },
+                ticks: {
+                    fontColor: "black",
+                }
+            }],
+            xAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: 'x',
+                    fontColor: "black",
+                },
+                gridLines: {
+                    display: false,
+                },
+                ticks: {
+                    fontColor: "black",
+                    userCallback: function(label) {return label.toFixed(2);},
+                }
+            }]
+        },
+        legend: false,
+        responsive: true,
+        tooltips: {
+            enabled: false
+        },
+    },
+    ctx = document.getElementById('chart-pdf').getContext('2d');
+
+function createConfig(data, labels, opt) {
+    return {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                borderColor: "black",
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+            }]
+        },
+        options: opt
+    };
+};
+new Chart(ctx, createConfig(data, labels, options));
+
+options.scales.yAxes[0].scaleLabel.labelString = 'F(x)';
+options.scales.yAxes[0].ticks.max = 1.01;
+data = {{ solve.cdf }},
+ctx = document.getElementById('chart-cdf').getContext('2d');
+new Chart(ctx, createConfig(data, labels, options));
+</script>
+{% else %}
+   <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+       <div class="solution-block">
+           $$\displaystyle f(x)=\gamma\,e^{ax^2+bx+c}$$
+       </div>
+       <div class="form-group">
+            <div class="col-xs-3">
+                <label for="a" class="control-label big-formuls-ftnz">Введите \(a\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="a" name="a" step="0.01" required>
+            </div>
+       </div>
+       <div class="form-group">
+            <div class="col-xs-3">
+                <label for="b" class="control-label big-formuls-ftnz">Введите \(b\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="b" name="b" step="0.01" required>
+            </div>
+        </div>
+       <div class="form-group">
+            <div class="col-xs-3">
+                <label for="c" class="control-label big-formuls-ftnz">Введите \(c\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="c" name="c" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="x1" class="control-label big-formuls-ftnz">Введите \(x_1\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="x1" name="x1" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="x2" class="control-label big-formuls-ftnz">Введите \(x_2\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="x2" name="x2" step="0.01" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
