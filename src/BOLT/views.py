@@ -4,6 +4,7 @@ import os
 import re
 
 import scipy.stats as ss
+from BOLT.tasks.economics import *
 from BOLT.tasks.numericalanalysis import *
 from BOLT.tasks.analyticgeometry import *
 from BOLT.tasks.complexanalysis import *

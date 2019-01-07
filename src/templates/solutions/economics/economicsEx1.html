@@ -1,0 +1,112 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение:</p>
+        <p class="big-formuls-ftnz">
+            Прибыль: \( П = Д - Р = {{ solve.d }} - {{ solve.r }}  = {{ solve.profit }}\) т.д.е.
+            <br>
+            Активы: \( Акт = Осн.К + Об.К = {{ solve.osn_k }} + {{ solve.ob_k }}  = {{ solve.assets }}\) т.д.е.
+            <br>
+            Собственный капитал: \( СК = Акт - ЗК = Акт - КО =
+                {{ solve.assets }} - {{ solve.k_o }} = {{ solve.sk }} \) т.д.е.
+            <br>
+            <br>
+            Рентабельность активов: \(R_{Акт} = \dfrac{П}{Акт} =
+                \dfrac{ {{ solve.profit }} }{ {{ solve.assets }} } = {{ solve.r_act }} = {{ solve.r_act_per }} \% \)
+            <br>
+            Рентабельность собственного капитала: \(R_{СК} = \dfrac{П}{СК} =
+                \dfrac{ {{ solve.profit }} }{ {{ solve.sk }} } = {{ solve.r_sk }} = {{ solve.r_sk_per }} \% \)
+            <br>
+            Рентабельность продаж: \(R_{Пр} = \dfrac{П}{Д} =
+                \dfrac{ {{ solve.profit }} }{ {{ solve.d }} } = {{ solve.r_pr }} = {{ solve.r_pr_per }} \% \)
+            <br>
+            Коэффициент полной ликвидности: \( КПЛ = \dfrac{Об.К}{КО} =
+                \dfrac{ {{ solve.ob_k }} }{ {{ solve.k_o }} } = {{ solve.kpl }} \)
+            <br>
+            Оборачиваемость основного капитала: \( ООК = \dfrac{Д}{Осн.К} =
+                \dfrac{ {{ solve.d }} }{ {{ solve.osn_k }} } = {{ solve.ook }} \)
+            <br>
+            Рентабельность основного капитала: \(R_{Осн.К} = \dfrac{П}{Осн.К} =
+                \dfrac{ {{ solve.profit }} }{ {{ solve.osn_k }} } = {{ solve.r_osk }} = {{ solve.r_osk_per }} \% \)
+            <br>
+            Стоимость рабочего места: \(СРМ = \dfrac{Осн.К}{Ч} =
+                \dfrac{ {{ solve.osn_k }} }{ {{ solve.ch }} } = {{ solve.srm }} \) т.д.е.
+            <br>
+            Коэффициент оборачиваемости оборотного капитала: \( К_{Об} = \dfrac{Д}{Об.К} =
+                \dfrac{ {{ solve.d }} }{ {{ solve.ob_k }} } = {{ solve.k_ob }} \)
+            <br>
+            Рентабельность оборотного капитала: \(R_{Об.К} = \dfrac{П}{Об.К} =
+                \dfrac{ {{ solve.profit }} }{ {{ solve.ob_k }} } = {{ solve.r_obk }} = {{ solve.r_obk_per }} \% \)
+            <br>
+            Длительность оборота оборотного капитала: \(Т_{Об} = \dfrac{F_{пл}}{К_{Об}} =
+                \dfrac{ {{ solve.f_pl }} }{ {{ solve.k_ob }} } = {{ solve.t_ob }} \) календарных дней.
+            <br>
+            Выручка (выработка) на одного работающего: \(В = \dfrac{Д}{Ч} =
+                \dfrac{ {{ solve.d }} }{ {{ solve.ch }} } = {{ solve.v }} \) т.д.е.
+        </p>
+    </div>
+
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="osn-k" class="big-formuls-ftnz control-label">\(Осн.К:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="osn-k" name="osn-k" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="d" class="big-formuls-ftnz control-label">\(Д:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="d" name="d" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="r" class="big-formuls-ftnz control-label">\(Р:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="r" name="r" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="f-pl" class="big-formuls-ftnz control-label">\(F_{пл}:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="f-pl" name="f-pl" value="365" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="ob-k" class="big-formuls-ftnz control-label">\(Об.К:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="ob-k" name="ob-k" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="ch" class="big-formuls-ftnz control-label">\(Ч:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="number" id="ch" name="ch" value="1000" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="k-o" class="big-formuls-ftnz control-label">\(КО:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="k-o" name="k-o" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}
