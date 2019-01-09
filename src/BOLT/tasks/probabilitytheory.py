@@ -3,8 +3,9 @@ from django.shortcuts import render
 from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
-from scipy.stats import norm, uniform
+from scipy.stats import norm, uniform, binom, poisson
 import numpy as np
+from sympy import *
 import re
 
 
@@ -392,22 +393,22 @@ def probabilitytheoryEx10(request):
     for i in range(1, k):
         P_A1 += p ** (2 * i - 1)
 
-    """вероятность того, что А выиграет не позднее k броска равна сумме 
+    """вероятность того, что А выиграет не позднее k броска равна сумме
     вероятности того, что А выиграет до k броска и что А выиграет на k броске"""
     P_A2 = P_A1 + p ** (2 * k - 1)
 
-    """вероятность того, что B выиграет до k броска равна сумме 
+    """вероятность того, что B выиграет до k броска равна сумме
     вероятности того, что B выиграет до k броска"""
     P_B1 = 0
     for i in range(1, k):
         P_B1 += p ** (2 * i)
 
-    """вероятность того, что B выиграет не позднее k броска равна сумме 
+    """вероятность того, что B выиграет не позднее k броска равна сумме
     вероятности того, что B выиграет до k броска и что B выиграет на k броске"""
     P_B2 = P_B1 + p ** (2 * k)
 
-    """Чтобы найти вероятность выигрыша игрока А при сколь угодно долгой игре, 
-    нужно положить k → ∞. По формуле суммы бесконечно убывающей геометрической 
+    """Чтобы найти вероятность выигрыша игрока А при сколь угодно долгой игре,
+    нужно положить k → ∞. По формуле суммы бесконечно убывающей геометрической
     прогрессии получаем:"""
     P_A3 = 1 / 2 * 1 / (1 - 1 / 4)
     """и для игрока B:"""
@@ -441,7 +442,7 @@ def probabilitytheoryEx11(request):
     """только одна последовательность соответствует извлечению в порядке 1, 2, ...,"""
     P_A = 1 / N
 
-    """число различных последовательностей извлечения шаров, имеющих хотя бы одну неподвижную 
+    """число различных последовательностей извлечения шаров, имеющих хотя бы одну неподвижную
     точку (то есть имеющих хотя бы одно совпадение номера шара и номера извлечения)."""
     M_B = sum([
         (-1) ** (i + 1) * combinations(m, i) * permutations(m - i)
@@ -868,3 +869,79 @@ def probabilitytheoryEx22(request):
         "var_kv": round(np.sqrt(var), 3), "x1": x1, "x2": x2, 'is_valid': True,
     }
     return solve
+
+
+@task_decorate
+def probabilitytheoryEx23(request):
+    n = request.GET.get('n')
+    p = request.GET.get('p')
+    a = request.GET.get('a')
+    type = request.GET.get('type')
+
+    if not type:
+        return {'is_valid': False}
+
+    def binomial_distribution(*args):
+        try:
+            n, p = int(args[0]), float(args[1])
+        except (ValueError, TypeError):
+            return {'is_valid': False}
+        if n<=0 or not 0 < p < 1:
+            return {'is_valid': False}
+        t = Symbol('t')
+        mean, var = binom.stats(n, p)
+        cf = (1 - p + p*exp(I*t))**n
+        d_cf = diff(cf, t)
+        dd_cf = diff(d_cf, t)
+        mean2 = round(float(lambdify(t, -dd_cf)(0)), 2)
+        return {
+            'n': n, 'p': p, 'q': round(1-p, 2), 'mean': round(float(mean), 2), 'mean2': mean2,
+            'var': round(float(var), 2), 'g': latex(cf), 'g1': latex(d_cf), 'g2': latex(dd_cf),
+            'type': type, 'is_valid': True,
+            }
+
+    def pascal_distribution(*args):
+        try:
+            a = float(args[2])
+        except (ValueError, TypeError):
+            return {'is_valid': False}
+        if not 0 < a < 1:
+            return {'is_valid': False}
+        t = Symbol('t')
+        mean, var, mean2 = a, round(a*(a+1), 2), round(a*(2*a+1), 2)
+        cf = 1 / (1 + a*(1-exp(I*t)))
+        d_cf = diff(cf, t)
+        dd_cf = diff(d_cf, t)
+        return {
+            'a': a, 'plus_a': 1+a, 'mean': mean, 'mean2': mean2, 'var': var, 'g': latex(cf),
+            'g1': latex(d_cf), 'g2': latex(dd_cf), 'type': type, 'is_valid': True,
+        }
+
+    def poisson_distribution(*args):
+        try:
+            a = float(args[2])
+        except (ValueError, TypeError):
+            return {'is_valid': False}
+        if not 0 < a < 1:
+            return {'is_valid': False}
+        t = Symbol('t')
+        mean, var = poisson.stats(a)
+        cf = exp(a * (exp(I*t)-1))
+        d_cf = diff(cf, t)
+        dd_cf = diff(d_cf, t)
+        mean2 = round(float(lambdify(t, -dd_cf)(0)), 2)
+        return {
+            'a': a, 'mean': mean, 'mean2': mean2, 'var': var,
+            'g': latex(nsimplify(cf, tolerance=0.1)),
+            'g1': latex(nsimplify(d_cf, tolerance=0.1)),
+            'g2': latex(nsimplify(dd_cf, tolerance=0.1)),
+            'type': type, 'is_valid': True,
+        }
+
+    distributions = {
+        '1': binomial_distribution,
+        '2': pascal_distribution,
+        '3': poisson_distribution,
+    }
+
+    return distributions[type](n, p, a)

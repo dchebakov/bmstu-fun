@@ -1,0 +1,165 @@
+{% if solve.is_valid %}
+    <div class="solution-block"><p>Решение: </p>
+      {% if solve.type == '1' %}
+        <p class="big-formuls-ftnz">
+          Имеется Биномиальный закон распределения:<br>
+          $$P\left(\xi=k\right)=C_{ {{solve.n}} }^{k}({{solve.p}})^{k}\left(
+          {{solve.q}}\right)^{ {{solve.n}}-k}.$$
+          Проверим условие нормировки:<br>
+          \(\displaystyle\sum\limits_{k=0}^{ {{solve.n}} }C_{ {{solve.n}} }^{k}({{solve.p}})^{k}\left(
+          {{solve.q}}\right)^{ {{solve.n}}-k}=({{solve.p}}+{{solve.q}})^n=1\) &ndash; Бином Ньютона.<br><br>
+          Математическое ожидание определим следующим образом:<br>
+          \(\displaystyle\sum\limits_{k=0}^{ {{solve.n}} }kC_{ {{solve.n}} }^{k}({{solve.p}})^{k}\left(
+          {{solve.q}}\right)^{ {{solve.n}}-k}={{solve.mean}}\).<br><br>
+          Для определения дисперсии, найдем начальный момент 2-ого порядка:<br>
+          \(\displaystyle\sum\limits_{k=0}^{ {{solve.n}} }k^2C_{ {{solve.n}} }^{k}({{solve.p}})^{k}\left(
+          {{solve.q}}\right)^{ {{solve.n}}-k}={{solve.mean2}}\) и воспользуемся формулой:
+          \(\displaystyle D[k]=M[k^2]-(M[k])^2={{solve.var}}\).<br><br>
+          Найдем характеристическую функцию:<br>
+          \(\displaystyle g(t)=M[e^{ikt}]=\sum\limits_{k=0}^{ {{solve.n}} }e^{ikt}C_{ {{solve.n}} }^{k}({{solve.p}})^{k}\left(
+          {{solve.q}}\right)^{ {{solve.n}}-k}={{solve.g}}\).<br><br>
+          Проверка:<br>
+          \(\displaystyle g(0)=1\) &ndash; по условию нормировки;<br>
+          \(\displaystyle g'(t)={{solve.g1}}\), &nbsp; тогда \(\ \ (-i)\cdot g'(0)={{solve.mean}}=M[k]\);<br>
+          \(\displaystyle g''(t)={{solve.g2}}\), &nbsp; тогда \(\ \ -g''(0)+(g'(0))^2={{solve.var}}=D[k]\).
+        </p>
+      {% elif solve.type == '2' %}
+        <p class="big-formuls-ftnz">
+          Имеется закон распределения Паскаля:<br>
+          $$P\left(\xi=k\right)=\frac{({{ solve.a }})^{k}}{\left(
+          {{ solve.plus_a }}\right)^{k+1}}.$$
+          Проверим условие нормировки:<br>
+          \(\displaystyle\sum\limits_{k=0}^{\infty}\frac{({{solve.a}})^k}
+          {({{solve.plus_a}})^{k+1}}=\frac{1}{ {{solve.plus_a}} }\sum
+          \limits_{k=0}^{\infty}\left(\frac{ {{solve.a}} }
+          { {{solve.plus_a}} }\right)^k=1\), так как \(\displaystyle\frac{ {{solve.a}} }
+          { {{solve.plus_a}} } &lt; 1\), следовательно, имеем бесконечно
+          убывающую геометрическую прогрессию.<br><br>
+          Математическое ожидание определим следующим образом:<br>
+          \(\displaystyle M[k]=\sum\limits_{k=0}^{\infty}\frac{k({{solve.a}})^k}
+          {({{solve.plus_a}})^{k+1}}={{solve.mean}}\).<br><br>
+          Для определения дисперсии, найдем начальный момент 2-ого порядка:<br>
+          \(\displaystyle M[k^2]=\sum\limits_{k=0}^{\infty}\frac{k^2({{solve.a}})^k}
+          {({{solve.plus_a}})^{k+1}}={{solve.mean2}}\) и воспользуемся формулой:
+          \(\displaystyle D[k]=M[k^2]-(M[k])^2={{solve.var}}\).<br><br>
+          Найдем характеристическую функцию:<br>
+          \(\displaystyle g(t)=M[e^{ikt}]=\frac{1}{ {{solve.plus_a}} }\sum
+          \limits_{k=0}^{\infty}\left(\frac{e^{it}\cdot{{solve.a}} }
+          { {{solve.plus_a}} }\right)^k={{solve.g}}\), так как \(\displaystyle
+          \left|\frac{e^{it}\cdot{{solve.a}} }{ {{solve.plus_a}} }\right| &lt; 1\), следовательно,
+          имеем бесконечно убывающую геометрическую прогрессию.<br><br>
+          Проверка:<br>
+          \(\displaystyle g(0)=1\) &ndash; по условию нормировки;<br>
+          \(\displaystyle g'(t)={{solve.g1}}\), &nbsp; тогда \(\ \ (-i)\cdot g'(0)={{solve.mean}}=M[k]\);<br>
+          \(\displaystyle g''(t)={{solve.g2}}\), &nbsp; тогда \(\ \ -g''(0)+(g'(0))^2={{solve.var}}=D[k]\).
+        </p>
+      {% else %}
+        <p class="big-formuls-ftnz">
+          Имеется закон распределения Пуассона:<br>
+          $$P\left(\xi=k\right)=\frac{ {{solve.a}}^{k}}{k!}e^{-{{solve.a}} }.$$
+          Проверим условие нормировки:<br>
+          \(\displaystyle\sum\limits_{k=0}^{\infty}\frac{ {{solve.a}}^{k}}{k!}
+          e^{-{{solve.a}} }=e^{ {{solve.a}} }e^{ -{{solve.a}} }=1\).<br><br>
+          Математическое ожидание определим следующим образом:<br>
+          \(\displaystyle M[k]=\sum\limits_{k=0}^{\infty}k\frac{ {{solve.a}}^{k}}{k!}
+          e^{-{{solve.a}} }={{solve.a}}e^{ {{solve.a}} }e^{ -{{solve.a}} }={{solve.mean}}\).<br><br>
+          Для определения дисперсии, найдем начальный момент 2-ого порядка:<br>
+          \(\displaystyle M[k^2]=\sum\limits_{k=0}^{\infty}k^2\frac{ {{solve.a}}^{k}}{k!}
+          e^{-{{solve.a}} }={{solve.mean2}}\) и воспользуемся формулой:
+          \(\displaystyle D[k]=M[k^2]-(M[k])^2={{solve.var}}\).<br><br>
+          Найдем характеристическую функцию:<br>
+          \(\displaystyle g(t)=M[e^{ikt}]=\sum\limits_{k=0}^{\infty}e^{ikt}
+          \frac{ {{solve.a}}^{k}}{k!}e^{-{{solve.a}} }\approx{{solve.g}}\).<br><br>
+          Проверка:<br>
+          \(\displaystyle g(0)=1\) &ndash; по условию нормировки;<br>
+          \(\displaystyle g'(t)\approx{{solve.g1}}\), &nbsp; тогда \(\ \ (-i)\cdot g'(0)={{solve.mean}}=M[k]\);<br>
+          \(\displaystyle g''(t)\approx{{solve.g2}}\), &nbsp; тогда \(\ \ -g''(0)+(g'(0))^2={{solve.var}}=D[k]\).
+        </p>
+      {% endif %}
+    </div>
+{% else %}
+   <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+     <div class="form-group">
+          <div class="col-sm-5">
+              <label for="type" class="type">Выберите закон распределения:</label>
+          </div>
+          <div class="col-sm-6">
+              <select name="type" id="type" class="form-control">
+                  <option value=1>Биномиальный закон</option>
+                  <option value=2>Закон Паскаля</option>
+                  <option value=3>Закон Пуассона</option>
+              </select>
+          </div>
+      </div>
+      <div class="solution-block" id="binom" style="display: block">
+          $$\large P\left(\xi=k\right)=C_{n}^{k}p^{k}\left(1-p\right)^{n-k}$$
+      </div>
+      <div class="solution-block" id="pascal" style="display: none">
+          $$\large P\left(\xi=k\right)=\frac{a^{k}}{\left(1+a\right)^{k+1}}$$
+      </div>
+      <div class="solution-block" id="puasson" style="display: none">
+          $$\large P\left(\xi=k\right)=\frac{a^{k}}{k!}e^{-a}$$
+      </div>
+      <div class="form-group" id="div_n" style="display: block">
+          <div class="col-xs-3">
+              <label for="a" class="control-label big-formuls-ftnz">Введите \(n\)</label>
+          </div>
+          <div class="col-xs-9">
+              <input class="form-control" type="number" id="n" name="n">
+          </div>
+      </div>
+      <div class="form-group" id="div_p" style="display: block">
+          <div class="col-xs-3">
+              <label for="a" class="control-label big-formuls-ftnz">Введите \(p\)</label>
+          </div>
+          <div class="col-xs-9">
+              <input class="form-control" type="number" id="p" name="p" step="0.01">
+          </div>
+      </div>
+      <div class="form-group" id="div_a" style="display: none">
+          <div class="col-xs-3">
+              <label for="a" class="control-label big-formuls-ftnz">Введите \(a\)</label>
+          </div>
+          <div class="col-xs-9">
+              <input class="form-control" type="number" id="a" name="a" step="0.01">
+          </div>
+      </div>
+      <div class="form-group" id="div_b" style="display: block">
+          <div class="col-xs-12 ">
+              <button class="btn btn-success" type="submit">Получить решение!</button>
+          </div>
+      </div>
+    </form>
+    <script type="text/javascript">
+      document.getElementById("type").addEventListener("change", function () {
+        showElem(this.options[this.selectedIndex].value);
+      });
+      function showElem(val) {
+        if (val == 1) {
+          document.getElementById('div_n').style.display = 'block';
+          document.getElementById('div_p').style.display = 'block';
+          document.getElementById('div_a').style.display = 'none';
+          document.getElementById('div_b').style.display = 'block';
+          document.getElementById('binom').style.display = 'block';
+          document.getElementById('pascal').style.display = 'none';
+          document.getElementById('puasson').style.display = 'none';
+        } else if (val == 2) {
+          document.getElementById('div_n').style.display = 'none';
+          document.getElementById('div_p').style.display = 'none';
+          document.getElementById('div_a').style.display = 'block';
+          document.getElementById('div_b').style.display = 'block';
+          document.getElementById('binom').style.display = 'none';
+          document.getElementById('pascal').style.display = 'block';
+          document.getElementById('puasson').style.display = 'none';
+        } else {
+          document.getElementById('div_n').style.display = 'none';
+          document.getElementById('div_p').style.display = 'none';
+          document.getElementById('div_a').style.display = 'block';
+          document.getElementById('div_b').style.display = 'block';
+          document.getElementById('binom').style.display = 'none';
+          document.getElementById('pascal').style.display = 'none';
+          document.getElementById('puasson').style.display = 'block';
+        }
+      }
+    </script>
+{% endif %}
