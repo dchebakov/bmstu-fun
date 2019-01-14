@@ -1,0 +1,154 @@
+{% if solve.is_valid %}
+    <div class="solution-block">
+        <p>Решение:</p>
+        <p class="big-formuls-ftnz">
+            Процентная ставка для рассчета инвестиционного проекта: \(i_n = (14 + n) \% =
+            (14 + {{ solve.n }} ) \% = {{ solve.i_n_per }} \% \)
+            <br>
+            Первоначальная стоимость основного капитала: \( C_н = k \cdot n =
+            {{ solve.k }} \cdot {{ solve.n }} = {{ solve.c_n_mln }} \) млн.д.е. \( = {{ solve.c_n }} \) т.д.е.
+            <br>
+            Себестоимость единственного вида выпускаемой продукции: \( S = 2 \cdot n = 2 \cdot {{ solve.n }} =
+            {{ solve.S }} \) т.д.е./шт.
+            <br>
+            Начальные затраты: \( S_н = n = {{ solve.n }} \) т.д.е./шт.
+            <br>
+            Норма текущего запаса: \( t_т = n = {{ solve.n }} \) дней
+            <br>
+            Норма запаса на подготовку материала: \(t_{техн} = \dfrac{t_т}{2} = \dfrac{ {{ solve.n }} }{2} =
+            {{ solve.t_tekhn }} \) дней
+            <br>
+            Производственный цикл: \( Т_{пр.ц.} ^ {к.д.} = 4 \cdot n = {{ solve.T_kd_prts }} \) дней
+            <br>
+            Период реализации готовой продукции: \(Т_{реал.} = 5 \cdot n = {{ solve.T_real }} \) дней
+            <br><br>
+            \( К_{н.з.} = \dfrac{S_н + S}{2S} = \dfrac{ {{ solve.n }} + {{ solve.S }} }{2 \cdot {{ solve.n }} } =
+            {{ solve.K_nz }} \)
+            <br>
+            \( Ф_{н.п.} = \dfrac{S \cdot N}{F_{пл}} \cdot К_{н.з.} \cdot Т_{пр.ц.} ^ {к.д.} =
+            \dfrac{ {{ solve.S }} \cdot {{ solve.N }} }{ {{ solve.f_pl }} } \cdot {{ solve.K_nz }} \cdot
+            {{ solve.T_kd_prts }} = {{ solve.F_np }} \) т.д.е.
+            <br>
+            \( Ф_з = \dfrac{S_н \cdot N}{F_{пл}} \cdot (t_т + t_{техн} + t_с) =
+            \dfrac{ {{ solve.n }} \cdot {{ solve.N }} }{ {{ solve.f_pl }} } \cdot
+            ( {{ solve.n }} + {{ solve.t_tekhn }} + 0 ) = {{ solve.F_z }} \) т.д.е.
+            <br>
+            \( Ф_{г.п.} = \dfrac{S \cdot N}{F_{пл}} \cdot Т_{реал.} =
+            \dfrac{ {{ solve.S }} \cdot {{ solve.N }} }{ {{ solve.f_pl }} } \cdot {{ solve.T_real }} =
+            {{ solve.F_pp }} \) т.д.е.
+            <br>
+            Оборотный капитал: \(Об.К. = Ф_{н.п.} + Ф_з + Ф_{г.п.} =
+            {{ solve.F_np }} + {{ solve.F_z }} + {{ solve.F_pp }} = {{ solve.ob_k }} \) т.д.е.
+            <br><br>
+            Амортизация: \(A_k = A_{k-1} + C_{k-1} \cdot A, \\ C_k = C_н - A_k\)
+            <br>
+        </p>
+        <details class="details-group">
+            <summary>Рассчеты:</summary>
+            <p class="big-formuls-ftnz">
+                \( A_0 = 0 \\ C_0 = С_н \)
+                <br><br>
+                \( A_1 = A_0 + C_0 \cdot A = C_н \cdot A = {{ solve.c_n }} \cdot 0.1 = {{ solve.A.1 }} \) т.д.е.
+                <br>
+                \( C_1 = C_н - А_1 = {{ solve.c_n }} - {{ solve.A.1 }} = {{ solve.C.1 }} \) т.д.е.
+                <br><br>
+                \( A_2 = A_1 + C_1 \cdot A = {{ solve.A.1 }} + {{ solve.C.1 }} \cdot 0.1 = {{ solve.A.2 }} \) т.д.е.
+                <br>
+                \( C_2 = C_н - А_2 = {{ solve.c_n }} - {{ solve.A.2 }} = {{ solve.C.2 }} \) т.д.е.
+                <br><br>
+                \( A_3 = A_2 + C_2 \cdot A = {{ solve.A.2 }} + {{ solve.C.2 }} \cdot 0.1 = {{ solve.A.3 }} \) т.д.е.
+                <br>
+                \( C_3 = C_н - А_3 = {{ solve.c_n }} - {{ solve.A.3 }} = {{ solve.C.3 }} \) т.д.е.
+                <br><br>
+                \( A_4 = A_3 + C_3 \cdot A = {{ solve.A.3 }} + {{ solve.C.3 }} \cdot 0.1 = {{ solve.A.4 }} \) т.д.е.
+                <br>
+                \( C_4 = C_н - А_4 = {{ solve.c_n }} - {{ solve.A.4 }} = {{ solve.C.4 }} \) т.д.е.
+                <br><br>
+                \( A_5 = A_4 + C_4 \cdot A = {{ solve.A.4 }} + {{ solve.C.4 }} \cdot 0.1 = {{ solve.A.5 }} \) т.д.е.
+                <br>
+                \( C_5 = C_н - А_5 = {{ solve.c_n }} - {{ solve.A.5 }} = {{ solve.C.5 }} \) т.д.е.
+                <br><br>
+                \( A_6 = A_5 + C_5 \cdot A = {{ solve.A.5 }} + {{ solve.C.5 }} \cdot 0.1 = {{ solve.A.6 }} \) т.д.е.
+                <br>
+                \( C_6 = C_н - А_6 = {{ solve.c_n }} - {{ solve.A.6 }} = {{ solve.C.6 }} \) т.д.е.
+            </p>
+        </details>
+        <p class="big-formuls-ftnz">
+            <br>
+            \( ПП_k = П_k + A_k - A_{k-1} = i \cdot Акт + A_k - A_{k-1} = i \cdot (Об.К. + С_k) + (A_k - A_{k-1}) \)
+            <br>
+        </p>
+        <details class="details-group">
+            <summary>Рассчеты:</summary>
+            <p class="big-formuls-ftnz" id="pp">
+                \( ПП_1 = i \cdot (Об.К. + С_1) + (A_1 - A_0) = \) \( 0.14 \cdot ( {{ solve.ob_k }} + {{ solve.C.1 }} )
+                + ( {{ solve.A.1 }} - {{ solve.A.0 }} ) = {{ solve.PP.0 }} \) т.д.е.
+                <br><br>
+                \( ПП_2 = i \cdot (Об.К. + С_2) + (A_2 - A_1) = \) \( 0.14 \cdot ( {{ solve.ob_k }} + {{ solve.C.2 }} )
+                + ( {{ solve.A.2 }} - {{ solve.A.1 }} ) = {{ solve.PP.1 }} \) т.д.е.
+                <br><br>
+                \( ПП_3 = i \cdot (Об.К. + С_3) + (A_3 - A_2) = \) \( 0.14 \cdot ( {{ solve.ob_k }} + {{ solve.C.3 }} )
+                + ( {{ solve.A.3 }} - {{ solve.A.2 }} ) = {{ solve.PP.2 }} \) т.д.е.
+                <br><br>
+                \( ПП_4 = i \cdot (Об.К. + С_4) + (A_4 - A_3) = \) \( 0.14 \cdot ( {{ solve.ob_k }} + {{ solve.C.4 }} )
+                + ( {{ solve.A.4 }} - {{ solve.A.3 }} ) = {{ solve.PP.3 }} \) т.д.е.
+                <br><br>
+                \( ПП_5 = i \cdot (Об.К. + С_5) + (A_5 - A_4) = \) \( 0.14 \cdot ( {{ solve.ob_k }} + {{ solve.C.5 }} )
+                + ( {{ solve.A.5 }} - {{ solve.A.4 }} ) = {{ solve.PP.4 }} \) т.д.е.
+                <br><br>
+                \( ПП_6 = i \cdot (Об.К. + С_6) + (A_6 - A_5) = \) \( 0.14 \cdot ( {{ solve.ob_k }} + {{ solve.C.6 }} )
+                + ( {{ solve.A.6 }} - {{ solve.A.5 }} ) = {{ solve.PP.5 }} \) т.д.е.
+            </p>
+        </details>
+        <p class="big-formuls-ftnz">
+            <br>
+            \( C = \min(ПП_k) = ПП_6 = {{ solve.PP.5 }} \) т.д.е.
+            <br>
+            \( A_0 = \dfrac{C \cdot ([1 + i_n]^t-1)}{i_n \cdot (1 + i_n)^t} =
+            \dfrac{ {{ solve.PP.5 }} \cdot ([1 + {{ solve.i_n }} ]^3 -1)}{ {{ solve.i_n }} \cdot (1 + {{ solve.i_n }}
+            )^3}
+            = {{ solve.A_0 }} \) т.д.е.
+        </p>
+    </div>
+
+{% else %}
+    <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="n" class="big-formuls-ftnz control-label">\(n:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="n" name="n" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="k" class="big-formuls-ftnz control-label">\(k:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="k" name="k" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="f-pl" class="big-formuls-ftnz control-label">\(F_{пл}:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="f-pl" name="f-pl" value="365" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">
+                <label for="N" class="big-formuls-ftnz control-label">\(N:\)</label>
+            </div>
+            <div class="col-xs-9">
+                <input class="form-control" type="text" id="N" name="N" value="1000" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 ">
+                <button class="btn btn-success" type="submit">Получить решение!</button>
+            </div>
+        </div>
+    </form>
+{% endif %}

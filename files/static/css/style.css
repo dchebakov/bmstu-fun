@@ -231,3 +231,11 @@ footer {
     border-bottom: 2px solid #eee;
     padding-bottom: 1%;
 }
+
+.details-group {
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 1.04%;
+    cursor: pointer;
+    text-align: left
+}
