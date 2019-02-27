@@ -1,0 +1,170 @@
+{% if solve.is_valid %}
+    <div class="solution-block"><p>Решение: </p>
+      {% if solve.type == '1' %}
+        <p class="big-formuls-ftnz">
+          Имеется Равномерный закон распределения:<br>
+            $$f(x)=\left\{
+                \begin{array}{ccc}
+                {\large\frac{1}{ {{solve.b_minus_a}} }}, & x \in [{{solve.a}}; {{solve.b}}]; \\
+                0, & x \notin [{{solve.a}}; {{solve.b}}]. \\
+                \end{array}
+                \right.$$
+          Проверим условие нормировки:<br>
+          \(\displaystyle\int\limits_{-\infty}^{ \infty }f(x)\,dx=\frac{1}{ {{solve.b_minus_a}} }\int
+          \limits_{ {{solve.a}} }^{ {{solve.b}} }\,dx=1\).<br><br>
+          Математическое ожидание определим следующим образом:<br>
+          \(\displaystyle M[x]=\int\limits_{-\infty}^{ \infty }xf(x)\,dx=\frac{1}{ {{solve.b_minus_a}} }\int
+          \limits_{ {{solve.a}} }^{ {{solve.b}} }x\,dx={{solve.mean}}\).<br><br>
+          Для определения дисперсии, найдем начальный момент 2-ого порядка:<br>
+          \(\displaystyle M[x^2]=\frac{1}{ {{solve.b_minus_a}} }\int
+          \limits_{ {{solve.a}} }^{ {{solve.b}} }x^2\,dx={{solve.mean2}}\) и воспользуемся формулой:
+          \(\displaystyle D[x]=M[x^2]-(M[x])^2={{solve.var}}\).<br><br>
+          Найдем характеристическую функцию:<br>
+          \(\displaystyle g(t)=M[e^{ixt}]=\frac{1}{ {{solve.b_minus_a}} }\int\limits_{ {{solve.a}} }^{ {{solve.b}} }
+          e^{ixt}\,dx = {{solve.g}}\).<br><br>
+          Проверка:<br>
+          \(\displaystyle g(0)=1\) &ndash; по условию нормировки;<br>
+          \(\displaystyle g'(t)={{solve.g1}}\), &nbsp; тогда \(\ \ (-i)\cdot g'(0)={{solve.mean}}=M[x]\);<br>
+          \(\displaystyle g''(t)={{solve.g2}}\), <br>тогда \(\ \ -g''(0)+(g'(0))^2={{solve.var}}=D[x]\).
+        </p>
+      {% elif solve.type == '2' %}
+        <p class="big-formuls-ftnz">
+          Имеется закон Гамма-распределения:<br>
+          $$f(x)=\left\{
+                \begin{array}{ccc}
+                {\large\frac{ {{solve.a}}^{ {{solve.b}} }x^{ {{solve.b_minus}} }}
+                {\Gamma({{solve.b}})}e^{-{{solve.a}}x}}, & x &gt; 0; \\
+                0, & x \leq 0. \\
+                \end{array}
+                \right.$$
+          Проверим условие нормировки:<br>
+          \(\displaystyle\int\limits_{-\infty}^{ \infty }f(x)\,dx=
+            \frac{ {{solve.a}}^{ {{solve.b}} } }{\Gamma( {{solve.b}} ) }\int
+          \limits_{ {{solve.a}} }^{ {{solve.b}} }x^{ {{solve.b_minus}} }e^{-{{solve.a}}x}\,dx=1\).<br><br>
+          Математическое ожидание определим следующим образом:<br>
+          \(\displaystyle\int\limits_{-\infty}^{ \infty }xf(x)\,dx=
+            \frac{ {{solve.a}}^{ {{solve.b}} } }{\Gamma( {{solve.b}} ) }\int
+          \limits_{ {{solve.a}} }^{ {{solve.b}} }x^{ {{solve.b}} }e^{-{{solve.a}}x}\,dx={{solve.mean}}\).<br><br>
+          Для определения дисперсии, найдем начальный момент 2-ого порядка:<br>
+          \(\displaystyle\int\limits_{-\infty}^{ \infty }x^2f(x)\,dx=
+            \frac{ {{solve.a}}^{ {{solve.b}} } }{\Gamma( {{solve.b}} ) }\int
+          \limits_{ {{solve.a}} }^{ {{solve.b}} }x^{ {{solve.b_plus}} }e^{-{{solve.a}}x}\,dx={{solve.mean2}}\)
+            и воспользуемся формулой:
+          \(\displaystyle D[x]=M[x^2]-(M[x])^2={{solve.var}}\).<br><br>
+          Найдем характеристическую функцию:<br>
+          \(\displaystyle g(t)=M[e^{ixt}]={{solve.g}}\).<br><br>
+          Проверка:<br>
+          \(\displaystyle g(0)=1\) &ndash; по условию нормировки;<br>
+          \(\displaystyle g'(t)={{solve.g1}}\), &nbsp; тогда \(\ \ (-i)\cdot g'(0)={{solve.mean}}=M[x]\);<br>
+          \(\displaystyle g''(t)={{solve.g2}}\), &nbsp; тогда \(\ \ -g''(0)+(g'(0))^2={{solve.var}}=D[x]\).
+        </p>
+      {% else %}
+        <p class="big-formuls-ftnz">
+          Имеется нормальный закон распределения:<br>
+          $$\displaystyle f\left(x\right)=\frac{1}{ {{solve.b}}\sqrt{2\pi}}e^{-\frac{(x
+          {% if solve.a > 0 %}-{{solve.a}}{% elif solve.a == 0 %}{% else %}-({{solve.a}}){% endif %})^2}{2\cdot
+          {{solve.b}}^2}}$$
+          Проверим условие нормировки:<br>
+           \(\displaystyle\int\limits_{-\infty}^{ \infty }f(x)\,dx=
+            \frac{1}{ {{solve.b}}\sqrt{2\pi}}\int
+          \limits_{ -\infty }^{ \infty }e^{-\frac{(x
+          {% if solve.a > 0 %}-{{solve.a}}{% elif solve.a == 0 %}{% else %}-({{solve.a}}){% endif %})^2}{2\cdot
+          {{solve.b}}^2}}\,dx=1\).<br><br>
+          Математическое ожидание определим следующим образом:<br>
+          \(\displaystyle\int\limits_{-\infty}^{ \infty }x\,f(x)\,dx=
+            \frac{1}{ {{solve.b}}\sqrt{2\pi}}\int
+          \limits_{ -\infty }^{ \infty }x\,e^{-\frac{(x
+          {% if solve.a > 0 %}-{{solve.a}}{% elif solve.a == 0 %}{% else %}-({{solve.a}}){% endif %})^2}{2\cdot
+          {{solve.b}}^2}}\,dx={{solve.mean}}\).<br><br>
+          Для определения дисперсии, найдем начальный момент 2-ого порядка:<br>
+          \(\displaystyle M[x^2]=\displaystyle\int\limits_{-\infty}^{ \infty }x^2\,f(x)\,dx=
+            \frac{1}{ {{solve.b}}\sqrt{2\pi}}\int
+          \limits_{ -\infty }^{ \infty }x^2\,e^{-\frac{(x
+          {% if solve.a > 0 %}-{{solve.a}}{% elif solve.a == 0 %}{% else %}-({{solve.a}}){% endif %})^2}{2\cdot
+          {{solve.b}}^2}}\,dx={{solve.mean2}}\) и воспользуемся формулой:
+          \(\displaystyle D[x]=M[x^2]-(M[x])^2={{solve.var}}\).<br><br>
+          Найдем характеристическую функцию:<br>
+          \(\displaystyle g(t)=M[e^{ixt}]={{solve.g}}\).<br><br>
+          Проверка:<br>
+          \(\displaystyle g(0)=1\) &ndash; по условию нормировки;<br>
+          \(\displaystyle g'(t)={{solve.g1}}\), &nbsp; тогда \(\ \ (-i)\cdot g'(0)={{solve.mean}}=M[x]\);<br>
+          \(\displaystyle g''(t)={{solve.g2}}\), &nbsp; тогда \(\ \ -g''(0)+(g'(0))^2={{solve.var}}=D[x]\).
+        </p>
+      {% endif %}
+    </div>
+{% else %}
+   <form class="form-horizontal" action="{{ task.get_absolute_url }}" method="get">
+     <div class="form-group">
+          <div class="col-sm-5">
+              <label for="type" class="type">Выберите закон распределения:</label>
+          </div>
+          <div class="col-sm-6">
+              <select name="type" id="type" class="form-control">
+                  <option value=1>Равномерный закон</option>
+                  <option value=2>Гамма-распределение</option>
+                  <option value=3>Нормальный закон</option>
+              </select>
+          </div>
+      </div>
+      <div class="solution-block" id="uniform" style="display: block">
+          $$f(x)=\left\{
+                \begin{array}{ccc}
+                {\large\frac{1}{b-a}}, & x \in [a; b]; \\
+                0, & x \notin [a;b]. \\
+                \end{array}
+                \right.$$
+      </div>
+      <div class="solution-block" id="gamma" style="display: none">
+          $$f(x)=\left\{
+                \begin{array}{ccc}
+                {\large\frac{a^bx^{b-1}}{\Gamma(b)}e^{-ax}}, & x &gt; 0; \\
+                0, & x \leq 0. \\
+                \end{array}
+                \right.\ \ (a&gt;0,b&gt;0)$$
+      </div>
+      <div class="solution-block" id="norm" style="display: none">
+          $$\displaystyle f\left(x\right)=\frac{1}{b\sqrt{2\pi}}e^{-\frac{(x-a)^2}{2b^2}}$$
+      </div>
+      <div class="form-group" id="div_a" style="display: block">
+          <div class="col-xs-3">
+              <label for="a" class="control-label big-formuls-ftnz">Введите \(a\)</label>
+          </div>
+          <div class="col-xs-9">
+              <input class="form-control" type="number" id="a" name="a" step="0.01">
+          </div>
+      </div>
+      <div class="form-group" id="div_b" style="display: block">
+          <div class="col-xs-3">
+              <label for="b" class="control-label big-formuls-ftnz">Введите \(b\)</label>
+          </div>
+          <div class="col-xs-9">
+              <input class="form-control" type="number" id="b" name="b" step="0.01">
+          </div>
+      </div>
+      <div class="form-group" id="div_button" style="display: block">
+          <div class="col-xs-12 ">
+              <button class="btn btn-success" type="submit">Получить решение!</button>
+          </div>
+      </div>
+    </form>
+    <script type="text/javascript">
+      document.getElementById("type").addEventListener("change", function () {
+        showElem(this.options[this.selectedIndex].value);
+      });
+      function showElem(val) {
+        if (val == 1) {
+          document.getElementById('uniform').style.display = 'block';
+          document.getElementById('gamma').style.display = 'none';
+          document.getElementById('norm').style.display = 'none';
+        } else if (val == 2) {
+          document.getElementById('uniform').style.display = 'none';
+          document.getElementById('gamma').style.display = 'block';
+          document.getElementById('norm').style.display = 'none';
+        } else {
+          document.getElementById('uniform').style.display = 'none';
+          document.getElementById('gamma').style.display = 'none';
+          document.getElementById('norm').style.display = 'block';
+        }
+      }
+    </script>
+{% endif %}

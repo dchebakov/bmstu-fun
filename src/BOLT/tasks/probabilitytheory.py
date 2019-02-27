@@ -1,9 +1,8 @@
-import math
 from django.shortcuts import render
 from .. import views
 from ..models import Task, Section, Comment, Thanks, UserProfile
 from ..forms import CommentForm
-from scipy.stats import norm, uniform, binom, poisson
+from scipy.stats import norm, uniform, binom, poisson, gamma as gmm
 import numpy as np
 from sympy import *
 import re
@@ -945,3 +944,83 @@ def probabilitytheoryEx23(request):
     }
 
     return distributions[type](n, p, a)
+
+
+@task_decorate
+def probabilitytheoryEx24(request):
+    a = request.GET.get('a')
+    b = request.GET.get('b')
+    type = request.GET.get('type')
+
+    if not type:
+        return {'is_valid': False}
+
+    def uniform_distribution(*args):
+        try:
+            a, b = float(args[0]), float(args[1])
+        except (ValueError, TypeError):
+            return {'is_valid': False}
+        if b < a:
+            a, b = b, a
+        elif b == a:
+            return {'is_valid': False}
+        t = Symbol('t')
+        mean, var = uniform.stats(loc=a, scale=b-a, moments='mv')
+        cf = (exp(I*t*b) - exp(I*t*a)) / (I*t*(b-a))
+        d_cf = diff(cf, t)
+        dd_cf = diff(d_cf, t)
+        mean2 = uniform.moment(2, loc=a, scale=b-a)
+        return {
+            'a': a, 'b': b, 'mean': round(float(mean), 2), 'mean2': round(mean2, 2), 'b_minus_a': b - a,
+            'var': round(float(var), 2),
+            'g': latex(nsimplify(cf, tolerance=0.1)),
+            'g1': latex(nsimplify(d_cf, tolerance=0.1)),
+            'g2': latex(nsimplify(dd_cf, tolerance=0.1)),
+            'type': type, 'is_valid': True,
+            }
+
+    def gamma_distribution(*args):
+        try:
+            a, b = float(args[0]), float(args[1])
+        except (ValueError, TypeError):
+            return {'is_valid': False}
+        if not a > 0 or not b > 0:
+            return {'is_valid': False}
+        t = Symbol('t')
+        mean, var = gmm.stats(b, scale=1/a, moments='mv')
+        cf = nsimplify((1-I*t/a)**(-b), tolerance=1e-2)
+        d_cf = diff(cf, t)
+        dd_cf = diff(d_cf, t)
+        mean2 = round(gmm.moment(2, b, scale=1/a), 2)
+        return {
+            'a': a, 'b': b, 'b_minus': round(b-1, 2), 'b_plus': round(b+1, 2), 'mean': mean, 'mean2': mean2,
+            'var': var, 'g': latex(cf), 'g1': latex(d_cf), 'g2': latex(dd_cf), 'type': type, 'is_valid': True,
+        }
+
+    def norm_distribution(*args):
+        try:
+            a, b = float(args[0]), float(args[1])
+        except (ValueError, TypeError):
+            return {'is_valid': False}
+        if not b > 0:
+            return {'is_valid': False}
+        t = Symbol('t')
+        mean, var, mean2 = a, b, norm.moment(2, loc=a, scale=sqrt(b))
+        cf = exp(I*a*t-b*t**2/2)
+        d_cf = diff(cf, t)
+        dd_cf = diff(d_cf, t)
+        return {
+            'a': a, 'b': b, 'mean': mean, 'mean2': mean2, 'var': var,
+            'g': latex(nsimplify(cf, tolerance=0.1)),
+            'g1': latex(nsimplify(d_cf, tolerance=0.1)),
+            'g2': latex(nsimplify(dd_cf, tolerance=0.1)),
+            'type': type, 'is_valid': True,
+        }
+
+    distributions = {
+        '1': uniform_distribution,
+        '2': gamma_distribution,
+        '3': norm_distribution,
+    }
+
+    return distributions[type](a, b)
