@@ -5,22 +5,47 @@
 * Введите свои исходные данные
 * Наслаждайтесь подробным решением именно вашей задачи!
 
-После того как вы клонировали репозиторий, для запуска проекта вам понадобится выполнить следующие команды:
-```bash
-#копируем настройки и базу даных в том виде, в котором они необходимы для запуска проекта
-cp BOLT_PROJECT/src/BOLT_PROJECT/settings-example.py src/BOLT_PROJECT/settings.py
-cp BOLT_PROJECT/src/db-example.sqlite3 src/db.sqlite3
-#устанавливаем pip3
-sudo apt-get install python3-pip
-#устанавливаем virtualenv
-pip3 install virtualenv
-cd BOLT_PROJECT
-#создаём и активируем вируальное окружение
-virtualenv --python=/usr/bin/python3.5 env
-source env/bin/activate
-#устанавливаем необходимые для работы приложения пакеты
-pip3 install -r requirements.txt 
-cd src/
-python manage.py runserver
+## Запуск локальной версии проекта
+
+#### 1. Склонировать репозиторий
 ```
-Наслаждаемся! Теперь наш проект доступен по адресу: localhost:8000
+$ git clone https://github.com/dchebakov/bmstu-fun
+```
+
+#### 2. Создать и запустить виртуальное окружение
+```
+$ python -m venv venv
+$ source venv/bin/activate
+```
+
+#### 3. Установить зависимости
+```
+$ pip install -r requirements.txt
+```
+
+#### 4. Создать базу данных
+Зайти в консоль postgres:
+```
+$ sudo -u postgres psql
+```
+
+И выполнить следующие команды:
+```postgresql
+create user admin with password 'qwerty';
+create database bmstu_fun owner admin;
+```
+
+#### 5. Заполнить базу данных
+```
+$ cd fixtures
+$ unzip dump.zip
+$ cd ..
+$ sudo -u postgres psql bmstu_fun < fixtures/dump.pgsql
+$ mkdir media
+$ cp -r fixtures/media/* files/media
+```
+
+#### 6. Запустить проект
+```
+$ python src/manage.py runserver
+```
