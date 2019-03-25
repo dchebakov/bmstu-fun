@@ -30,9 +30,4 @@
             <a href="{{ last_comment.get_absolute_url }}">{{ last_comment.text | shortern }}</a><br>
         {% endfor %}
     </div>
-    {% if not user.is_superuser %}
-        <a href="{% url 'newtask' %}" class="btn btn-success" style="margin-bottom: 2%">Прислать решение!</a>
-    {% else %}
-        <a href="{% url 'listofsentsolutions' %}" class="btn btn-success" style="margin-bottom: 2%">Проверить решения</a>
-    {% endif %}
 {% endif %}

@@ -136,29 +136,3 @@ class Thanks(models.Model):
 
 def file_url(self, filename):
     return 'tmp/%s%s' % (str(date.today()), filename)
-
-
-class NewTask(models.Model):
-    sections = [('probabilitytheory', 'Теория вероятности'),
-                ('complexanalysis', 'ТФКП'),
-                ('diffgeometry', 'Дифференциальная геометрия'),
-                ('diffequation', 'Дифференциальные уравнения'),
-                ('functionalanalysis', 'Функциональный анализ'),
-                ('mathanalysis', 'Математический анализ'),
-                ('linearalgebra', 'Линейная алгебра'),
-                ('analyticgeometry', 'Аналитическая геометрия')]
-
-    title = models.TextField()
-    function = models.FileField(upload_to=file_url)
-    template = models.FileField(upload_to=file_url)
-    section = models.CharField(max_length=18, choices=sections,
-                               null=True)
-
-    class Meta:
-        verbose_name = 'New task'
-
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse('checknewsolution', args=[self.pk])

@@ -73,3 +73,5 @@ venv/
 media
 master.pid
 files
+
+robots.txt

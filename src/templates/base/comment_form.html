@@ -6,7 +6,7 @@
     <form class="form-horizontal" action="{% url 'comment' id=task.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
-    <textarea class="form-control" placeholder="Введите комментирий"
+    <textarea class="form-control" placeholder="Введите комментарий"
               name="text"
               required maxlength="1000" rows="4">{% if comment_form.value != None %}
         {{ comment_form.value }}{% endif %}</textarea>
