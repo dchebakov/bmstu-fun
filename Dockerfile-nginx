@@ -1,0 +1,17 @@
+FROM nginx:1.15.9
+
+# Устанавливаем python3.5, чтобы сделать collectstatic
+RUN apt-get update
+RUN apt-get install -y python3.5 python3-pip
+
+RUN mkdir -p /srv/bmstu-fun
+WORKDIR /srv/bmstu-fun
+
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+COPY . /srv/bmstu-fun
+
+RUN python3 src/manage.py collectstatic
+RUN chown -R www-data:www-data files
+
+CMD ["nginx", "-g", "daemon off;"]

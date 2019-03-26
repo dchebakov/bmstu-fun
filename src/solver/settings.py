@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,8 +44,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
-                 os.path.join(RESOURCE_DIR, 'files', 'media')]
-        ,
+                 os.path.join(RESOURCE_DIR, 'files', 'media')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
