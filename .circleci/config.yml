@@ -1,0 +1,77 @@
+version: 2.1
+
+executors:
+  publish-release:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
+jobs:
+  build:
+    executor: publish-release
+    working_directory: ~/solver
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Собираем main и nginx образы
+          command: SAVE_ARCHIVE=true ./deploy/tools/build.sh
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - main.tar
+            - nginx.tar
+  publish:
+    executor: publish-release
+    working_directory: ~/solver
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: images
+      - run:
+          name: Публикуем образы в gcloud
+          command: |
+            echo $GCLOUD_ACCESS_TOKEN | docker login -u _json_key --password-stdin https://eu.gcr.io
+            LOAD_IMAGE_ARCHIVE=true ./deploy/tools/publish.sh
+  deploy:
+    executor: publish-release
+    working_directory: ~/deploy
+    steps:
+      - checkout
+      - run:
+          name: Устанавливаем ansible
+          command: |
+            sudo apt install -y python-pip
+            sudo pip install ansible
+      - run:
+          name: Запускаем playbooks
+          command: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i deploy/inventory/server.ini deploy/inventory/deploy.yml
+
+workflows:
+  version: 2.1
+  build-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+
+      - publish:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - deploy:
+          requires:
+            - publish
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/

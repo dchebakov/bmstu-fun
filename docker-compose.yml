@@ -9,7 +9,9 @@ services:
       - backend
 
   web:
-    image: dchebakov/solver-main
+    image: $MAIN_IMAGE_TAG
+    volumes:
+      - ./files/media:/app/files/media
     secrets:
       - bmstu_fun_allowed_hosts
       - bmstu_fun_db_password
@@ -20,14 +22,14 @@ services:
       - backend
 
   nginx:
-    image: dchebakov/solver-nginx
-    volumes:
-      - ./deploy/nginx.conf:/etc/nginx/nginx.conf
-      - ./deploy:/etc/nginx/deploy
-      - ./keys:/etc/nginx/keys
+    image: $NGINX_IMAGE_TAG
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - ./files/media:/srv/bmstu-fun/files/media
+      - ./keys/letsencrypt:/etc/letsencrypt
+      - ./keys/conf:/var/www/certbot
     depends_on:
       - web
     networks:

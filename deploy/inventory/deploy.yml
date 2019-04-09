@@ -1,0 +1,22 @@
+- hosts: main
+  remote_user: root
+  vars:
+    project_dir: /srv/bmstu-fun
+  tasks:
+    - name: Обновляем репозиторий
+      command: git pull origin master
+      args:
+        chdir: "{{project_dir}}"
+    - name: Загружаем последние тэги
+      command: git fetch --tags
+      args:
+        chdir: "{{project_dir}}"
+    - name: Аунтефицируемся в gcloud registry
+      shell: cat keys/gcloud.json | docker login -u _json_key --password-stdin https://eu.gcr.io
+      args:
+        chdir: "{{project_dir}}"
+    - name: Устнавливаем переменные окружения и запускаем перезапуск конейнеров
+      shell: source deploy/tools/get-images-versions.sh && docker stack deploy --with-registry-auth -c docker-compose.yml solver
+      args:
+        chdir: "{{project_dir}}"
+        executable: /bin/bash

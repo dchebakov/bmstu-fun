@@ -12,7 +12,6 @@
 
 # production
 /build
-uwsgi.ini
 
 # misc
 .DS_Store
@@ -76,3 +75,4 @@ files
 database
 
 robots.txt
+keys

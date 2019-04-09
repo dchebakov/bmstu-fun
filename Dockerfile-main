@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 COPY --chown=www-data:www-data . /app/
 
 EXPOSE 8000
-CMD uwsgi --ini deploy/uwsgi.ini
+CMD ./deploy/start.sh
