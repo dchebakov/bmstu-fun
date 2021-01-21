@@ -10,7 +10,7 @@ import re
 
 def comments(request, task):
     is_like = True
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         is_like = Thanks.objects.filter(task=task,
                                         user=UserProfile.objects.get(user=request.user)).exists()
 
