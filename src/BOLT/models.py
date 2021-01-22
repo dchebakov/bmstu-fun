@@ -4,7 +4,7 @@ from autoslug import AutoSlugField
 from datetime import date
 from imagekit.models.fields import ImageSpecField
 from imagekit.processors import ResizeToFill, Adjust
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 COUNT_BEST_MEMBERS = 3
 COUNT_TOP_TAGS = 5
@@ -43,7 +43,7 @@ def img_url(self, filename):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to=img_url, blank=True, null=True)
     avatar_small = ImageSpecField([Adjust(contrast=1.2, sharpness=1.1),
                                    ResizeToFill(40, 40)],
@@ -95,7 +95,7 @@ class TaskManager(models.Manager):
 class Task(models.Model):
     title = models.TextField()
     description = models.TextField(blank=True, default='')
-    section = models.ForeignKey(Section)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     function_name = models.CharField(max_length=100, null=True)
@@ -112,8 +112,8 @@ class Task(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(UserProfile)
-    task = models.ForeignKey(Task)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
     date_created = models.DateTimeField(auto_now_add=True)
 
@@ -125,8 +125,8 @@ class Comment(models.Model):
 
 
 class Thanks(models.Model):
-    task = models.ForeignKey(Task)
-    user = models.ForeignKey(UserProfile)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     def like(self):
         task = Task.objects.get(id=self.task.id)

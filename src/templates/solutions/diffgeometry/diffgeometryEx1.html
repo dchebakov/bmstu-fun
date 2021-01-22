@@ -22,7 +22,7 @@
         \partial_{y}$$</p>
 
 {% else %}
-    {% load staticfiles %}
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/mathquill.css' %}">
 
     <form action="{{ task.get_absolute_url }}" method="get" class="form-horizontal" name="com-form">

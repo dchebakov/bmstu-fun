@@ -36,7 +36,7 @@ COUNT_BEST_MEMBERS = 3
 
 def get_profile(request):
     profile = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         profile = UserProfile.objects.get(user=request.user)
     return profile
 
@@ -75,7 +75,7 @@ def login(request):
                 form = 'login'
     else:
         form = None
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             form = AuthenticationForm()
     return form
 
@@ -111,7 +111,7 @@ def main(request):
 
 
 def signup(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(settings)
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)
@@ -142,7 +142,7 @@ def logout(request):
 
 
 def settings(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         profile = UserProfile.objects.get(user=request.user)
         if request.method == 'POST':
             form = SettingsForm(request.POST, request.FILES)
