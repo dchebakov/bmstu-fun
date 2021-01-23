@@ -12,6 +12,9 @@
 
 # production
 /build
+/deploy/project-master.pid
+/.env
+/deploy/nginx.conf
 
 # misc
 .DS_Store
